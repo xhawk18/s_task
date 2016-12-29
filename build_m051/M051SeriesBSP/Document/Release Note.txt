@@ -1,0 +1,112 @@
+/*---------------------------------------------------------------------------------------------------------*/
+/*                                                                                                         */
+/* Copyright (c) 2012 by Nuvoton Technology Corporation                                                    */
+/* All rights reserved                                                                                     */
+/*                                                                                                         */
+/*---------------------------------------------------------------------------------------------------------*/
+/*                                                                                                         */
+/* NuMicro(TM) M051 Series Board Support Package v2.01.002                                                 */
+/*                                                                                                         */
+/*---------------------------------------------------------------------------------------------------------*/
+
+Introduction:
+The NuMicor(TM) M051 Series BSP supports the basic materials for NuMicro M051 series development and provides 
+an easy way to use the NuMicro(TM) M051 series. The documents and examples show how to use each peripheral 
+library. The pre-created projects of each tool chain (including KEIL and IAR) could be used as an application template.
+
+The supported tool chain includes: KEIL MDK 4.1, IAR EWARM 6.21 or higher versions.
+
+The default debug interface (ICE) of each sample project is Nu-Link. If using U-Link2 or J-Link, you may change the debugger
+option of the compiler tool chain.
+
+The NuMicro(TM) M051 Series BSP includes:
+
+\LibM051Series\CMSIS
+    The CMSIS files compliant with Cortex Microcontroller Software Interface Standard (CMSIS) v1.3 of ARM Corp.
+\Document
+    NuMicro(TM) M051 Series Driver Reference Guide and Release Note.
+\Project
+    A code template for user to implement their application.
+\SampleCode
+    All example code for M051 Series.
+
+Update History:
+
+
+2012/08/10:
+
+    v2.01.002
+      - Fixed the _TIMER_RESET definition.
+      - Fixed the SYSCLK_CLKSEL1_PWM23_HCLK definition.
+      - Removed the IARv6 directory and supported only IAR v6.21 and higher versions.
+      - Modified PLL enable procedure to avoid unstable condition caused by PLL frequency changes.
+
+2012/04/24:
+
+    v2.01.001
+      - Provided a new driver for faster performance with smaller code size.
+      - Created a new directory hierarchy.
+    
+2012/03/12
+
+    v1.02.003
+      - Fixed the UART driver bug.
+
+2011/08/26
+    
+    v1.02.002
+      - Added the NuvotonPlatform_IARv6 directory to support IAR tool v6.10 and later.
+      - Supported semihosted input by IAR.
+
+2011/07/08
+    
+    v1.02.001
+      - Updated the header to support 32-bit word access for control registers.
+
+2011/06/20
+    
+    v1.01.005
+      - Fixed the bug about wrong clock source of timer driver.
+
+2011/06/08:
+
+    v1.01.004 
+      - Fixed the _PORT_DOUT definition of GPIO header.
+      - Fixed the GPIO example in the Driver Reference Guide.
+
+2011/05/31:
+
+    v1.01.003 
+     - Added new sample code of learning board in KEIL environment: Smpl_I2C_SW, Smpl_I2C_SW_I, Smpl_Idle.
+     - Fixed driver bugs.
+     - Updated the clock diagram in the Driver Reference Guide.
+
+2011/01/05:
+
+    v1.01.002 
+     - Fixed bugs and added more samples.
+     - Added sample code for the learning board.
+		 
+2010/12/01:
+
+    v1.01.001 
+     - Fixed bugs and added more samples.
+     - Defaulted the NMI_SEL to 0x31 (assigned NMI to reserved IRQ).
+     - Updated the clock diagram in the Driver Reference Guide for the PLL source.
+     - Removed the second parameter (E_ADC_INPUT_MODE) from DrvADC_SetADCChannel().
+     - Removed multi-function pin configurations from SPI driver (DrvSPI_Open()).
+     - Removed multi-function pin configurations from ADC driver [ DrvADC_Open( ) & DrvADC_SetADCChannel( ) ]. User needs to control the multi-function I/O by GPIO driver before they can use the I/O of ADC or SPI.
+     - Added sample code for M051-LB_004 (Learning Board).
+     - Fixed the gau32ClkSrcTbl setting to avoid wrong system clock calculation.
+     - Fixed the bug about EINT0, EINT1 handler cleaning status.
+     - Removed unused register definitions in startup_M051Series.s.
+     - Fixed the GCR_INT_T definition in M051Series.h.
+     - Fixed the wrong definition of DRVUART_STOPBITS_1_5 and DRVUART_STOPBITS_2.
+
+
+2010/08/20:
+
+    v1.00.001 
+     - Primary release version.
+    
+    

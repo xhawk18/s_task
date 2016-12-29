@@ -1,0 +1,89 @@
+Dependencies for Project 'SPI_Flash', Target 'SPI_Flash': (DO NOT MODIFY !)
+F (..\..\..\..\LibM051Series\CMSIS\CM0\CoreSupport\core_cm0.c)(0x5024B4A4)(--feedback ".\obj\SPI_Flash.fed" -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork -I..\..\..\..\libM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series -I..\..\..\..\libM051Series\CMSIS\CM0\CoreSupport -I..\..\..\..\libM051Series\StdDriver\inc -I..\..\..\..\LibM051Series\M051-LB_004_Driver\inc -I C:\Keil460\ARM\RV31\INC -I C:\Keil460\ARM\CMSIS\Include -DDEBUG_ENABLE_SEMIHOST -o ".\obj\core_cm0.o" --omf_browse ".\obj\core_cm0.crf" --depend ".\obj\core_cm0.d")
+I (C:\Keil460\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+F (..\..\..\..\LibM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series\system_M051Series.c)(0x5024B4A4)(--feedback ".\obj\SPI_Flash.fed" -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork -I..\..\..\..\libM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series -I..\..\..\..\libM051Series\CMSIS\CM0\CoreSupport -I..\..\..\..\libM051Series\StdDriver\inc -I..\..\..\..\LibM051Series\M051-LB_004_Driver\inc -I C:\Keil460\ARM\RV31\INC -I C:\Keil460\ARM\CMSIS\Include -DDEBUG_ENABLE_SEMIHOST -o ".\obj\system_m051series.o" --omf_browse ".\obj\system_m051series.crf" --depend ".\obj\system_m051series.d")
+I (C:\Keil460\ARM\ARMCC\bin\..\include\stdio.h)(0x4EB0D286)
+I (C:\Keil460\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (..\..\..\..\LibM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series\M051Series.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\CMSIS\CM0\CoreSupport\core_cm0.h)(0x50F659F9)
+I (..\..\..\..\LibM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series\system_M051Series.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\SYS.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\ADC.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\EBI.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\FMC.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\GPIO.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\I2C.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\PWM.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\SPI.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\TIMER.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\UART.h)(0x51639E8E)
+F (..\..\..\..\LibM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series\startup\arm\startup_M051Series.s)(0x50F65A71)(--cpu Cortex-M0 -g --16 --apcs=interwork --pd "__MICROLIB SETA 1" -I C:\Keil460\ARM\RV31\INC -I C:\Keil460\ARM\CMSIS\Include --pd "DEBUG_ENABLE_SEMIHOST SETA 1" --list ".\lst\startup_M051Series.lst" --xref -o ".\obj\startup_M051Series.o" --depend ".\obj\startup_M051Series.d")
+F (..\main.c)(0x55D6D13A)(--feedback ".\obj\SPI_Flash.fed" -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork -I..\..\..\..\libM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series -I..\..\..\..\libM051Series\CMSIS\CM0\CoreSupport -I..\..\..\..\libM051Series\StdDriver\inc -I..\..\..\..\LibM051Series\M051-LB_004_Driver\inc -I C:\Keil460\ARM\RV31\INC -I C:\Keil460\ARM\CMSIS\Include -DDEBUG_ENABLE_SEMIHOST -o ".\obj\main.o" --omf_browse ".\obj\main.crf" --depend ".\obj\main.d")
+I (C:\Keil460\ARM\ARMCC\bin\..\include\stdio.h)(0x4EB0D286)
+I (..\..\..\..\libM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series\M051Series.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\CMSIS\CM0\CoreSupport\core_cm0.h)(0x50F659F9)
+I (C:\Keil460\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (..\..\..\..\libM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series\system_M051Series.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\SYS.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\ADC.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\EBI.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\FMC.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\GPIO.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\I2C.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\PWM.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\SPI.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\TIMER.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\UART.h)(0x51639E8E)
+I (..\..\..\..\LibM051Series\M051-LB_004_Driver\inc\LCD_Driver.h)(0x5024B4A4)
+I (..\..\..\..\LibM051Series\M051-LB_004_Driver\inc\SPIFLASH_Driver.h)(0x5024B4A4)
+F (..\..\..\..\LibM051Series\M051-LB_004_Driver\src\Ascii_Table.C)(0x5024B4A4)(--feedback ".\obj\SPI_Flash.fed" -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork -I..\..\..\..\libM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series -I..\..\..\..\libM051Series\CMSIS\CM0\CoreSupport -I..\..\..\..\libM051Series\StdDriver\inc -I..\..\..\..\LibM051Series\M051-LB_004_Driver\inc -I C:\Keil460\ARM\RV31\INC -I C:\Keil460\ARM\CMSIS\Include -DDEBUG_ENABLE_SEMIHOST -o ".\obj\ascii_table.o" --omf_browse ".\obj\ascii_table.crf" --depend ".\obj\ascii_table.d")
+I (C:\Keil460\ARM\ARMCC\bin\..\include\stdio.h)(0x4EB0D286)
+F (..\..\..\..\LibM051Series\M051-LB_004_Driver\src\LCD_Driver.c)(0x5024B4A4)(--feedback ".\obj\SPI_Flash.fed" -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork -I..\..\..\..\libM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series -I..\..\..\..\libM051Series\CMSIS\CM0\CoreSupport -I..\..\..\..\libM051Series\StdDriver\inc -I..\..\..\..\LibM051Series\M051-LB_004_Driver\inc -I C:\Keil460\ARM\RV31\INC -I C:\Keil460\ARM\CMSIS\Include -DDEBUG_ENABLE_SEMIHOST -o ".\obj\lcd_driver.o" --omf_browse ".\obj\lcd_driver.crf" --depend ".\obj\lcd_driver.d")
+I (..\..\..\..\libM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series\M051Series.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\CMSIS\CM0\CoreSupport\core_cm0.h)(0x50F659F9)
+I (C:\Keil460\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (..\..\..\..\libM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series\system_M051Series.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\SYS.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\ADC.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\EBI.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\FMC.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\GPIO.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\I2C.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\PWM.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\SPI.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\TIMER.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\UART.h)(0x51639E8E)
+I (..\..\..\..\LibM051Series\M051-LB_004_Driver\inc\LCD_Driver.h)(0x5024B4A4)
+F (..\..\..\..\LibM051Series\StdDriver\src\retarget.c)(0x51638841)(--feedback ".\obj\SPI_Flash.fed" -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork -I..\..\..\..\libM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series -I..\..\..\..\libM051Series\CMSIS\CM0\CoreSupport -I..\..\..\..\libM051Series\StdDriver\inc -I..\..\..\..\LibM051Series\M051-LB_004_Driver\inc -I C:\Keil460\ARM\RV31\INC -I C:\Keil460\ARM\CMSIS\Include -DDEBUG_ENABLE_SEMIHOST -o ".\obj\retarget.o" --omf_browse ".\obj\retarget.crf" --depend ".\obj\retarget.d")
+I (C:\Keil460\ARM\ARMCC\bin\..\include\stdio.h)(0x4EB0D286)
+I (..\..\..\..\libM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series\M051Series.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\CMSIS\CM0\CoreSupport\core_cm0.h)(0x50F659F9)
+I (C:\Keil460\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (..\..\..\..\libM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series\system_M051Series.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\SYS.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\ADC.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\EBI.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\FMC.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\GPIO.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\I2C.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\PWM.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\SPI.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\TIMER.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\UART.h)(0x51639E8E)
+F (..\..\..\..\LibM051Series\M051-LB_004_Driver\src\SPIFLASH_Driver.c)(0x522000FF)(--feedback ".\obj\SPI_Flash.fed" -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork -I..\..\..\..\libM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series -I..\..\..\..\libM051Series\CMSIS\CM0\CoreSupport -I..\..\..\..\libM051Series\StdDriver\inc -I..\..\..\..\LibM051Series\M051-LB_004_Driver\inc -I C:\Keil460\ARM\RV31\INC -I C:\Keil460\ARM\CMSIS\Include -DDEBUG_ENABLE_SEMIHOST -o ".\obj\spiflash_driver.o" --omf_browse ".\obj\spiflash_driver.crf" --depend ".\obj\spiflash_driver.d")
+I (C:\Keil460\ARM\ARMCC\bin\..\include\stdio.h)(0x4EB0D286)
+I (..\..\..\..\libM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series\M051Series.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\CMSIS\CM0\CoreSupport\core_cm0.h)(0x50F659F9)
+I (C:\Keil460\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (..\..\..\..\libM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series\system_M051Series.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\SYS.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\ADC.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\EBI.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\FMC.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\GPIO.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\I2C.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\PWM.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\SPI.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\TIMER.h)(0x5024B4A4)
+I (..\..\..\..\libM051Series\StdDriver\inc\UART.h)(0x51639E8E)
+I (..\..\..\..\LibM051Series\M051-LB_004_Driver\inc\LCD_Driver.h)(0x5024B4A4)
