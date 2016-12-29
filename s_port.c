@@ -7,7 +7,11 @@
 
 #if defined __ARMCC_VERSION
 /* === Timer functions on nuvoton M051. === */
+#ifdef  STM32F10X_MD
+#include "stm32f10x.h"
+#else
 #include "M051Series.h"
+#endif
 
 #define MY_CLOCKS_PER_SEC 1024
 typedef uint32_t my_clock_t;
