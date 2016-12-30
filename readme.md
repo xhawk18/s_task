@@ -5,7 +5,7 @@ setjmp_task is designed for easy use, just use task_init_system() to initialize 
 and use task_create to create tasks is OK.
 
 After task_init_system() was called, main_task will be created, and the main function will halt
-until all tasks is over.
+until all tasks are finished.
 
 setjmp_task is not preemptive multitasking. A task need call task_msleep or task_yield to make
 other tasks hava chance to run.
