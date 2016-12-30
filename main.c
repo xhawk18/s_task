@@ -6,24 +6,37 @@
 //#define PRINTF(fmt...)
 #define PRINTF printf
 
+event_t g_event;
+
 void sub_task(void *arg) {
-    int i;
     int n = (int)arg;
-    for (i = 0; i < 5; ++i) {
-        PRINTF("task %d, delay seconds = %d, i = %d\n", n, n, i);
-        task_msleep(n * 1000);
-        //task_yield();
+
+    while (1) {
+        event_wait(&g_event);
+        PRINTF("task %d wait event OK\n", n);
     }
 }
 
 void main_task(void *arg) {
     int i;
+    event_init(&g_event);
+
     task_create(sub_task, (void *)1);
     task_create(sub_task, (void *)2);
 
-    for (i = 0; i < 4; ++i) {
+    for (i = 0; i < 24; ++i) {
         PRINTF("task_main arg = %p, i = %d\n", arg, i);
-        task_yield();
+        task_msleep(500);
+        if (i % 3 == 0) {
+            PRINTF("task main set event\n");
+            event_set(&g_event);
+            task_yield();
+        }
+    }
+    
+    while (1) {
+        PRINTF("loop in main_task\n");
+        task_msleep(1000);
     }
 }
 

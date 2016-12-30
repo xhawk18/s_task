@@ -23,12 +23,6 @@
 /*******************************************************************/
 /* list                                                            */
 /*******************************************************************/
-struct tag_list;
-typedef struct tag_list {
-    struct tag_list *next;
-    struct tag_list *prev;
-} list_t;
-
 
 #define GET_PARENT_ADDR(pMe,tParent,eMyName) \
     ((tParent *)((char *)(pMe) - (ptrdiff_t)&((tParent *)0)->eMyName))
@@ -283,3 +277,22 @@ void task_create(task_fn_t entry, void *arg) {
     }
 }
 
+/* Initialize a wait event */
+void event_init(event_t *event) {
+    list_init(&event->wait_list);
+}
+
+/* Wait event */
+void event_wait(event_t *event) {
+    if (setjmp(g_current_task->jbuf) == 0) {
+        //Put current task to the event's waiting list
+        list_attach(&event->wait_list, &g_current_task->node);
+        run_next_task();
+    }
+}
+
+/* Set event */
+void event_set(event_t *event) {
+    list_attach(&g_waiting_tasks, &event->wait_list);
+    list_detach(&event->wait_list);
+}

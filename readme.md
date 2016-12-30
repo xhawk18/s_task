@@ -40,6 +40,7 @@ int main(int argc, char *argv) {
 ```
 
 ## API
+### Task
 ```c
 /* Function type for task entrance */
 typedef void(*task_fn_t)(void *arg);
@@ -55,6 +56,17 @@ void task_msleep(uint32_t msec);
 
 /* Yield current task */
 void task_yield(void);
+```
+### Event
+```c
+/* Initialize a wait event */
+void event_init(event_t *event);
+
+/* Wait event */
+void event_wait(event_t *event);
+
+/* Set event */
+void event_set(event_t *event);
 ```
 
 ## How to make port?
