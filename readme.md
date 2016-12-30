@@ -57,7 +57,7 @@ void task_msleep(uint32_t msec);
 void task_yield(void);
 ```
 
-## How to port
+## How to make port?
 To make a port of "setjmp_task" to new system is very simple.
 Here's an example --
 ```c
