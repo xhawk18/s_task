@@ -20,8 +20,8 @@ my_clock_t my_clock() {
     return clock();
 }
 
-void my_sleep_ms(uint64_t ms) {
-    usleep(ms / 1000);
+void my_on_idle(uint64_t max_idle_ms) {
+    usleep(max_idle_ms / 1000);
 }
 
 #endif

@@ -22,8 +22,8 @@ my_clock_t my_clock() {
     return GetTickCount();
 }
 
-void my_sleep_ms(uint64_t ms) {
-    Sleep((DWORD)ms);
+void my_on_idle(uint64_t max_idle_ms) {
+    Sleep((DWORD)max_idle_ms);
 }
 
 #endif

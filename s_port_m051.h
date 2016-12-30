@@ -27,8 +27,7 @@ my_clock_t my_clock() {
     return g_ticks;
 }
 
-/* sleep at most ms millseconds */
-void my_sleep_ms(uint64_t ms) {
+void my_on_idle(uint64_t max_idle_ms) {
     __WFE();
 }
 

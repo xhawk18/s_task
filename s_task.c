@@ -144,7 +144,7 @@ static void timer_wait_recent() {
         task_t *task = GET_PARENT_ADDR(node, task_t, node);
         int ticks_to_wakeup = (int)(task->wakeup_ticks - current_ticks);
         if (ticks_to_wakeup > 0)
-            my_sleep_ms((uint64_t)ticks_to_wakeup * 1000  / MY_CLOCKS_PER_SEC);
+            my_on_idle((uint64_t)ticks_to_wakeup * 1000  / MY_CLOCKS_PER_SEC);
     }
 }
 
