@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>s_task</TargetName>
+      <TargetName>Project</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>

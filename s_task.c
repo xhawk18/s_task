@@ -6,7 +6,19 @@
 #include <stddef.h>
 #include "s_task.h"
 
-#include "s_port.c"
+#if defined __ARMCC_VERSION
+#   if defined  STM32F10X_MD
+#       include "s_port_stm32f10x.h"
+#   elif defined  STM32F302x8
+#       include "s_port_stm32f30x.h"
+#   else
+#       include "s_port_m051.h"
+#   endif
+#elif defined _WIN32
+#   include "s_port_win32.h"
+#else
+#   include "s_port_posix.h"
+#endif
 
 /*******************************************************************/
 /* list                                                            */
