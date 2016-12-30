@@ -28,7 +28,7 @@ my_clock_t my_clock() {
 
 //5. Implement the idle delay function.
 void my_on_idle(uint64_t max_idle_ms) {
-    usleep(max_idle_ms / 1000);
+    usleep(max_idle_ms * 1000);
 }
 
 #endif
