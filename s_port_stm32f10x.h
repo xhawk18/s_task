@@ -4,7 +4,7 @@
 /* Copyright xhawk, MIT license */
 
 /* Size for stack for each stask. */
-#define STACK_SIZE 2048
+#define STACK_SIZE 1024
 
 /* Timer functions need to be implemented on a new porting. */
 

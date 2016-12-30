@@ -18,11 +18,8 @@ void sub_task(void *arg) {
 
 void main_task(void *arg) {
     int i;
-    task_create(sub_task, (void *)0);
     task_create(sub_task, (void *)1);
     task_create(sub_task, (void *)2);
-    task_create(sub_task, (void *)3);
-    task_create(sub_task, (void *)5);
 
     for (i = 0; i < 4; ++i) {
         PRINTF("task_main arg = %p, i = %d\n", arg, i);
