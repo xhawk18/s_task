@@ -9,6 +9,7 @@
 extern "C" {
 #endif
 
+/* Function type for task entrance */
 typedef void(*task_fn_t)(void *arg);
 
 /* Initialize the task system. */
