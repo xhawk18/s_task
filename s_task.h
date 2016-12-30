@@ -5,6 +5,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef void(*task_fn_t)(void *arg);
 
 /* Initialize the task system. */
@@ -19,4 +23,7 @@ void task_msleep(uint32_t msec);
 /* Yield current task */
 void task_yield(void);
 
+#ifdef __cplusplus
+}
+#endif
 #endif
