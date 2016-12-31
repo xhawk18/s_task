@@ -6,6 +6,12 @@
 /* Size for stack for each stask. */
 #define STACK_SIZE 1024
 
+/* The original jmp_buf is too large and waste RAM, Use smaller jmb_buf instead! */
+typedef struct {
+    int buf[44 / sizeof(int)];
+} my_jmp_buf_t;
+#define MY_JMP_BUF my_jmp_buf_t
+
 /* Timer functions need to be implemented on a new porting. */
 
 /* === Timer functions on STM32F302 === */
