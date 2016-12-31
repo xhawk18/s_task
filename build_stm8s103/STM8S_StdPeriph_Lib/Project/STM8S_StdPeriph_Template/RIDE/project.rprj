@@ -1,0 +1,12 @@
+
+<Project Header="Project 'project'" Path=".\project.rprj" Project="Yes" OutputFile="" sate="96" ActiveApp="stm8af622x" >
+	<ApplicationBuild Header="stm8s208" Extern=".\stm8s208.rapp" Path=".\stm8s208.rapp" OutputFile=".\Debug\stm8s208.aof" sate="66" />
+	<ApplicationBuild Header="stm8s207" Extern=".\stm8s207.rapp" Path=".\stm8s207.rapp" OutputFile=".\Debug\stm8s207.aof" sate="64" />
+	<ApplicationBuild Header="stm8af52ax" Extern=".\stm8af52ax.rapp" Path=".\stm8af52ax.rapp" OutputFile=".\Debug\stm8af52ax.aof" sate="64" />
+	<ApplicationBuild Header="stm8af62ax" Extern=".\stm8af62ax.rapp" Path=".\stm8af62ax.rapp" OutputFile=".\Debug\stm8af62ax.aof" sate="64" />
+	<ApplicationBuild Header="stm8s105" Extern=".\stm8s105.rapp" Path=".\stm8s105.rapp" OutputFile=".\Debug\stm8s105.aof" sate="0" />
+	<ApplicationBuild Header="stm8af626x" Extern=".\stm8af626x.rapp" Path=".\stm8af626x.rapp" OutputFile=".\Debug\stm8af626x.aof" sate="0" />
+	<ApplicationBuild Header="stm8s103" Extern=".\stm8s103.rapp" Path=".\stm8s103.rapp" OutputFile=".\Debug\stm8s103.aof" sate="64" />
+	<ApplicationBuild Header="stm8s903" Extern=".\stm8s903.rapp" Path=".\stm8s903.rapp" OutputFile=".\Debug\stm8s903.aof" sate="64" />
+	<ApplicationBuild Header="stm8af622x" Extern=".\stm8af622x.rapp" Path=".\stm8af622x.rapp" OutputFile=".\Debug\stm8af622x.aof" sate="64" />
+</Project>

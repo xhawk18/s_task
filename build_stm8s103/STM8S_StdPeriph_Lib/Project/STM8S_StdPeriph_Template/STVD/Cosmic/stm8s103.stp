@@ -1,0 +1,459 @@
+;	STMicroelectronics Project file
+
+[Version]
+Keyword=ST7Project
+Number=1.3
+
+[Project]
+Name=stm8s103
+Toolset=STM8 Cosmic
+
+[Config]
+0=Config.0
+1=Config.1
+
+[Config.0]
+ConfigName=Debug
+Target=stm8s103.elf
+OutputFolder=Debug
+Debug=$(TargetFName)
+
+[Config.1]
+ConfigName=Release
+Target=stm8s103.elf
+OutputFolder=Release
+Debug=$(TargetFName)
+
+[Root]
+ElemType=Project
+PathName=stm8s103
+Child=Root.Source Files
+Config.0=Root.Config.0
+Config.1=Root.Config.1
+
+[Root.Config.0]
+Settings.0.0=Root.Config.0.Settings.0
+Settings.0.1=Root.Config.0.Settings.1
+Settings.0.2=Root.Config.0.Settings.2
+Settings.0.3=Root.Config.0.Settings.3
+Settings.0.4=Root.Config.0.Settings.4
+Settings.0.5=Root.Config.0.Settings.5
+Settings.0.6=Root.Config.0.Settings.6
+Settings.0.7=Root.Config.0.Settings.7
+Settings.0.8=Root.Config.0.Settings.8
+
+[Root.Config.1]
+Settings.1.0=Root.Config.1.Settings.0
+Settings.1.1=Root.Config.1.Settings.1
+Settings.1.2=Root.Config.1.Settings.2
+Settings.1.3=Root.Config.1.Settings.3
+Settings.1.4=Root.Config.1.Settings.4
+Settings.1.5=Root.Config.1.Settings.5
+Settings.1.6=Root.Config.1.Settings.6
+Settings.1.7=Root.Config.1.Settings.7
+Settings.1.8=Root.Config.1.Settings.8
+
+[Root.Config.0.Settings.0]
+String.6.0=2010,12,3,14,49,2
+String.100.0=ST Assembler Linker
+String.100.1=ST7 Cosmic
+String.100.2=STM8 Cosmic
+String.100.3=ST7 Metrowerks V1.1
+String.100.4=Raisonance
+String.101.0=STM8 Cosmic
+String.102.0=C:\Program Files (x86)\COSMIC\CXSTM8_32K
+String.103.0=
+String.104.0=Hstm8
+String.105.0=Lib
+String.106.0=Debug
+String.107.0=stm8s103.elf
+Int.108=0
+
+[Root.Config.0.Settings.1]
+String.6.0=2010,12,3,14,49,2
+String.100.0=$(TargetFName)
+String.101.0=
+String.103.0=.\;..\..;..\..\..\..\libraries\stm8s_stdperiph_driver\src;
+
+[Root.Config.0.Settings.2]
+String.2.0=
+String.6.0=2010,12,3,14,49,2
+String.100.0=STM8S103K3U
+
+[Root.Config.0.Settings.3]
+String.2.0=Compiling $(InputFile)...
+String.3.0=cxstm8 +mods0 -customDebCompat -customOpt +compact +split -customC-pp -customLst -l -dSTM8S103 -i..\..\..\stm8s_stdperiph_template -i..\..\..\..\libraries\stm8s_stdperiph_driver\inc $(ToolsetIncOpts) -cl$(IntermPath) -co$(IntermPath) $(InputFile)
+String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
+String.5.0=$(IntermPath)$(InputName).ls
+String.6.0=2011,11,16,18,52,35
+
+[Root.Config.0.Settings.4]
+String.2.0=Assembling $(InputFile)...
+String.3.0=castm8 -xx -l $(ToolsetIncOpts) -o$(IntermPath)$(InputName).$(ObjectExt) $(InputFile)
+String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
+String.5.0=$(IntermPath)$(InputName).ls
+String.6.0=2010,12,3,14,49,2
+
+[Root.Config.0.Settings.5]
+String.2.0=Running Pre-Link step
+String.6.0=2010,12,3,14,49,2
+String.8.0=
+
+[Root.Config.0.Settings.6]
+String.2.0=Running Linker
+String.3.0=clnk -customMapFile -customMapFile-m $(OutputPath)$(TargetSName).map -fakeRunConv -fakeInteger -fakeSemiAutoGen $(ToolsetLibOpts) -o $(OutputPath)$(TargetSName).sm8 -fakeOutFile$(ProjectSFile).elf -customCfgFile $(OutputPath)$(TargetSName).lkf -fakeVectFilestm8_interrupt_vector.c -fakeStartupcrtsi0.sm8 
+String.3.1=cvdwarf $(OutputPath)$(TargetSName).sm8 -fakeVectAddr0x8000
+String.4.0=$(OutputPath)$(TargetFName)
+String.5.0=
+String.6.0=2011,2,22,8,53,36
+String.100.0=
+String.101.0=crtsi.st7
+String.102.0=+seg .const -b 0x8080 -m 0x1f80  -n .const -it 
+String.102.1=+seg .text -a .const  -n .text 
+String.102.2=+seg .eeprom -b 0x4000 -m 0x280  -n .eeprom 
+String.102.3=+seg .bsct -b 0x0 -m 0x100  -n .bsct 
+String.102.4=+seg .ubsct -a .bsct  -n .ubsct 
+String.102.5=+seg .bit -a .ubsct  -n .bit -id 
+String.102.6=+seg .share -a .bit  -n .share -is 
+String.102.7=+seg .data -b 0x100 -m 0x100  -n .data 
+String.102.8=+seg .bss -a .data  -n .bss 
+String.103.0=Code,Constants[0x8080-0x9fff]=.const,.text
+String.103.1=Eeprom[0x4000-0x427f]=.eeprom
+String.103.2=Zero Page[0x0-0xff]=.bsct,.ubsct,.bit,.share
+String.103.3=Ram[0x100-0x1ff]=.data,.bss
+String.104.0=0x3ff
+Int.0=0
+Int.1=0
+
+[Root.Config.0.Settings.7]
+String.2.0=Running Post-Build step
+String.3.0=chex -o $(OutputPath)$(TargetSName).s19 $(OutputPath)$(TargetSName).sm8
+String.6.0=2010,12,3,14,49,2
+
+[Root.Config.0.Settings.8]
+String.2.0=Performing Custom Build on $(InputFile)
+String.6.0=2010,12,3,14,49,2
+
+[Root.Config.1.Settings.0]
+String.6.0=2010,12,3,14,49,2
+String.100.0=ST Assembler Linker
+String.100.1=ST7 Cosmic
+String.100.2=STM8 Cosmic
+String.100.3=ST7 Metrowerks V1.1
+String.100.4=Raisonance
+String.101.0=STM8 Cosmic
+String.102.0=C:\Program Files (x86)\COSMIC\CXSTM8_32K
+String.103.0=
+String.104.0=Hstm8
+String.105.0=Lib
+String.106.0=Release
+String.107.0=stm8s103.elf
+Int.108=0
+
+[Root.Config.1.Settings.1]
+String.6.0=2010,12,3,14,49,2
+String.100.0=$(TargetFName)
+String.101.0=
+String.103.0=.\;..\..;..\..\..\..\libraries\stm8s_stdperiph_driver\src;
+
+[Root.Config.1.Settings.2]
+String.2.0=
+String.6.0=2010,12,3,14,49,2
+String.100.0=STM8S103K3U
+
+[Root.Config.1.Settings.3]
+String.2.0=Compiling $(InputFile)...
+String.3.0=cxstm8 +mods0 -customC-pp $(ToolsetIncOpts) -cl$(IntermPath) -co$(IntermPath) $(InputFile) 
+String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
+String.5.0=$(IntermPath)$(InputName).ls
+String.6.0=2010,12,3,14,49,2
+
+[Root.Config.1.Settings.4]
+String.2.0=Assembling $(InputFile)...
+String.3.0=castm8 $(ToolsetIncOpts) -o$(IntermPath)$(InputName).$(ObjectExt) $(InputFile)
+String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
+String.5.0=$(IntermPath)$(InputName).ls
+String.6.0=2010,12,3,14,49,2
+
+[Root.Config.1.Settings.5]
+String.2.0=Running Pre-Link step
+String.6.0=2010,12,3,14,49,2
+
+[Root.Config.1.Settings.6]
+String.2.0=Running Linker
+String.3.0=clnk -fakeRunConv  -fakeInteger  -fakeSemiAutoGen  $(ToolsetLibOpts)  -o $(OutputPath)$(TargetSName).sm8 -fakeOutFile$(ProjectSFile).elf -customCfgFile $(OutputPath)$(TargetSName).lkf -fakeVectFilestm8_interrupt_vector.c    -fakeStartupcrtsi0.sm8 
+String.3.1=cvdwarf $(OutputPath)$(TargetSName).sm8 -fakeVectAddr0x8000
+String.4.0=$(OutputPath)$(TargetFName)
+String.5.0=$(OutputPath)$(TargetSName).map $(OutputPath)$(TargetSName).st7 $(OutputPath)$(TargetSName).s19
+String.6.0=2010,12,3,14,49,2
+String.101.0=crtsi.st7
+String.102.0=+seg .const -b 0x8080 -m 0x1f80  -n .const -it 
+String.102.1=+seg .text -a .const  -n .text 
+String.102.2=+seg .eeprom -b 0x4000 -m 0x280  -n .eeprom 
+String.102.3=+seg .bsct -b 0x0 -m 0x100  -n .bsct 
+String.102.4=+seg .ubsct -a .bsct  -n .ubsct 
+String.102.5=+seg .bit -a .ubsct  -n .bit -id 
+String.102.6=+seg .share -a .bit  -n .share -is 
+String.102.7=+seg .data -b 0x100 -m 0x100  -n .data 
+String.102.8=+seg .bss -a .data  -n .bss 
+String.103.0=Code,Constants[0x8080-0x9fff]=.const,.text
+String.103.1=Eeprom[0x4000-0x427f]=.eeprom
+String.103.2=Zero Page[0x0-0xff]=.bsct,.ubsct,.bit,.share
+String.103.3=Ram[0x100-0x1ff]=.data,.bss
+String.104.0=0x3ff
+Int.0=0
+Int.1=0
+
+[Root.Config.1.Settings.7]
+String.2.0=Running Post-Build step
+String.3.0=chex -o $(OutputPath)$(TargetSName).s19 $(OutputPath)$(TargetSName).sm8
+String.6.0=2010,12,3,14,49,2
+
+[Root.Config.1.Settings.8]
+String.2.0=Performing Custom Build on $(InputFile)
+String.6.0=2010,12,3,14,49,2
+
+[Root.Source Files]
+ElemType=Folder
+PathName=Source Files
+Child=Root.Source Files...\..\main.c
+Next=Root.StdPeriph_Drivers
+Config.0=Root.Source Files.Config.0
+Config.1=Root.Source Files.Config.1
+
+[Root.Source Files.Config.0]
+Settings.0.0=Root.Source Files.Config.0.Settings.0
+Settings.0.1=Root.Source Files.Config.0.Settings.1
+Settings.0.2=Root.Source Files.Config.0.Settings.2
+Settings.0.3=Root.Source Files.Config.0.Settings.3
+
+[Root.Source Files.Config.1]
+Settings.1.0=Root.Source Files.Config.1.Settings.0
+Settings.1.1=Root.Source Files.Config.1.Settings.1
+Settings.1.2=Root.Source Files.Config.1.Settings.2
+Settings.1.3=Root.Source Files.Config.1.Settings.3
+
+[Root.Source Files.Config.0.Settings.0]
+String.6.0=2010,12,3,14,49,2
+String.8.0=Debug
+Int.0=0
+Int.1=0
+
+[Root.Source Files.Config.0.Settings.1]
+String.2.0=Compiling $(InputFile)...
+String.3.0=cxstm8 +mods0 -customDebCompat -customOpt +compact +split -customC-pp -customLst -l -dSTM8S103 -i..\..\..\stm8s_stdperiph_template -i..\..\..\..\libraries\stm8s_stdperiph_driver\inc $(ToolsetIncOpts) -cl$(IntermPath) -co$(IntermPath) $(InputFile)
+String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
+String.5.0=$(IntermPath)$(InputName).ls
+String.6.0=2011,11,16,18,52,35
+
+[Root.Source Files.Config.0.Settings.2]
+String.2.0=Assembling $(InputFile)...
+String.3.0=castm8 -xx -l $(ToolsetIncOpts) -o$(IntermPath)$(InputName).$(ObjectExt) $(InputFile)
+String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
+String.5.0=$(IntermPath)$(InputName).ls
+String.6.0=2010,12,3,14,49,2
+
+[Root.Source Files.Config.0.Settings.3]
+String.2.0=Performing Custom Build on $(InputFile)
+String.3.0=
+String.4.0=
+String.5.0=
+String.6.0=2010,12,3,14,49,2
+
+[Root.Source Files.Config.1.Settings.0]
+String.6.0=2010,12,3,14,49,2
+String.8.0=Release
+Int.0=0
+Int.1=0
+
+[Root.Source Files.Config.1.Settings.1]
+String.2.0=Compiling $(InputFile)...
+String.3.0=cxstm8 +mods0 -customC-pp $(ToolsetIncOpts) -cl$(IntermPath) -co$(IntermPath) $(InputFile) 
+String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
+String.5.0=$(IntermPath)$(InputName).ls
+String.6.0=2010,12,3,14,49,2
+
+[Root.Source Files.Config.1.Settings.2]
+String.2.0=Assembling $(InputFile)...
+String.3.0=castm8 $(ToolsetIncOpts) -o$(IntermPath)$(InputName).$(ObjectExt) $(InputFile)
+String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
+String.5.0=$(IntermPath)$(InputName).ls
+String.6.0=2010,12,3,14,49,2
+
+[Root.Source Files.Config.1.Settings.3]
+String.2.0=Performing Custom Build on $(InputFile)
+String.3.0=
+String.4.0=
+String.5.0=
+String.6.0=2010,12,3,14,49,2
+
+[Root.Source Files...\..\main.c]
+ElemType=File
+PathName=..\..\main.c
+Next=Root.Source Files...\..\stm8s_it.c
+
+[Root.Source Files...\..\stm8s_it.c]
+ElemType=File
+PathName=..\..\stm8s_it.c
+Next=Root.Source Files.stm8_interrupt_vector.c
+
+[Root.Source Files.stm8_interrupt_vector.c]
+ElemType=File
+PathName=stm8_interrupt_vector.c
+
+[Root.StdPeriph_Drivers]
+ElemType=Folder
+PathName=StdPeriph_Drivers
+Child=Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_adc1.c
+Config.0=Root.StdPeriph_Drivers.Config.0
+Config.1=Root.StdPeriph_Drivers.Config.1
+
+[Root.StdPeriph_Drivers.Config.0]
+Settings.0.0=Root.StdPeriph_Drivers.Config.0.Settings.0
+Settings.0.1=Root.StdPeriph_Drivers.Config.0.Settings.1
+Settings.0.2=Root.StdPeriph_Drivers.Config.0.Settings.2
+Settings.0.3=Root.StdPeriph_Drivers.Config.0.Settings.3
+
+[Root.StdPeriph_Drivers.Config.1]
+Settings.1.0=Root.StdPeriph_Drivers.Config.1.Settings.0
+Settings.1.1=Root.StdPeriph_Drivers.Config.1.Settings.1
+Settings.1.2=Root.StdPeriph_Drivers.Config.1.Settings.2
+Settings.1.3=Root.StdPeriph_Drivers.Config.1.Settings.3
+
+[Root.StdPeriph_Drivers.Config.0.Settings.0]
+String.6.0=2010,12,3,14,50,8
+String.8.0=Debug
+Int.0=0
+Int.1=0
+
+[Root.StdPeriph_Drivers.Config.0.Settings.1]
+String.2.0=Compiling $(InputFile)...
+String.3.0=cxstm8 +mods0 -customDebCompat -customOpt +compact +split -customC-pp -customLst -l -dSTM8S103 -i..\..\..\stm8s_stdperiph_template -i..\..\..\..\libraries\stm8s_stdperiph_driver\inc $(ToolsetIncOpts) -cl$(IntermPath) -co$(IntermPath) $(InputFile)
+String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
+String.5.0=$(IntermPath)$(InputName).ls
+String.6.0=2011,11,16,18,52,35
+
+[Root.StdPeriph_Drivers.Config.0.Settings.2]
+String.2.0=Assembling $(InputFile)...
+String.3.0=castm8 -xx -l $(ToolsetIncOpts) -o$(IntermPath)$(InputName).$(ObjectExt) $(InputFile)
+String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
+String.5.0=$(IntermPath)$(InputName).ls
+String.6.0=2010,12,3,14,49,2
+
+[Root.StdPeriph_Drivers.Config.0.Settings.3]
+String.2.0=Performing Custom Build on $(InputFile)
+String.3.0=
+String.4.0=
+String.5.0=
+String.6.0=2010,12,3,14,49,2
+
+[Root.StdPeriph_Drivers.Config.1.Settings.0]
+String.6.0=2010,12,3,14,50,8
+String.8.0=Release
+Int.0=0
+Int.1=0
+
+[Root.StdPeriph_Drivers.Config.1.Settings.1]
+String.2.0=Compiling $(InputFile)...
+String.3.0=cxstm8 +mods0 -customC-pp $(ToolsetIncOpts) -cl$(IntermPath) -co$(IntermPath) $(InputFile) 
+String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
+String.5.0=$(IntermPath)$(InputName).ls
+String.6.0=2010,12,3,14,49,2
+
+[Root.StdPeriph_Drivers.Config.1.Settings.2]
+String.2.0=Assembling $(InputFile)...
+String.3.0=castm8 $(ToolsetIncOpts) -o$(IntermPath)$(InputName).$(ObjectExt) $(InputFile)
+String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
+String.5.0=$(IntermPath)$(InputName).ls
+String.6.0=2010,12,3,14,49,2
+
+[Root.StdPeriph_Drivers.Config.1.Settings.3]
+String.2.0=Performing Custom Build on $(InputFile)
+String.3.0=
+String.4.0=
+String.5.0=
+String.6.0=2010,12,3,14,49,2
+
+[Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_adc1.c]
+ElemType=File
+PathName=..\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_adc1.c
+Next=Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_awu.c
+
+[Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_awu.c]
+ElemType=File
+PathName=..\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_awu.c
+Next=Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_beep.c
+
+[Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_beep.c]
+ElemType=File
+PathName=..\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_beep.c
+Next=Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_clk.c
+
+[Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_clk.c]
+ElemType=File
+PathName=..\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_clk.c
+Next=Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_exti.c
+
+[Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_exti.c]
+ElemType=File
+PathName=..\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_exti.c
+Next=Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_flash.c
+
+[Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_flash.c]
+ElemType=File
+PathName=..\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_flash.c
+Next=Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_gpio.c
+
+[Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_gpio.c]
+ElemType=File
+PathName=..\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_gpio.c
+Next=Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_i2c.c
+
+[Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_i2c.c]
+ElemType=File
+PathName=..\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_i2c.c
+Next=Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_itc.c
+
+[Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_itc.c]
+ElemType=File
+PathName=..\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_itc.c
+Next=Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_iwdg.c
+
+[Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_iwdg.c]
+ElemType=File
+PathName=..\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_iwdg.c
+Next=Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_rst.c
+
+[Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_rst.c]
+ElemType=File
+PathName=..\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_rst.c
+Next=Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_spi.c
+
+[Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_spi.c]
+ElemType=File
+PathName=..\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_spi.c
+Next=Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_tim1.c
+
+[Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_tim1.c]
+ElemType=File
+PathName=..\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_tim1.c
+Next=Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_tim2.c
+
+[Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_tim2.c]
+ElemType=File
+PathName=..\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_tim2.c
+Next=Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_tim4.c
+
+[Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_tim4.c]
+ElemType=File
+PathName=..\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_tim4.c
+Next=Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_uart1.c
+
+[Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_uart1.c]
+ElemType=File
+PathName=..\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_uart1.c
+Next=Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_wwdg.c
+
+[Root.StdPeriph_Drivers...\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_wwdg.c]
+ElemType=File
+PathName=..\..\..\..\libraries\stm8s_stdperiph_driver\src\stm8s_wwdg.c

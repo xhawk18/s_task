@@ -15,6 +15,8 @@
 #   else
 #       include "s_port_m051.h"
 #   endif
+#elif defined STM8S103
+#   include "s_port_stm8s103.h"
 #elif defined _WIN32
 #   include "s_port_win32.h"
 #else

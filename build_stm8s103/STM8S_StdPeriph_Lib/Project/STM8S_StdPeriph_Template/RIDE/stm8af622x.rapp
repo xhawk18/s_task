@@ -1,0 +1,72 @@
+
+<ApplicationBuild Header="stm8af622x" Extern=".\stm8af622x.rapp" Path=".\stm8af622x.rapp" OutputFile=".\Debug\stm8af622x.aof" sate="64" >
+	<Group Header="StdPeriph_Driver" Marker="-1" OutputFile="" sate="0" >
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_adc1.c" Header="stm8s_adc1.c" Marker="-1" OutputFile=".\Debug\stm8s_adc1.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_awu.c" Header="stm8s_awu.c" Marker="-1" OutputFile=".\Debug\stm8s_awu.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_beep.c" Header="stm8s_beep.c" Marker="-1" OutputFile=".\Debug\stm8s_beep.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_clk.c" Header="stm8s_clk.c" Marker="-1" OutputFile=".\Debug\stm8s_clk.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_exti.c" Header="stm8s_exti.c" Marker="-1" OutputFile=".\Debug\stm8s_exti.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_flash.c" Header="stm8s_flash.c" Marker="-1" OutputFile=".\Debug\stm8s_flash.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_gpio.c" Header="stm8s_gpio.c" Marker="-1" OutputFile=".\Debug\stm8s_gpio.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_i2c.c" Header="stm8s_i2c.c" Marker="-1" OutputFile=".\Debug\stm8s_i2c.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_itc.c" Header="stm8s_itc.c" Marker="-1" OutputFile=".\Debug\stm8s_itc.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_iwdg.c" Header="stm8s_iwdg.c" Marker="-1" OutputFile=".\Debug\stm8s_iwdg.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_rst.c" Header="stm8s_rst.c" Marker="-1" OutputFile=".\Debug\stm8s_rst.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_spi.c" Header="stm8s_spi.c" Marker="-1" OutputFile=".\Debug\stm8s_spi.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_tim1.c" Header="stm8s_tim1.c" Marker="-1" OutputFile=".\Debug\stm8s_tim1.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_tim5.c" Header="stm8s_tim5.c" Marker="-1" OutputFile=".\Debug\stm8s_tim5.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_tim6.c" Header="stm8s_tim6.c" Marker="-1" OutputFile=".\Debug\stm8s_tim6.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_wwdg.c" Header="stm8s_wwdg.c" Marker="-1" OutputFile=".\Debug\stm8s_wwdg.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_uart4.c" Header="stm8s_uart4.c" Marker="-1" OutputFile=".\Debug\stm8s_uart4.obj" sate="0" />
+			
+	</Group>
+	<Group Header="Source files" Marker="-1" OutputFile="" sate="0" >
+		<NodeASM Path=".\STM8_OB.asm" Header="STM8_OB.asm" Marker="-1" OutputFile=".\Debug\STM8_OB.obj" sate="0" />
+		<NodeC Path="..\main.c" Header="main.c" Marker="-1" OutputFile=".\Debug\main.obj" sate="0" />
+		<NodeC Path="..\stm8s_it.c" Header="stm8s_it.c" Marker="-1" OutputFile=".\Debug\stm8s_it.obj" sate="0" />
+			
+	</Group>
+	<Options>
+		<Config Header="Standard" >
+			<Set Header="ApplicationBuild" >
+				<Section Header="General" >
+					<Property Header="TargetFamily" Value="ST7" />
+																
+				</Section>
+				<Section Header="Directories" >
+					<Property Header="IncDir" Value="$(RkitInc);$(RkitInc)\ST7;$(RkitInc)\STM8;$(ApplicationDir)\..\..\..\Libraries\STM8S_StdPeriph_Driver\inc;$(ApplicationDir)\..;$(ApplicationDir)" Removable="1" />
+					<Property Header="OutDir" Value="$(ApplicationDir)\Debug" Removable="1" />
+					<Property Header="ListDir" Value="$(ApplicationDir)\Debug" Removable="1" />
+							
+				</Section>
+					
+			</Set>
+			<Set Header="Target" >
+				<Section Header="ProcessorST7" >
+					<Property Header="Processor" Value="STM8AF622" Removable="1" />
+																
+				</Section>
+				<Section Header="ToolSetST7" >
+					<Property Header="BuildToolSetST7" Value="ST7\RaisonanceTools.config" Removable="1" />
+					<Property Header="ArelocInfo" Value="" Removable="1" />
+							
+				</Section>
+					
+			</Set>
+			<Set Header="RCST7" >
+				<Section Header="Defines" >
+					<Property Header="Defines" Value="STM8AF622x" Removable="1" />
+																
+				</Section>
+												
+			</Set>
+			<Set Header="RLST7" >
+				<Section Header="Output" >
+					<Property Header="ExtendedBin" Value="" Removable="1" />
+							
+				</Section>
+					
+			</Set>
+		</Config>
+	</Options>
+</ApplicationBuild>
