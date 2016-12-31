@@ -58,13 +58,7 @@ void assert_failed(uint8_t* file, uint32_t line)
 typedef unsigned long long uint64_t;
 
 /* Size for stack for each stask. */
-#define STACK_SIZE 192
-
-/* The original jmp_buf is too large and waste RAM, Use smaller jmb_buf instead! */
-typedef struct {
-    int buf[12 / sizeof(int)];
-} my_jmp_buf_t;
-#define MY_JMP_BUF my_jmp_buf_t
+#define STACK_SIZE 200
 
 /* Timer functions need to be implemented on a new porting. */
 

@@ -259,7 +259,7 @@ void task_update_jmpbuf_size(size_t *jbuf_real_size, jmp_buf *jbuf, char ch) {
     char *p_jbuf = (char *)jbuf;
 
     for (j = sizeof(*jbuf); j-- != 0;)
-        if (p_jbuf[j] != ch) break;
+        if (p_jbuf[j] != (ch+1)) break;
     ++j;
     if (*jbuf_real_size < (size_t)j) *jbuf_real_size = (size_t)j;
 }
@@ -270,7 +270,7 @@ int task_test_jmpbuf_size() {
     size_t jbuf_real_size = 0;
     for (i = 0; i < 16; ++i) {
         char ch = (char)(i * 0x11);
-        memset(&jbuf, ch, sizeof(jbuf));
+        memset(&jbuf, (ch+1), sizeof(jbuf));
         if (setjmp(jbuf) == 0) {
             task_update_jmpbuf_size(&jbuf_real_size, &jbuf, ch);
             longjmp(jbuf, i + 1);
