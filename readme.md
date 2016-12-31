@@ -1,14 +1,16 @@
 # setjmp_task - A multi-task library implemented by pure C.
 
 ## Usage
-setjmp_task is designed for easy use, just use task_init_system() to initialize the system,
+"setjmp_task" is designed for easy use, just use task_init_system() to initialize the system,
 and use task_create to create tasks is OK.
 
 After task_init_system() was called, main_task will be created, and the main function will halt
 until all tasks are finished.
 
-setjmp_task is not preemptive multitasking. A task need call task_msleep or task_yield to make
+"setjmp_task" is not preemptive multitasking. A task need call task_msleep or task_yield to make
 other tasks hava chance to run.
+
+"setjmp_task" has been ported to various platforms, such as win32, linux, stm32, stm8, m051.
 
 ```c
 void sub_task(void *arg) {
