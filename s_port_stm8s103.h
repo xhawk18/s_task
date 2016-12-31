@@ -58,7 +58,7 @@ void assert_failed(uint8_t* file, uint32_t line)
 typedef unsigned long long uint64_t;
 
 /* Size for stack for each stask. */
-#define STACK_SIZE 256
+#define STACK_SIZE 192
 
 /* The original jmp_buf is too large and waste RAM, Use smaller jmb_buf instead! */
 typedef struct {
@@ -75,7 +75,7 @@ typedef struct {
 typedef uint16_t my_clock_t;
 
 //2. define the clock ticks count for one second
-#define MY_CLOCKS_PER_SEC (16*1000*1000/16384)
+#define MY_CLOCKS_PER_SEC ((uint32_t)16*1000*1000/16384)
 
 //3. Implement the initilization function for clock. Leave it blank if not required.
 void my_clock_init(){
