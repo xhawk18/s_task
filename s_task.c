@@ -259,8 +259,9 @@ void task_update_jmpbuf_size(size_t *jbuf_real_size, jmp_buf *jbuf, char ch) {
     char *p_jbuf = (char *)jbuf;
 
     for (j = sizeof(*jbuf); j-- != 0;)
-        if (p_jbuf[j] != (ch+1)) break;
+        if (p_jbuf[j] != (char)(ch+1)) break;
     ++j;
+
     if (*jbuf_real_size < (size_t)j) *jbuf_real_size = (size_t)j;
 }
 
