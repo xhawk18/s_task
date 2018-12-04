@@ -4,6 +4,7 @@
 /* Copyright xhawk, MIT license */
 
 #include <stdint.h>
+#include <stddef.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -19,26 +20,38 @@ typedef struct {
     list_t wait_list;
 } event_t;
 
+
+typedef struct{
+    int dummy;
+} awaiter_t;
+
+#   define __await__ __awaiter_dummy__
+#   define __async__ awaiter_t *__awaiter_dummy__
+
+
 /* Function type for task entrance */
-typedef void(*task_fn_t)(void *arg);
+typedef void(*task_fn_t)(__async__, void *arg);
 
 /* Initialize the task system. */
-void task_init_system(task_fn_t main_entry, void *arg);
+void task_init_system(void *stack, size_t stack_size, task_fn_t main_entry, void *arg);
 
 /* Create a new task */
-void task_create(task_fn_t entry, void *arg);
+void task_create(void *stack, size_t stack_size, task_fn_t entry, void *arg);
 
 /* Sleep in milliseconds */
-void task_msleep(uint32_t msec);
+void task_msleep(__async__, uint32_t msec);
 
 /* Yield current task */
-void task_yield(void);
+void task_yield(__async__);
+
+/* Get free stack size (for debug) */
+size_t task_get_stack_free_size(void);
 
 /* Initialize a wait event */
 void event_init(event_t *event);
 
 /* Wait event */
-void event_wait(event_t *event);
+void event_wait(__async__, event_t *event);
 
 /* Set event */
 void event_set(event_t *event);
