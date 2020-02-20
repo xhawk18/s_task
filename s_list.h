@@ -1,8 +1,15 @@
 #ifndef INC_S_LIST_H_
 #define INC_S_LIST_H_
 
+#include <stddef.h>
+
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+#ifndef GET_PARENT_ADDR
+#define GET_PARENT_ADDR(pMe,tParent,eMyName) \
+    ((tParent *)((char *)(pMe) - (ptrdiff_t)&((tParent *)0)->eMyName))
 #endif
 
 struct tag_list;
@@ -10,9 +17,6 @@ typedef struct tag_list {
     struct tag_list *next;
     struct tag_list *prev;
 } list_t;
-
-#define GET_PARENT_ADDR(pMe,tParent,eMyName) \
-    ((tParent *)((char *)(pMe) - (ptrdiff_t)&((tParent *)0)->eMyName))
 
 list_t *list_get_prev (list_t *list);
 list_t *list_get_next (list_t *list);
