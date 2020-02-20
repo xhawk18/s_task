@@ -17,10 +17,10 @@ void my_on_idle(uint64_t max_idle_ms) {
     usleep(max_idle_ms * 1000);
 }
 
-void createcontext(ucontext_t *oucp, void *stack, size_t stack_size, void *task, s_task_fn_t task_entry, void *task_arg) {
+void createcontext(ucontext_t *oucp, void *stack, size_t stack_size, void *task) {
     getcontext(oucp);
     oucp->uc_stack.ss_sp = stack;
     oucp->uc_stack.ss_size = stack_size;
     //oucp->uc_link = &schedule_task_->ucontext_;
-    makecontext(oucp, (void (*)())&s_task_helper_entry, 4, task, task_entry, task_arg, NULL);
+    makecontext(oucp, (void (*)())&s_task_helper_entry, 1, task);
 }

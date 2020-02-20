@@ -61,10 +61,11 @@ void main_task(__async__, void *arg) {
 }
 
 int main(int argc, char *argv) {
+    __async__;
+
     s_task_init_system();
     s_task_create(stack_main, sizeof(stack_main), main_task, (void *)(size_t)argc);
     
-    __async__;
     //while(1){
     //    s_task_yield(__await__);
     //}

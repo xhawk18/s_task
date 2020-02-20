@@ -61,7 +61,8 @@ __asm void task_helper_entry_asm() {
     BX      r2
 }
 
-__asm static void makecontext(ucontext_t *oucp, void *stack, s_task_fn_t task_entry, void *task_arg) {
+//dummy_arg is not used now
+__asm static void makecontext(ucontext_t *oucp, void *stack, void *task, void *dummy_arg) {
     PUSH    {r2, r3}
     LDR     r3, =task_helper_entry_asm  //½«»Ö¸´Îªlr
     STM     r0!, {r3-r7}
@@ -83,7 +84,7 @@ __asm static void makecontext(ucontext_t *oucp, void *stack, s_task_fn_t task_en
 }
 
 
-static void createcontext(ucontext_t *oucp, void *stack, size_t stack_size, s_task_fn_t task_entry, void *task_arg) {
-    makecontext(oucp, (char *)stack + stack_size, task_entry, task_arg);
+static void createcontext(ucontext_t *oucp, void *stack, size_t stack_size, void *task) {
+    makecontext(oucp, (char *)stack + stack_size, task, NULL);
 }
 

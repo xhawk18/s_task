@@ -7,7 +7,9 @@
 #include "s_task.h"
 #include "s_list.h"
 
-void s_task_helper_entry(void *task, s_task_fn_t task_entry, void *task_arg, __async__);
+struct tag_s_task_t;
+
+void s_task_helper_entry(struct tag_s_task_t *task);
 
 /* Run next task, but not set myself for ready to run */
 static void s_task_next(__async__);
@@ -34,16 +36,18 @@ static void s_task_next(__async__);
 /* tasks                                                           */
 /*******************************************************************/
 
-typedef struct {
-    s_list_t node;
-    s_event_t join_event;
-    ucontext_t uc;
-    size_t stack_size;
+typedef struct tag_s_task_t {
+    s_list_t     node;
+    s_event_t    join_event;
+    s_task_fn_t  task_entry;
+    void        *task_arg;
+    ucontext_t   uc;
+    size_t       stack_size;
 } s_task_t;
 
 typedef struct {
-    s_list_t node;
-    s_task_t *task;
+    s_list_t   node;
+    s_task_t  *task;
     my_clock_t wakeup_ticks;
 } s_timer_t;
 
@@ -220,16 +224,18 @@ void s_task_create(void *stack, size_t stack_size, s_task_fn_t task_entry, void 
     s_task_t *task = (s_task_t *)stack;
     s_list_init(&task->node);
     s_event_init(&task->join_event);
+    task->task_entry = task_entry;
+    task->task_arg   = task_arg;
     task->stack_size = stack_size;
     s_list_attach(&g_active_tasks, &task->node);
-    
+
     //填全1检查stack大小
     real_stack = (void *)&task[1];
     real_stack_size = stack_size - sizeof(task[0]);
     memset(real_stack, '\xff', real_stack_size);
     ((char *)real_stack)[real_stack_size - 1] = 0;    //最后填0防止stack检查越过界
     
-    createcontext(&task->uc, real_stack, real_stack_size, task, task_entry, task_arg);
+    createcontext(&task->uc, real_stack, real_stack_size, task);
 }
 
 void s_task_join(__async__, void *stack) {
@@ -261,10 +267,13 @@ size_t s_task_get_stack_free_size() {
     return s_task_get_stack_free_size_by_task(g_current_task);
 }
 
-
-void s_task_helper_entry(void *task, s_task_fn_t task_entry, void *task_arg, __async__) {
+void s_task_helper_entry(struct tag_s_task_t *task) {
+    s_task_fn_t task_entry = task->task_entry;
+    void *task_arg         = task->task_arg;
+    
+    __async__;
     (*task_entry)(__await__, task_arg);
-    s_event_set(&((s_task_t *)task)->join_event);
+    s_event_set(&task->join_event);
     s_task_next(__await__);
 }
 
