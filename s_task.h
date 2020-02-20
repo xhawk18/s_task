@@ -60,6 +60,9 @@ void s_task_init_system(void);
 /* Create a new task */
 void s_task_create(void *stack, size_t stack_size, s_task_fn_t entry, void *arg);
 
+/* Wait a task to exit */
+void s_task_join(__async__, void *stack);
+
 /* Kill a task */
 void s_task_kill(void *stack);
 

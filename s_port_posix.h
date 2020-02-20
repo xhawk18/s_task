@@ -17,10 +17,10 @@ extern "C" {
 #include <unistd.h>
 
 //1. define a type for clock
-typedef clock_t my_clock_t;
+typedef uint32_t my_clock_t;
 
 //2. define the clock ticks count for one second
-#define MY_CLOCKS_PER_SEC CLOCKS_PER_SEC
+#define MY_CLOCKS_PER_SEC 1000
 
 //3. Implement the initilization function for clock. Leave it blank if not required.
 void my_clock_init();

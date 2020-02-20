@@ -7,7 +7,7 @@
 #include "s_task.h"
 #include "s_list.h"
 
-void s_task_helper_entry(s_task_fn_t task_entry, void *task_arg, __async__);
+void s_task_helper_entry(void *task, s_task_fn_t task_entry, void *task_arg, __async__);
 
 /* Run next task, but not set myself for ready to run */
 static void s_task_next(__async__);
@@ -36,6 +36,7 @@ static void s_task_next(__async__);
 
 typedef struct {
     s_list_t node;
+    s_event_t join_event;
     ucontext_t uc;
     size_t stack_size;
 } s_task_t;
@@ -86,6 +87,7 @@ static void s_timer_wait_recent() {
         s_timer_t *timer = GET_PARENT_ADDR(node, s_timer_t, node);
         
         int ticks_to_wakeup = (int)(timer->wakeup_ticks - current_ticks);
+        //printf("ticks_to_wakeup = %d %d %d \n", ticks_to_wakeup, (int)current_ticks, (int)timer->wakeup_ticks);
         if (ticks_to_wakeup > 0)
             my_on_idle((uint64_t)ticks_to_wakeup * 1000  / MY_CLOCKS_PER_SEC);
     }
@@ -167,19 +169,24 @@ static void s_task_next(__async__) {
         s_timer_run();
         is_wait_empty = s_list_is_empty(&g_active_tasks);
         is_timer_empty = s_list_is_empty(&g_timers);
+        
+        //printf("is %d %d\n", is_timer_empty, is_wait_empty);
         if (!is_wait_empty)
             break;
         else if(!is_timer_empty) {
             //Wait for the recent timer
             s_timer_wait_recent();
         }else{
-            //Wati CPU
+            //Wait CPU
             my_on_idle(0);
         }
     }
 
     old_task = g_current_task;
     next = s_list_get_next(&g_active_tasks);
+    
+    //printf("next = %p %p\n", g_current_task, next);
+    
     g_current_task = GET_PARENT_ADDR(next, s_task_t, node);
     s_list_detach(next);
 
@@ -200,6 +207,7 @@ void s_task_init_system() {
     my_clock_init();
 
     s_list_init(&main_task.node);
+    s_event_init(&main_task.join_event);
     main_task.stack_size = 0;
     g_current_task = &main_task;
 
@@ -211,8 +219,9 @@ void s_task_create(void *stack, size_t stack_size, s_task_fn_t task_entry, void 
 
     s_task_t *task = (s_task_t *)stack;
     s_list_init(&task->node);
-    s_list_attach(&g_active_tasks, &task->node);
+    s_event_init(&task->join_event);
     task->stack_size = stack_size;
+    s_list_attach(&g_active_tasks, &task->node);
     
     //填全1检查stack大小
     real_stack = (void *)&task[1];
@@ -220,10 +229,16 @@ void s_task_create(void *stack, size_t stack_size, s_task_fn_t task_entry, void 
     memset(real_stack, '\xff', real_stack_size);
     ((char *)real_stack)[real_stack_size - 1] = 0;    //最后填0防止stack检查越过界
     
-    createcontext(&task->uc, real_stack, real_stack_size, task_entry, task_arg);
+    createcontext(&task->uc, real_stack, real_stack_size, task, task_entry, task_arg);
+}
+
+void s_task_join(__async__, void *stack) {
+    s_task_t *task = (s_task_t *)stack;
+    s_event_wait(__await__, &task->join_event);
 }
 
 //timer conflict with this function!!!
+//Do NOT call s_task_kill, and let the task exit by itself!
 void s_task_kill__remove(void *stack) {
     s_task_t *task = (s_task_t *)stack;
     s_list_detach(&task->node);
@@ -247,8 +262,9 @@ size_t s_task_get_stack_free_size() {
 }
 
 
-void s_task_helper_entry(s_task_fn_t task_entry, void *task_arg, __async__) {
+void s_task_helper_entry(void *task, s_task_fn_t task_entry, void *task_arg, __async__) {
     (*task_entry)(__await__, task_arg);
+    s_event_set(&((s_task_t *)task)->join_event);
     s_task_next(__await__);
 }
 
