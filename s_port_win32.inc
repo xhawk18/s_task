@@ -18,7 +18,7 @@ typedef struct {
     int regs[12];   //psp,r4-r12,lr,sp
 } ucontext_t;
 
-void createcontext(ucontext_t *oucp, void *stack, size_t stack_size, task_fn_t task_entry, void *task_arg) {
+void createcontext(ucontext_t *oucp, void *stack, size_t stack_size, s_task_fn_t task_entry, void *task_arg) {
 }
 
 void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {

@@ -55,13 +55,13 @@ __asm static void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
 
 __asm void task_helper_entry_asm() {
     PRESERVE8
-    import task_helper_entry
+    import s_task_helper_entry
     POP     {r0, r1}
-    LDR     r2, =task_helper_entry
+    LDR     r2, =s_task_helper_entry
     BX      r2
 }
 
-__asm static void makecontext(ucontext_t *oucp, void *stack, task_fn_t task_entry, void *task_arg) {
+__asm static void makecontext(ucontext_t *oucp, void *stack, s_task_fn_t task_entry, void *task_arg) {
     PUSH    {r2, r3}
     LDR     r3, =task_helper_entry_asm  //½«»Ö¸´Îªlr
     STM     r0!, {r3-r7}
@@ -83,7 +83,7 @@ __asm static void makecontext(ucontext_t *oucp, void *stack, task_fn_t task_entr
 }
 
 
-static void createcontext(ucontext_t *oucp, void *stack, size_t stack_size, task_fn_t task_entry, void *task_arg) {
+static void createcontext(ucontext_t *oucp, void *stack, size_t stack_size, s_task_fn_t task_entry, void *task_arg) {
     makecontext(oucp, (char *)stack + stack_size, task_entry, task_arg);
 }
 

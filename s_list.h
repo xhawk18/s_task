@@ -13,28 +13,28 @@ extern "C" {
 #endif
 
 struct tag_list;
-typedef struct tag_list {
-    struct tag_list *next;
-    struct tag_list *prev;
-} list_t;
+typedef struct tag_s_list {
+    struct tag_s_list *next;
+    struct tag_s_list *prev;
+} s_list_t;
 
-list_t *list_get_prev (list_t *list);
-list_t *list_get_next (list_t *list);
-void list_set_prev (list_t *list, list_t *other);
-void list_set_next (list_t *list, list_t *other);
+s_list_t *s_list_get_prev (s_list_t *list);
+s_list_t *s_list_get_next (s_list_t *list);
+void s_list_set_prev (s_list_t *list, s_list_t *other);
+void s_list_set_next (s_list_t *list, s_list_t *other);
 /* Initilization a list */
-void list_init(list_t *list);
+void s_list_init(s_list_t *list);
 /* Connect two lists. */
-void list_connect (list_t *list1, list_t *list2);
+void s_list_connect (s_list_t *list1, s_list_t *list2);
 /* Disconnect tow lists. */
-void list_disconnect (list_t *list1, list_t *list2);
-/* Same as list_connect */
-void list_attach (list_t *node1, list_t *node2);
+void s_list_disconnect (s_list_t *list1, s_list_t *list2);
+/* Same as s_list_connect */
+void s_list_attach (s_list_t *node1, s_list_t *node2);
 /* Make node in detach mode */
-void list_detach (list_t *node);
+void s_list_detach (s_list_t *node);
 /* Check if list is empty */
-int list_is_empty (list_t *list);
-int list_size(list_t *list);
+int s_list_is_empty (s_list_t *list);
+int s_list_size(s_list_t *list);
 
 
 #ifdef __cplusplus

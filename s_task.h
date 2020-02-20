@@ -14,13 +14,13 @@ extern "C" {
 
 typedef struct{
     int dummy;
-} awaiter_t;
+} s_awaiter_t;
 
 #   define __await__ __awaiter_dummy__
-#   define __async__ awaiter_t *__awaiter_dummy__
+#   define __async__ s_awaiter_t *__awaiter_dummy__
 
 /* Function type for task entrance */
-typedef void(*task_fn_t)(__async__, void *arg);
+typedef void(*s_task_fn_t)(__async__, void *arg);
 
 #if defined __ARMCC_VERSION
 #   if defined STM32F10X_MD
@@ -41,13 +41,13 @@ typedef void(*task_fn_t)(__async__, void *arg);
 #endif
 
 typedef struct {
-    list_t wait_list;
+    s_list_t wait_list;
     bool locked;
-} mutex_t;
+} s_mutex_t;
 
 typedef struct {
-    list_t wait_list;
-} event_t;
+    s_list_t wait_list;
+} s_event_t;
 
 
 
@@ -55,49 +55,49 @@ typedef struct {
 
 
 /* Initialize the task system. */
-void task_init_system(void);
+void s_task_init_system(void);
 
 /* Create a new task */
-void task_create(void *stack, size_t stack_size, task_fn_t entry, void *arg);
+void s_task_create(void *stack, size_t stack_size, s_task_fn_t entry, void *arg);
 
 /* Kill a task */
-void task_kill(void *stack);
+void s_task_kill(void *stack);
 
 /* Sleep in milliseconds */
-void task_msleep(__async__, uint32_t msec);
+void s_task_msleep(__async__, uint32_t msec);
 
 /* Sleep in seconds */
-void task_sleep(__async__, uint32_t sec);
+void s_task_sleep(__async__, uint32_t sec);
 
 /* Yield current task */
-void task_yield(__async__);
+void s_task_yield(__async__);
 
 /* Get free stack size (for debug) */
-size_t task_get_stack_free_size(void);
+size_t s_task_get_stack_free_size(void);
 
 /* Dump task information */
-void dump_tasks(__async__);
+//void dump_tasks(__async__);
 
 /* Initialize a mutex */
-void mutex_init(mutex_t *mutex);
+void s_mutex_init(s_mutex_t *mutex);
 
 /* Lock the mutex */
-void mutex_lock(__async__, mutex_t *mutex);
+void s_mutex_lock(__async__, s_mutex_t *mutex);
 
 /* Unlock the mutex */
-void mutex_unlock(mutex_t *mutex);
+void s_mutex_unlock(s_mutex_t *mutex);
 
 /* Initialize a wait event */
-void event_init(event_t *event);
+void s_event_init(s_event_t *event);
 
 /* Wait event */
-void event_wait(__async__, event_t *event);
+void s_event_wait(__async__, s_event_t *event);
 
 /* Set event */
-void event_set(event_t *event);
+void s_event_set(s_event_t *event);
 
-void event_wait_msec(__async__, event_t *event, uint32_t msec);
-void event_wait_sec(__async__, event_t *event, uint32_t msec);
+void s_event_wait_msec(__async__, s_event_t *event, uint32_t msec);
+void s_event_wait_sec(__async__, s_event_t *event, uint32_t msec);
 
 /* milliseconds to ticks */
 my_clock_t msec_to_ticks(uint32_t msec);
