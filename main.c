@@ -11,11 +11,11 @@
 event_t g_event;
 
 void sub_task(__async__, void *arg) {
-    int n = (int)arg;
+    size_t n = (size_t)arg;
 
     while (1) {
         event_wait(__await__, &g_event);
-        PRINTF("task %d wait event OK\n", n);
+        PRINTF("task %d wait event OK\n", (int)n);
     }
 }
 
@@ -61,7 +61,8 @@ void main_task(__async__, void *arg) {
 }
 
 int main(int argc, char *argv) {
-    task_init_system(stack_main, sizeof(stack_main), main_task, (void *)argc);
+    task_init_system();
+    task_create(stack_main, sizeof(stack_main), main_task, (void *)(size_t)argc);
     while(1){
         __async__;
         task_yield(__await__);
