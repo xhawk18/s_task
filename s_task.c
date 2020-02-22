@@ -43,7 +43,7 @@ static void s_task_next(__async__);
 #   include "s_port_stm8s103.inc"
 #elif defined _WIN32
 #   define USE_JUMP_FCONTEXT
-#   include "s_port_win32.inc"
+#   include "s_port_windows.inc"
 #else
 #   define USE_JUMP_FCONTEXT
 #   include "s_port_posix.inc"

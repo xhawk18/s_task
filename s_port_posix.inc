@@ -1,7 +1,5 @@
 /* Copyright xhawk, MIT license */
 
-#include "s_port_posix.h"
-
 /* Timer functions need to be implemented on a new porting. */
 
 void my_clock_init(){
