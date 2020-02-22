@@ -41,10 +41,10 @@ void main_task(__async__, void *arg) {
     int i;
     s_event_init(&g_event);
 
-    //s_task_create(stack0, sizeof(stack0), sub_task, (void *)1);
-    //s_task_create(stack1, sizeof(stack1), sub_task, (void *)2);
+    s_task_create(stack0, sizeof(stack0), sub_task, (void *)1);
+    s_task_create(stack1, sizeof(stack1), sub_task, (void *)2);
 
-    for (i = 0; i < 24; ++i) {
+    for (i = 0; i < 13; ++i) {
         PRINTF("task_main arg = %p, i = %d\n", arg, i);
         s_task_msleep(__await__, 500);
         if (i % 3 == 0) {
@@ -61,7 +61,7 @@ void main_task(__async__, void *arg) {
 }
 
 int main(int argc, char *argv) {
-    __async__;
+    __async__ = 0;
 
     s_task_init_system();
     s_task_create(stack_main, sizeof(stack_main), main_task, (void *)(size_t)argc);
@@ -70,7 +70,7 @@ int main(int argc, char *argv) {
     //    s_task_yield(__await__);
     //}
     s_task_join(__await__, stack_main);
-    //PRINTF("all task is over\n");
-    //return 0;
+    PRINTF("all task is over\n");
+    return 0;
 }
 

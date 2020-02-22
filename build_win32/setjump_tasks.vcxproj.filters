@@ -27,6 +27,9 @@
     <ClInclude Include="..\s_task.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\s_list.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.c">
@@ -35,5 +38,19 @@
     <ClCompile Include="..\s_task.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\s_list.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_fcontext.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="..\asm\jump_i386_ms_pe_masm.asm">
+      <Filter>Source Files</Filter>
+    </MASM>
+    <MASM Include="..\asm\make_i386_ms_pe_masm.asm">
+      <Filter>Source Files</Filter>
+    </MASM>
   </ItemGroup>
 </Project>

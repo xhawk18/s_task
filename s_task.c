@@ -9,7 +9,15 @@
 
 struct tag_s_task_t;
 
-void s_task_helper_entry(struct tag_s_task_t *task);
+
+
+typedef void* fcontext_t;
+typedef struct {
+    fcontext_t  fctx;
+    void* data;
+} transfer_t;
+
+void s_task_helper_entry(transfer_t arg);
 
 /* Run next task, but not set myself for ready to run */
 static void s_task_next(__async__);
@@ -41,7 +49,7 @@ typedef struct tag_s_task_t {
     s_event_t    join_event;
     s_task_fn_t  task_entry;
     void        *task_arg;
-    ucontext_t   uc;
+    fcontext_t   uc;
     size_t       stack_size;
 } s_task_t;
 
@@ -50,6 +58,11 @@ typedef struct {
     s_task_t  *task;
     my_clock_t wakeup_ticks;
 } s_timer_t;
+
+typedef struct {
+    s_task_t *from;
+    s_task_t *to;
+} s_jump_t;
 
 
 static s_list_t  g_active_tasks;
@@ -194,7 +207,17 @@ static void s_task_next(__async__) {
     g_current_task = GET_PARENT_ADDR(next, s_task_t, node);
     s_list_detach(next);
 
-    swapcontext(&old_task->uc, &g_current_task->uc);
+    if (old_task == g_current_task)
+        return;
+
+    //swapfcontext(&old_task->uc, &g_current_task->uc);
+    //printf("about to jump_fcontext = %p\n", g_current_task->uc);
+    s_jump_t jump;
+    jump.from = old_task;
+    jump.to = g_current_task;
+    transfer_t t = jump_fcontext(g_current_task->uc, (void*)&jump);
+    s_jump_t* ret = (s_jump_t*)t.data;
+    ret->from->uc = t.fctx;
 }
 
 void s_task_yield(__async__) {
@@ -214,7 +237,6 @@ void s_task_init_system() {
     s_event_init(&main_task.join_event);
     main_task.stack_size = 0;
     g_current_task = &main_task;
-
 }
 
 void s_task_create(void *stack, size_t stack_size, s_task_fn_t task_entry, void *task_arg) {
@@ -267,16 +289,29 @@ size_t s_task_get_stack_free_size() {
     return s_task_get_stack_free_size_by_task(g_current_task);
 }
 
-void s_task_helper_entry(struct tag_s_task_t *task) {
+void s_task_helper_entry2(struct tag_s_task_t *task) {
     s_task_fn_t task_entry = task->task_entry;
     void *task_arg         = task->task_arg;
     
-    __async__;
+    __async__ = 0;
     (*task_entry)(__await__, task_arg);
+
+    //printf("<<<<<<<<<<<<<<<< %p\n", task);
     s_event_set(&task->join_event);
     s_task_next(__await__);
 }
 
+
+
+void s_task_helper_entry(transfer_t arg) {
+    //printf("=== s_task_helper_entry = %p\n", arg.fctx);
+
+    s_jump_t* jump = (s_jump_t*)arg.data;
+    jump->from->uc = arg.fctx;
+    //printf("%p %p %p\n", jump, jump->to, g_current_task);
+
+    s_task_helper_entry2(jump->to);
+}
 
 
 /* Initialize a mutex */

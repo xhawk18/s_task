@@ -17,10 +17,25 @@ void my_on_idle(uint64_t max_idle_ms) {
     usleep(max_idle_ms * 1000);
 }
 
-void createcontext(ucontext_t *oucp, void *stack, size_t stack_size, void *task) {
-    getcontext(oucp);
-    oucp->uc_stack.ss_sp = stack;
-    oucp->uc_stack.ss_size = stack_size;
-    //oucp->uc_link = &schedule_task_->ucontext_;
-    makecontext(oucp, (void (*)())&s_task_helper_entry, 1, task);
+
+#if (defined(i386) || defined(__i386__) || defined(__i386) \
+     || defined(__i486__) || defined(__i586__) || defined(__i686__) \
+     || defined(__X86__) || defined(_X86_) || defined(__THW_INTEL__) \
+     || defined(__I86__) || defined(__INTEL__) || defined(__IA32__) \
+     || defined(_M_IX86) || defined(_I86_)) && defined(BOOST_WINDOWS)
+# define BOOST_CONTEXT_CALLDECL __cdecl
+#else
+# define BOOST_CONTEXT_CALLDECL
+#endif
+
+extern
+transfer_t BOOST_CONTEXT_CALLDECL jump_fcontext( fcontext_t const to, void * vp);
+extern
+fcontext_t BOOST_CONTEXT_CALLDECL make_fcontext( void * sp, size_t size, void (* fn)( transfer_t) );
+
+
+void createcontext(fcontext_t *oucp, void *stack, size_t stack_size, void *task) {
+	stack = (void *)((char *)stack + stack_size);
+    *oucp = make_fcontext(stack, stack_size, s_task_helper_entry);
 }
+

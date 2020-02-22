@@ -2,6 +2,8 @@
 
 #include "s_port_win32.h"
 
+/* Timer functions need to be implemented on a new porting. */
+
 void my_clock_init(){
 }
 
@@ -14,12 +16,25 @@ void my_on_idle(uint64_t max_idle_ms) {
 }
 
 
-typedef struct {
-    int regs[12];   //psp,r4-r12,lr,sp
-} ucontext_t;
 
-void createcontext(ucontext_t *oucp, void *stack, size_t stack_size, s_task_fn_t task_entry, void *task_arg) {
+#if (defined(i386) || defined(__i386__) || defined(__i386) \
+     || defined(__i486__) || defined(__i586__) || defined(__i686__) \
+     || defined(__X86__) || defined(_X86_) || defined(__THW_INTEL__) \
+     || defined(__I86__) || defined(__INTEL__) || defined(__IA32__) \
+     || defined(_M_IX86) || defined(_I86_)) && defined(BOOST_WINDOWS)
+# define BOOST_CONTEXT_CALLDECL __cdecl
+#else
+# define BOOST_CONTEXT_CALLDECL
+#endif
+
+extern 
+transfer_t BOOST_CONTEXT_CALLDECL jump_fcontext( fcontext_t const to, void * vp);
+extern
+fcontext_t BOOST_CONTEXT_CALLDECL make_fcontext( void * sp, size_t size, void (* fn)( transfer_t) );
+
+
+void createcontext(fcontext_t *oucp, void *stack, size_t stack_size, void *task) {
+	stack = (void *)((char *)stack + stack_size);
+    *oucp = make_fcontext(stack, stack_size, s_task_helper_entry);
 }
 
-void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
-}
