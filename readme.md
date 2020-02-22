@@ -10,7 +10,7 @@ until all tasks are finished.
 "setjmp_task" is not preemptive multitasking. A task need call task_msleep or task_yield to make
 other tasks hava chance to run.
 
-"setjmp_task" has been ported to various platforms, such as win32, linux, stm32, stm8, m051.
+"setjmp_task" has been ported to various platforms, such as win32, linux, stm32, m051.
 
 ```c
 void sub_task(void *arg) {
@@ -76,7 +76,8 @@ To make a port of "setjmp_task" to new system is very simple.
 Here's an example for linux porting, s_port_posix.h --
 ```c
 //1. define a type for clock
-typedef clock_t my_clock_t;
+typedef uint32_t my_clock_t;
+typedef int32_t my_clock_diff_t;
 
 //2. define the clock ticks count for one second
 #define MY_CLOCKS_PER_SEC CLOCKS_PER_SEC
@@ -94,6 +95,11 @@ my_clock_t my_clock() {
 void my_on_idle(uint64_t max_idle_ms) {
     usleep(max_idle_ms * 1000);
 }
+
+//6. The platform must implement one of the groups of context functions, 
+    make_fcontext / jump_fcontext   (fast, suggest to use)
+    or 
+    makecontext / swapcontext       (slow!!)
 ```
 
 ## Issues on embedded system
