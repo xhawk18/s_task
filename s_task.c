@@ -17,12 +17,18 @@ typedef struct {
     void* data;
 } transfer_t;
 
-void s_task_helper_entry(transfer_t arg);
+void s_task_context_entry(struct tag_s_task_t* task);
+void s_task_fcontext_entry(transfer_t arg);
 
 /* Run next task, but not set myself for ready to run */
 static void s_task_next(__async__);
 
+//#define USE_SWAP_CONTEXT
+//#define USE_JUMP_FCONTEXT
+
+
 #if defined __ARMCC_VERSION
+#   define USE_SWAP_CONTEXT
 #   if defined STM32F10X_MD
 #       include "s_port_cortex_m3.inc"
 #   elif defined STM32F302x8
@@ -33,10 +39,13 @@ static void s_task_next(__async__);
 #       include "s_port_cortex_m0.inc"
 #   endif
 #elif defined STM8S103
+#   define USE_SWAP_CONTEXT
 #   include "s_port_stm8s103.inc"
 #elif defined _WIN32
+#   define USE_JUMP_FCONTEXT
 #   include "s_port_win32.inc"
 #else
+#   define USE_JUMP_FCONTEXT
 #   include "s_port_posix.inc"
 #endif
 
@@ -49,7 +58,11 @@ typedef struct tag_s_task_t {
     s_event_t    join_event;
     s_task_fn_t  task_entry;
     void        *task_arg;
-    fcontext_t   uc;
+#if defined   USE_SWAP_CONTEXT
+    ucontext_t   uc;
+#elif defined USE_JUMP_FCONTEXT
+	fcontext_t   fc;
+#endif
     size_t       stack_size;
 } s_task_t;
 
@@ -210,14 +223,16 @@ static void s_task_next(__async__) {
     if (old_task == g_current_task)
         return;
 
-    //swapfcontext(&old_task->uc, &g_current_task->uc);
-    //printf("about to jump_fcontext = %p\n", g_current_task->uc);
+#if defined   USE_SWAP_CONTEXT
+    swapcontext(&old_task->uc, &g_current_task->uc);
+#elif defined USE_JUMP_FCONTEXT
     s_jump_t jump;
     jump.from = old_task;
     jump.to = g_current_task;
-    transfer_t t = jump_fcontext(g_current_task->uc, (void*)&jump);
+    transfer_t t = jump_fcontext(g_current_task->fc, (void*)&jump);
     s_jump_t* ret = (s_jump_t*)t.data;
-    ret->from->uc = t.fctx;
+    ret->from->fc = t.fctx;
+#endif
 }
 
 void s_task_yield(__async__) {
@@ -257,7 +272,12 @@ void s_task_create(void *stack, size_t stack_size, s_task_fn_t task_entry, void 
     memset(real_stack, '\xff', real_stack_size);
     ((char *)real_stack)[real_stack_size - 1] = 0;    //最后填0防止stack检查越过界
     
-    createcontext(&task->uc, real_stack, real_stack_size, task);
+
+#if defined   USE_SWAP_CONTEXT
+    create_context(&task->uc, real_stack, real_stack_size, task);
+#elif defined USE_JUMP_FCONTEXT
+    create_fcontext(&task->fc, real_stack, real_stack_size, s_task_fcontext_entry);
+#endif
 }
 
 void s_task_join(__async__, void *stack) {
@@ -289,7 +309,7 @@ size_t s_task_get_stack_free_size() {
     return s_task_get_stack_free_size_by_task(g_current_task);
 }
 
-void s_task_helper_entry2(struct tag_s_task_t *task) {
+void s_task_context_entry(struct tag_s_task_t *task) {
     s_task_fn_t task_entry = task->task_entry;
     void *task_arg         = task->task_arg;
     
@@ -302,16 +322,17 @@ void s_task_helper_entry2(struct tag_s_task_t *task) {
 }
 
 
-
-void s_task_helper_entry(transfer_t arg) {
+#ifdef USE_JUMP_FCONTEXT
+void s_task_fcontext_entry(transfer_t arg) {
     //printf("=== s_task_helper_entry = %p\n", arg.fctx);
 
     s_jump_t* jump = (s_jump_t*)arg.data;
-    jump->from->uc = arg.fctx;
+    jump->from->fc = arg.fctx;
     //printf("%p %p %p\n", jump, jump->to, g_current_task);
 
-    s_task_helper_entry2(jump->to);
+    s_task_context_entry(jump->to);
 }
+#endif
 
 
 /* Initialize a mutex */

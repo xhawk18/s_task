@@ -34,8 +34,19 @@ extern
 fcontext_t BOOST_CONTEXT_CALLDECL make_fcontext( void * sp, size_t size, void (* fn)( transfer_t) );
 
 
-void createcontext(fcontext_t *oucp, void *stack, size_t stack_size, void *task) {
-	stack = (void *)((char *)stack + stack_size);
-    *oucp = make_fcontext(stack, stack_size, s_task_helper_entry);
+
+void create_context(ucontext_t *uc, void *stack, size_t stack_size, void *task) {
+    getcontext(uc);
+    uc->uc_stack.ss_sp = stack;
+    uc->uc_stack.ss_size = stack_size;
+    uc->uc_link = 0;
+    makecontext(uc, (void (*)())&s_task_context_entry, 1, task);
 }
+
+
+void create_fcontext(fcontext_t *fc, void *stack, size_t stack_size, void (* fn)( transfer_t)) {
+	stack = (void *)((char *)stack + stack_size);
+	*fc = make_fcontext(stack, stack_size, fn);
+}
+
 

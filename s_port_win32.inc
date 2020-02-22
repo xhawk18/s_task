@@ -27,14 +27,14 @@ void my_on_idle(uint64_t max_idle_ms) {
 # define BOOST_CONTEXT_CALLDECL
 #endif
 
-extern 
+extern
 transfer_t BOOST_CONTEXT_CALLDECL jump_fcontext( fcontext_t const to, void * vp);
 extern
 fcontext_t BOOST_CONTEXT_CALLDECL make_fcontext( void * sp, size_t size, void (* fn)( transfer_t) );
 
 
-void createcontext(fcontext_t *oucp, void *stack, size_t stack_size, void *task) {
-	stack = (void *)((char *)stack + stack_size);
-    *oucp = make_fcontext(stack, stack_size, s_task_helper_entry);
+void create_fcontext(fcontext_t *fc, void * sp, size_t size, void (* fn)( transfer_t)) {
+	sp = (void *)((char *)sp + size);
+	*fc = make_fcontext(sp, size, fn);
 }
 

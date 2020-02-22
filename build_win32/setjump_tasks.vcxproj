@@ -116,7 +116,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <MASM>
-      <UseSafeExceptionHandlers>true</UseSafeExceptionHandlers>
+      <PreprocessorDefinitions>BOOST_CONTEXT_EXPORT;FRAME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </MASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -157,7 +157,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <MASM>
-      <UseSafeExceptionHandlers>true</UseSafeExceptionHandlers>
+      <PreprocessorDefinitions>BOOST_CONTEXT_EXPORT;FRAME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </MASM>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -176,8 +176,22 @@
     <ClCompile Include="..\test_fcontext.c" />
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="..\asm\jump_i386_ms_pe_masm.asm" />
-    <MASM Include="..\asm\make_i386_ms_pe_masm.asm" />
+    <MASM Include="..\asm\jump_i386_ms_pe_masm.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </MASM>
+    <MASM Include="..\asm\jump_x86_64_ms_pe_masm.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </MASM>
+    <MASM Include="..\asm\make_i386_ms_pe_masm.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </MASM>
+    <MASM Include="..\asm\make_x86_64_ms_pe_masm.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </MASM>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

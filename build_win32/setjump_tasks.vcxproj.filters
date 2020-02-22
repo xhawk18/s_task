@@ -46,6 +46,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <MASM Include="..\asm\jump_x86_64_ms_pe_masm.asm">
+      <Filter>Source Files</Filter>
+    </MASM>
+    <MASM Include="..\asm\make_x86_64_ms_pe_masm.asm">
+      <Filter>Source Files</Filter>
+    </MASM>
     <MASM Include="..\asm\jump_i386_ms_pe_masm.asm">
       <Filter>Source Files</Filter>
     </MASM>

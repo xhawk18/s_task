@@ -44,7 +44,7 @@ void main_task(__async__, void *arg) {
     s_task_create(stack0, sizeof(stack0), sub_task, (void *)1);
     s_task_create(stack1, sizeof(stack1), sub_task, (void *)2);
 
-    for (i = 0; i < 13; ++i) {
+    for (i = 0; i < 12; ++i) {
         PRINTF("task_main arg = %p, i = %d\n", arg, i);
         s_task_msleep(__await__, 500);
         if (i % 3 == 0) {
