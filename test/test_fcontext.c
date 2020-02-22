@@ -278,7 +278,7 @@ void test_snprintf() {
     free(sp);
 }
 
-int main_test_fcontext() {
+int main() {
     TEST(test_setup);
     TEST(test_start);
     TEST(test_jump);

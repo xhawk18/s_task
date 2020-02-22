@@ -6,6 +6,7 @@
 #include <string.h>
 #include "s_task.h"
 #include "s_list.h"
+#include "s_rbtree.h"
 
 struct tag_s_task_t;
 
@@ -67,7 +68,7 @@ typedef struct tag_s_task_t {
 } s_task_t;
 
 typedef struct {
-    s_list_t   node;
+    RBTNode    rbt_node;
     s_task_t  *task;
     my_clock_t wakeup_ticks;
 } s_timer_t;
@@ -80,44 +81,97 @@ typedef struct {
 
 static s_list_t  g_active_tasks;
 static s_task_t *g_current_task = NULL;
-static s_list_t  g_timers;
-
+static RBTree    g_timers;
 
 /*******************************************************************/
 /* timer                                                           */
 /*******************************************************************/
 
+
+static int s_timer_comparator(const RBTNode* a, const RBTNode* b, void* arg) {
+    s_timer_t* timer_a = GET_PARENT_ADDR(a, s_timer_t, rbt_node);
+    s_timer_t* timer_b = GET_PARENT_ADDR(b, s_timer_t, rbt_node);
+
+    my_clock_diff_t diff = (my_clock_diff_t)(timer_a->wakeup_ticks - timer_b->wakeup_ticks);
+    if (diff != 0) {
+        return (int)diff;
+    }
+    else {
+        if (timer_a->task < timer_b->task)
+            return -1;
+        else if (timer_b->task < timer_a->task)
+            return 1;
+        else
+            return 0;
+    }
+}
+
+void dump_timers(int line) {
+#if 0
+    RBTreeIterator itr;
+    RBTNode* node;
+    RBTNode* node_next;
+    my_clock_t current_ticks = my_clock();
+    printf("=========================== %d\n", line);
+    rbt_begin_iterate(&g_timers, LeftRightWalk, &itr);
+    node_next = rbt_iterate(&itr);
+    while ((node = node_next) != NULL) {
+        s_timer_t* timer = GET_PARENT_ADDR(node, s_timer_t, rbt_node);
+        printf("timer: %p %d %d\n", timer->task, (int)timer->wakeup_ticks, (int)(timer->wakeup_ticks - current_ticks));
+        node_next = rbt_iterate(&itr);
+    }
+
+    s_list_t* list;
+    for (list = &g_active_tasks.next; list != &g_active_tasks; list = list->next) {
+        s_task_t *task = GET_PARENT_ADDR(list, s_task_t, node);
+        printf("task: %p\n", task);
+    }
+#endif
+}
+
 static void s_timer_run() {
     my_clock_t current_ticks = my_clock();
 
-    s_list_t *node = s_list_get_next(&g_timers);
-    while (node != &g_timers) {
-        //s_task_t *task = GET_PARENT_ADDR(node, s_task_t, node);
-        s_timer_t *timer = GET_PARENT_ADDR(node, s_timer_t, node);
+    RBTreeIterator itr;
+    RBTNode* node;
+    RBTNode* node_next;
+	
+    dump_timers(__LINE__);
+
+    rbt_begin_iterate(&g_timers, LeftRightWalk, &itr);
+    node_next = rbt_iterate(&itr);
+    while ((node = node_next) != NULL) {
+
+        s_timer_t* timer = GET_PARENT_ADDR(node, s_timer_t, rbt_node);
 
         int ticks_to_wakeup = (int)(timer->wakeup_ticks - current_ticks);
-        if (ticks_to_wakeup <= 0) {
-            s_list_t *node_next = s_list_get_next(node);
-            s_list_detach(node);
-            //s_list_attach(&g_active_tasks, node);
-            
-            s_list_detach(&timer->task->node);
-            s_list_attach(&g_active_tasks, &timer->task->node);
-            node = node_next;
-        }
-        else break;
+        if (ticks_to_wakeup > 0) break;
+
+        node_next = rbt_iterate(&itr);
+        
+        s_list_detach(&timer->task->node);
+        s_list_attach(&g_active_tasks, &timer->task->node);
+
+        timer->task = NULL;
+        rbt_delete(&g_timers, node);
     }
+
+    dump_timers(__LINE__);
+
 }
 
 static void s_timer_wait_recent() {
     my_clock_t current_ticks = my_clock();
-    s_list_t *node = s_list_get_next(&g_timers);
-    if (node != &g_timers) {
-        //s_task_t *task = GET_PARENT_ADDR(node, s_task_t, node);
-        s_timer_t *timer = GET_PARENT_ADDR(node, s_timer_t, node);
+    
+    RBTreeIterator itr;
+    RBTNode* node;
+    rbt_begin_iterate(&g_timers, LeftRightWalk, &itr);
+
+    if((node = rbt_iterate(&itr)) != NULL) {
+        s_timer_t *timer = GET_PARENT_ADDR(node, s_timer_t, rbt_node);
         
         int ticks_to_wakeup = (int)(timer->wakeup_ticks - current_ticks);
-        //printf("ticks_to_wakeup = %d %d %d \n", ticks_to_wakeup, (int)current_ticks, (int)timer->wakeup_ticks);
+        printf("ticks_to_wakeup = %d %d %d \n", ticks_to_wakeup, (int)current_ticks, (int)timer->wakeup_ticks);
         if (ticks_to_wakeup > 0)
             my_on_idle((uint64_t)ticks_to_wakeup * 1000  / MY_CLOCKS_PER_SEC);
     }
@@ -126,30 +180,31 @@ static void s_timer_wait_recent() {
 
 void s_task_sleep_ticks(__async__, my_clock_t ticks) {
     my_clock_t current_ticks;
-    s_list_t *node;
     s_timer_t timer;
     
     current_ticks = my_clock();
-    s_list_init(&timer.node);
+    
     timer.task = g_current_task;
     timer.wakeup_ticks = current_ticks + ticks;
-    //g_current_task->wakeup_ticks = current_ticks + ticks;
 
-    for(node = s_list_get_next(&g_timers);
-        node != &g_timers;
-        node = s_list_get_next(node)) {
-        s_timer_t *timer = GET_PARENT_ADDR(node, s_timer_t, node);
+    dump_timers(__LINE__);
 
-        int ticks_to_wakeup = (int)(timer->wakeup_ticks - current_ticks);
-        if (ticks_to_wakeup >= 0 && (my_clock_t)ticks_to_wakeup > ticks)
-            break;
+    if (!rbt_insert(&g_timers, &timer.rbt_node)) {
+        fprintf(stderr, "timer insert failed!\n");
+        return;
     }
 
-    //s_list_attach(node, &g_current_task->node);
-    s_list_detach(&timer.task->node);
-    s_list_attach(node, &timer.node);
+    dump_timers(__LINE__);
+
+    s_list_detach(&g_current_task->node);
     s_task_next(__await__);
-    s_list_detach(&timer.node);
+
+    dump_timers(__LINE__);
+
+    if (timer.task != NULL) {
+        timer.task = NULL;
+        rbt_delete(&g_timers, &timer.rbt_node);
+    }
 }
 
 void s_task_msleep(__async__, uint32_t msec) {
@@ -198,7 +253,7 @@ static void s_task_next(__async__) {
 
         s_timer_run();
         is_wait_empty = s_list_is_empty(&g_active_tasks);
-        is_timer_empty = s_list_is_empty(&g_timers);
+        is_timer_empty = rbt_is_empty(&g_timers);
         
         //printf("is %d %d\n", is_timer_empty, is_wait_empty);
         if (!is_wait_empty)
@@ -245,7 +300,10 @@ void s_task_init_system() {
     static s_task_t main_task;
 
     s_list_init(&g_active_tasks);
-    s_list_init(&g_timers);
+    rbt_create(&g_timers,
+        s_timer_comparator,
+        NULL
+    );
     my_clock_init();
 
     s_list_init(&main_task.node);
@@ -385,34 +443,25 @@ void s_event_set(s_event_t *event) {
 /* Wait event */
 static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
     my_clock_t current_ticks;
-    s_list_t *node;
     s_timer_t timer;
     
     current_ticks = my_clock();
-    s_list_init(&timer.node);
     timer.task = g_current_task;
     timer.wakeup_ticks = current_ticks + ticks;
-    //g_current_task->wakeup_ticks = current_ticks + ticks;
 
-    for(node = s_list_get_next(&g_timers);
-        node != &g_timers;
-        node = s_list_get_next(node)) {
-        s_timer_t *timer = GET_PARENT_ADDR(node, s_timer_t, node);
-
-        int ticks_to_wakeup = (int)(timer->wakeup_ticks - current_ticks);
-        if (ticks_to_wakeup >= 0 && (my_clock_t)ticks_to_wakeup > ticks)
-            break;
+    if (!rbt_insert(&g_timers, &timer.rbt_node)) {
+        fprintf(stderr, "timer insert failed!\n");
+        return;
     }
 
-    //s_list_attach(node, &g_current_task->node);
-    s_list_detach(&timer.task->node);
-    s_list_attach(node, &timer.node);
-    
-    //Put current task to the event's waiting list
+    s_list_detach(&g_current_task->node);
     s_list_attach(&event->wait_list, &g_current_task->node);
     s_task_next(__await__);
-    
-    s_list_detach(&timer.node);
+
+    if (timer.task != NULL) {
+        timer.task = NULL;
+        rbt_delete(&g_timers, &timer.rbt_node);
+    }
 }
 
 void s_event_wait_msec(__async__, s_event_t *event, uint32_t msec) {

@@ -441,6 +441,11 @@
               <FileType>1</FileType>
               <FilePath>..\s_list.c</FilePath>
             </File>
+            <File>
+              <FileName>s_rbtree.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\s_rbtree.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

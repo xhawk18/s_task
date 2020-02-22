@@ -56,6 +56,7 @@ void assert_failed(uint8_t* file, uint32_t line)
 
 /* Copyright xhawk, MIT license */
 typedef unsigned long long uint64_t;
+typedef signed long long my_clock_diff_t;
 
 /* Size for stack for each stask. */
 #define STACK_SIZE 200

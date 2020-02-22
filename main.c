@@ -14,7 +14,8 @@ void sub_task(__async__, void *arg) {
     size_t n = (size_t)arg;
 
     while (1) {
-        s_event_wait(__await__, &g_event);
+        s_event_wait_msec(__await__, &g_event, 300);
+        //s_task_msleep(__await__, 500);
         PRINTF("task %d wait event OK\n", (int)n);
     }
 }

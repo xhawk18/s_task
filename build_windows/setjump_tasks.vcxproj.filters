@@ -30,6 +30,9 @@
     <ClInclude Include="..\s_list.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\s_rbtree.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.c">
@@ -41,7 +44,7 @@
     <ClCompile Include="..\s_list.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_fcontext.c">
+    <ClCompile Include="..\s_rbtree.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

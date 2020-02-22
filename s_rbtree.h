@@ -102,6 +102,7 @@ extern void rbt_delete(RBTree *rbt, RBTNode *node);
 extern void rbt_begin_iterate(RBTree *rbt, RBTOrderControl ctrl,
 							  RBTreeIterator *iter);
 extern RBTNode *rbt_iterate(RBTreeIterator *iter);
+extern bool rbt_is_empty(const RBTree* rbt);
 
 #ifdef __cplusplus
 }

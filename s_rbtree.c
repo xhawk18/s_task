@@ -110,7 +110,7 @@ rbt_create(RBTree* tree,
 //	memcpy(dest + 1, src + 1, rbt->node_size - sizeof(RBTNode));
 //}
 
-static inline void
+static void
 rbt_swap_node(RBTree *rbt, RBTNode *x, RBTNode *y) {
     //交换y,z的数据结构
     char color = x->color;
@@ -118,6 +118,9 @@ rbt_swap_node(RBTree *rbt, RBTNode *x, RBTNode *y) {
     y->color = color;
 
     if (x->parent == y) {
+        RBTNode *y_left;
+        RBTNode *y_right;
+        
         if (y->parent) {
             RBTNode* node = y->parent;
             if (node->left == y)
@@ -129,8 +132,8 @@ rbt_swap_node(RBTree *rbt, RBTNode *x, RBTNode *y) {
         x->parent = y->parent;
         y->parent = x;
 
-        RBTNode *y_left = y->left;
-        RBTNode *y_right = y->right;
+        y_left = y->left;
+        y_right = y->right;
         if (y_left == x)
             y_left = y;
         if (y_right == x)
@@ -160,6 +163,9 @@ rbt_swap_node(RBTree *rbt, RBTNode *x, RBTNode *y) {
         x->right = y_right;
     }
     else if (y->parent == x) {
+        RBTNode *x_left;
+        RBTNode *x_right;
+        
         if (x->parent) {
             RBTNode* node = x->parent;
             if (node->left == x)
@@ -171,8 +177,8 @@ rbt_swap_node(RBTree *rbt, RBTNode *x, RBTNode *y) {
         y->parent = x->parent;
         x->parent = y;
 
-        RBTNode *x_left = x->left;
-        RBTNode *x_right = x->right;
+        x_left = x->left;
+        x_right = x->right;
         if (x_left == y)
             x_left = x;
         if (x_right == y)
@@ -202,6 +208,10 @@ rbt_swap_node(RBTree *rbt, RBTNode *x, RBTNode *y) {
         y->right = x_right;
     }
     else {
+        RBTNode *left;
+        RBTNode *right;
+        RBTNode *parent;
+        
         if (x->parent) {
             RBTNode* node = x->parent;
             if (node->left == x) {
@@ -240,15 +250,15 @@ rbt_swap_node(RBTree *rbt, RBTNode *x, RBTNode *y) {
             node->parent = x;
         }
 
-        RBTNode *left = x->left;
+        left = x->left;
         x->left = y->left;
         y->left = left;
 
-        RBTNode *right = x->right;
+        right = x->right;
         x->right = y->right;
         y->right = right;
 
-        RBTNode *parent = x->parent;
+        parent = x->parent;
         x->parent = y->parent;
         y->parent = parent;
     }
@@ -919,4 +929,24 @@ rbt_iterate(RBTreeIterator *iter)
 		return NULL;
 
 	return iter->iterate(iter);
+}
+
+bool rbt_is_empty(const RBTree* rbt) {
+    return rbt->root == RBTNIL;
+#if 0
+    bool ret1 = (rbt->root == RBTNIL);
+
+    RBTreeIterator itr;
+    RBTNode* node;
+    rbt_begin_iterate((RBTree *)rbt, LeftRightWalk, &itr);
+
+    node = rbt_iterate(&itr);
+    bool ret2 = (node == NULL);
+
+    if (ret1 != ret2) {
+        fprintf(stderr, "is_empty\n");
+        //exit(0);
+    }
+    return ret1;
+#endif
 }
