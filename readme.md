@@ -1,9 +1,9 @@
 # s_task - a co-routine library for C
 
 ## Usage
-"s_task" is a co-routine library written in C and asm (from boost library), without C++ required.
+"s_task" is a co-routine library written in C and asm (from boost library), **without** **C++** required.
 
-"s_task" has been ported to various platforms, such as win32, linux, stm32, m051.
+"s_task" has been ported to various platforms, such as win32, linux, stm32.
 
 "s_task" uses keywords \_\_await\_\_ and \_\_async\_\_. For functions that may switch to other tasks, call it with 1st parameter \_\_await\_\_, for the caller function of which, define the 1st parameter as \_\_async\_\_, which make it is clear to know about context switching.
 
