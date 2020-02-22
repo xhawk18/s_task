@@ -16,8 +16,9 @@ typedef struct{
     int dummy;
 } s_awaiter_t;
 
-#   define __await__ __awaiter_dummy__
-#   define __async__ s_awaiter_t *__awaiter_dummy__
+#   define __await__      __awaiter_dummy__
+#   define __async__      s_awaiter_t *__awaiter_dummy__
+#   define __init_async__ s_awaiter_t *__awaiter_dummy__ = 0
 
 /* Function type for task entrance */
 typedef void(*s_task_fn_t)(__async__, void *arg);
@@ -99,7 +100,10 @@ void s_event_wait(__async__, s_event_t *event);
 /* Set event */
 void s_event_set(s_event_t *event);
 
+/* Wait event with timeout */
 void s_event_wait_msec(__async__, s_event_t *event, uint32_t msec);
+
+/* Wait event with timeout */
 void s_event_wait_sec(__async__, s_event_t *event, uint32_t msec);
 
 /* milliseconds to ticks */

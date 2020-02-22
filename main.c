@@ -62,7 +62,7 @@ void main_task(__async__, void *arg) {
 }
 
 int main(int argc, char *argv) {
-    __async__ = 0;
+    __init_async__;
 
     s_task_init_system();
     s_task_create(stack_main, sizeof(stack_main), main_task, (void *)(size_t)argc);
@@ -74,4 +74,3 @@ int main(int argc, char *argv) {
     PRINTF("all task is over\n");
     return 0;
 }
-

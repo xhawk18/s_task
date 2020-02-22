@@ -1,78 +1,116 @@
-# setjmp_task - A multi-task library implemented by pure C.
+# s_task - a co-routine library for C
 
 ## Usage
-"setjmp_task" is designed for easy use, just use task_init_system() to initialize the system,
-and use task_create to create tasks is OK.
+"s_task" is a co-routine library written in C and asm (from boost library), without C++ required.
 
-After task_init_system() was called, main_task will be created, and the main function will halt
-until all tasks are finished.
+"s_task" has been ported to various platforms, such as win32, linux, stm32, m051.
 
-"setjmp_task" is not preemptive multitasking. A task need call task_msleep or task_yield to make
-other tasks hava chance to run.
+"s_task" uses keywords \_\_await\_\_ and \_\_async\_\_. For functions that may switch to other tasks, call it with 1st parameter \_\_await\_\_, for the caller function of which, define the 1st parameter as \_\_async\_\_, which make it is clear to know about context switching.
 
-"setjmp_task" has been ported to various platforms, such as win32, linux, stm32, m051.
+[Example](example.c)
 
 ```c
-void sub_task(void *arg) {
+#include <stdio.h>
+#include "s_task.h"
+
+void* stack_main[64 * 1024];
+void* stack0[64 * 1024];
+void* stack1[64 * 1024];
+
+void sub_task(__async__, void* arg) {
     int i;
     int n = (int)arg;
     for (i = 0; i < 5; ++i) {
-        PRINTF("task %d, delay seconds = %d, i = %d\n", n, n, i);
-        task_msleep(n * 1000);
+        printf("task %d, delay seconds = %d, i = %d\n", n, n, i);
+        s_task_msleep(__await__, n * 1000);
         //task_yield();
     }
 }
 
-void main_task(void *arg) {
+void main_task(__async__, void* arg) {
     int i;
-    task_create(sub_task, (void *)1);
-    task_create(sub_task, (void *)2);
+    s_task_create(stack0, sizeof(stack0), sub_task, (void*)1);
+    s_task_create(stack1, sizeof(stack1), sub_task, (void*)2);
 
     for (i = 0; i < 4; ++i) {
-        PRINTF("task_main arg = %p, i = %d\n", arg, i);
-        task_yield();
+        printf("task_main arg = %p, i = %d\n", arg, i);
+        s_task_yield(__await__);
     }
+
+    s_task_join(__await__, stack0);
+    s_task_join(__await__, stack1);
 }
 
-int main(int argc, char *argv) {
-    task_init_system(main_task, (void *)argc);
-    PRINTF("all task is over\n");
+int main(int argc, char* argv) {
+    __init_async__;
+
+    s_task_init_system();
+    s_task_create(stack_main, sizeof(stack_main), main_task, (void*)argc);
+    s_task_join(__await__, stack_main);
+    printf("all task is over\n");
     return 0;
 }
 ```
 
 ## API
+
 ### Task
+
 ```c
 /* Function type for task entrance */
-typedef void(*task_fn_t)(void *arg);
-
-/* Initialize the task system. */
-void task_init_system(task_fn_t main_entry, void *arg);
+typedef void(*s_task_fn_t)(__async__, void *arg);
 
 /* Create a new task */
-void task_create(task_fn_t entry, void *arg);
+void s_task_create(void *stack, size_t stack_size, s_task_fn_t entry, void *arg);
+
+/* Wait a task to exit */
+void s_task_join(__async__, void *stack);
+
+/* Kill a task */
+void s_task_kill(void *stack);
 
 /* Sleep in milliseconds */
-void task_msleep(uint32_t msec);
+void s_task_msleep(__async__, uint32_t msec);
+
+/* Sleep in seconds */
+void s_task_sleep(__async__, uint32_t sec);
 
 /* Yield current task */
-void task_yield(void);
+void s_task_yield(__async__);
 ```
+
+### Mutex
+```c
+/* Initialize a mutex */
+void s_mutex_init(s_mutex_t *mutex);
+
+/* Lock the mutex */
+void s_mutex_lock(__async__, s_mutex_t *mutex);
+
+/* Unlock the mutex */
+void s_mutex_unlock(s_mutex_t *mutex);
+```
+
 ### Event
 ```c
 /* Initialize a wait event */
-void event_init(event_t *event);
+void s_event_init(s_event_t *event);
 
 /* Wait event */
-void event_wait(event_t *event);
+void s_event_wait(__async__, s_event_t *event);
 
 /* Set event */
-void event_set(event_t *event);
+void s_event_set(s_event_t *event);
+
+/* Wait event with timeout */
+void s_event_wait_msec(__async__, s_event_t *event, uint32_t msec);
+
+/* Wait event with timeout */
+void s_event_wait_sec(__async__, s_event_t *event, uint32_t msec);
 ```
 
 ## How to make port?
-To make a port of "setjmp_task" to new system is very simple.
+To make a port of "s_task" to new system is very simple.
 Here's an example for linux porting, s_port_posix.h --
 ```c
 //1. define a type for clock
