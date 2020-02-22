@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6F731134-9181-4DC1-98EE-506E61C81F46}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>setjump_tasks</RootNamespace>
+    <RootNamespace>s_task</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

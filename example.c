@@ -9,11 +9,11 @@ void* stack1[64 * 1024];
 
 void sub_task(__async__, void* arg) {
     int i;
-    int n = (int)arg;
+    int n = (int)(size_t)arg;
     for (i = 0; i < 5; ++i) {
         printf("task %d, delay seconds = %d, i = %d\n", n, n, i);
         s_task_msleep(__await__, n * 1000);
-        //task_yield();
+        //s_task_yield(__await__);
     }
 }
 
@@ -35,7 +35,7 @@ int main(int argc, char* argv) {
     __init_async__;
 
     s_task_init_system();
-    s_task_create(stack_main, sizeof(stack_main), main_task, (void*)argc);
+    s_task_create(stack_main, sizeof(stack_main), main_task, (void*)(size_t)argc);
     s_task_join(__await__, stack_main);
     printf("all task is over\n");
     return 0;

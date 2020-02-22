@@ -65,6 +65,7 @@ typedef struct tag_s_task_t {
 	fcontext_t   fc;
 #endif
     size_t       stack_size;
+    bool         closed;
 } s_task_t;
 
 typedef struct {
@@ -309,6 +310,7 @@ void s_task_init_system() {
     s_list_init(&main_task.node);
     s_event_init(&main_task.join_event);
     main_task.stack_size = 0;
+    main_task.closed = false;
     g_current_task = &main_task;
 }
 
@@ -322,6 +324,7 @@ void s_task_create(void *stack, size_t stack_size, s_task_fn_t task_entry, void 
     task->task_entry = task_entry;
     task->task_arg   = task_arg;
     task->stack_size = stack_size;
+    task->closed = false;
     s_list_attach(&g_active_tasks, &task->node);
 
     //填全1检查stack大小
@@ -340,7 +343,8 @@ void s_task_create(void *stack, size_t stack_size, s_task_fn_t task_entry, void 
 
 void s_task_join(__async__, void *stack) {
     s_task_t *task = (s_task_t *)stack;
-    s_event_wait(__await__, &task->join_event);
+    while(!task->closed)
+        s_event_wait(__await__, &task->join_event);
 }
 
 //timer conflict with this function!!!
@@ -374,7 +378,7 @@ void s_task_context_entry(struct tag_s_task_t *task) {
     __async__ = 0;
     (*task_entry)(__await__, task_arg);
 
-    //printf("<<<<<<<<<<<<<<<< %p\n", task);
+    task->closed = true;
     s_event_set(&task->join_event);
     s_task_next(__await__);
 }
