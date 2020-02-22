@@ -144,7 +144,7 @@ static void s_timer_run() {
 
         s_timer_t* timer = GET_PARENT_ADDR(node, s_timer_t, rbt_node);
 
-        int ticks_to_wakeup = (int)(timer->wakeup_ticks - current_ticks);
+        my_clock_diff_t ticks_to_wakeup = (my_clock_diff_t)(timer->wakeup_ticks - current_ticks);
         if (ticks_to_wakeup > 0) break;
 
         node_next = rbt_iterate(&itr);
@@ -170,8 +170,8 @@ static void s_timer_wait_recent() {
     if((node = rbt_iterate(&itr)) != NULL) {
         s_timer_t *timer = GET_PARENT_ADDR(node, s_timer_t, rbt_node);
         
-        int ticks_to_wakeup = (int)(timer->wakeup_ticks - current_ticks);
-        printf("ticks_to_wakeup = %d %d %d \n", ticks_to_wakeup, (int)current_ticks, (int)timer->wakeup_ticks);
+        my_clock_diff_t ticks_to_wakeup = (my_clock_diff_t)(timer->wakeup_ticks - current_ticks);
+        //printf("ticks_to_wakeup = %d %d %d \n", ticks_to_wakeup, (int)current_ticks, (int)timer->wakeup_ticks);
         if (ticks_to_wakeup > 0)
             my_on_idle((uint64_t)ticks_to_wakeup * 1000  / MY_CLOCKS_PER_SEC);
     }
