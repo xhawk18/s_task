@@ -1,25 +1,18 @@
+/* Copyright xhawk, MIT license */
 #ifndef INC_S_PORT_H_
 #define INC_S_PORT_H_
 
-#include <time.h>
-#define _XOPEN_SOURCE
-#include <ucontext.h>
-#include <unistd.h>
+#include "uv.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-
-/* Copyright xhawk, MIT license */
-
 /* Timer functions need to be implemented on a new porting. */
 
-/* === Timer functions on posix/linux === */
-
 //1. define a type for clock
-typedef uint32_t my_clock_t;
-typedef int32_t my_clock_diff_t;
+typedef uint64_t my_clock_t;
+typedef int64_t my_clock_diff_t;
 
 //2. define the clock ticks count for one second
 #define MY_CLOCKS_PER_SEC 1000
@@ -32,6 +25,7 @@ my_clock_t my_clock();
 
 //5. Implement the idle delay function.
 void my_on_idle(uint64_t max_idle_ms);
+
 
 #ifdef __cplusplus
 }

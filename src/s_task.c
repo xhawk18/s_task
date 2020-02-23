@@ -10,8 +10,6 @@
 
 struct tag_s_task_t;
 
-
-
 typedef void* fcontext_t;
 typedef struct {
     fcontext_t  fctx;
@@ -42,6 +40,9 @@ static void s_task_next(__async__);
 #elif defined STM8S103
 #   define USE_SWAP_CONTEXT
 #   include "s_port_stm8s103.inc"
+#elif defined USE_LIBUV
+#   define USE_JUMP_FCONTEXT
+#   include "s_port_libuv.inc"
 #elif defined _WIN32
 #   define USE_JUMP_FCONTEXT
 #   include "s_port_windows.inc"
@@ -161,21 +162,26 @@ static void s_timer_run() {
 
 }
 
-static void s_timer_wait_recent() {
+static uint64_t s_timer_wait_recent() {
     my_clock_t current_ticks = my_clock();
-    
+
     RBTreeIterator itr;
     RBTNode* node;
     rbt_begin_iterate(&g_timers, LeftRightWalk, &itr);
 
-    if((node = rbt_iterate(&itr)) != NULL) {
-        s_timer_t *timer = GET_PARENT_ADDR(node, s_timer_t, rbt_node);
-        
+    if ((node = rbt_iterate(&itr)) != NULL) {
+        s_timer_t* timer = GET_PARENT_ADDR(node, s_timer_t, rbt_node);
+
         my_clock_diff_t ticks_to_wakeup = (my_clock_diff_t)(timer->wakeup_ticks - current_ticks);
         //printf("ticks_to_wakeup = %d %d %d \n", ticks_to_wakeup, (int)current_ticks, (int)timer->wakeup_ticks);
-        if (ticks_to_wakeup > 0)
-            my_on_idle((uint64_t)ticks_to_wakeup * 1000  / MY_CLOCKS_PER_SEC);
+        if (ticks_to_wakeup > 0) {
+            uint64_t wait = ((uint64_t)ticks_to_wakeup * 1000 / MY_CLOCKS_PER_SEC);
+            return wait;
+        }
+        else
+            return 0;
     }
+    return (uint64_t)-1;    //max
 }
 
 
@@ -243,53 +249,90 @@ uint32_t ticks_to_sec(my_clock_t ticks) {
     return sec;
 }
 
-static void s_task_next(__async__) {
+/* 
+    *timeout, wait timeout
+    return, true on task run
+ */
+static void s_task_call_next(__async__) {
     //get next task and run it
-    s_list_t *next;
-    s_task_t *old_task;
+    s_list_t* next;
+    s_task_t* old_task;
 
-    while (1){
-        int is_wait_empty;
-        int is_timer_empty;
-
-        s_timer_run();
-        is_wait_empty = s_list_is_empty(&g_active_tasks);
-        is_timer_empty = rbt_is_empty(&g_timers);
-        
-        //printf("is %d %d\n", is_timer_empty, is_wait_empty);
-        if (!is_wait_empty)
-            break;
-        else if(!is_timer_empty) {
-            //Wait for the recent timer
-            s_timer_wait_recent();
-        }else{
-            //Wait CPU
-            my_on_idle(0);
-        }
+    //Check active tasks
+    if (s_list_is_empty(&g_active_tasks)) {
+        fprintf(stderr, "error: must has one task to run\n");
+        return;
     }
 
     old_task = g_current_task;
     next = s_list_get_next(&g_active_tasks);
     
     //printf("next = %p %p\n", g_current_task, next);
-    
+
     g_current_task = GET_PARENT_ADDR(next, s_task_t, node);
     s_list_detach(next);
 
-    if (old_task == g_current_task)
-        return;
-
+    if (old_task != g_current_task) {
 #if defined   USE_SWAP_CONTEXT
-    swapcontext(&old_task->uc, &g_current_task->uc);
+        swapcontext(&old_task->uc, &g_current_task->uc);
 #elif defined USE_JUMP_FCONTEXT
-    s_jump_t jump;
-    jump.from = old_task;
-    jump.to = g_current_task;
-    transfer_t t = jump_fcontext(g_current_task->fc, (void*)&jump);
-    s_jump_t* ret = (s_jump_t*)t.data;
-    ret->from->fc = t.fctx;
+        s_jump_t jump;
+        jump.from = old_task;
+        jump.to = g_current_task;
+        transfer_t t = jump_fcontext(g_current_task->fc, (void*)&jump);
+        s_jump_t* ret = (s_jump_t*)t.data;
+        ret->from->fc = t.fctx;
 #endif
+    }
 }
+
+#if defined USE_LIBUV
+static void s_task_next(__async__) {
+    s_timer_run();
+    s_task_call_next(__await__);
+}
+
+void s_task_main_loop_once(__async__) {
+    s_timer_run();
+    while (!s_list_is_empty(&g_active_tasks)) {
+        //Put current task to the waiting list
+        s_list_attach(&g_active_tasks, &g_current_task->node);
+        s_task_call_next(__await__);
+        s_timer_run();
+    }
+
+    //Check timers
+    if (!rbt_is_empty(&g_timers)) {
+        //Wait for the recent timer
+        uint64_t timeout = s_timer_wait_recent();
+        my_on_idle(timeout);
+    }
+}
+
+#else
+
+static void s_task_next(__async__) {
+    while (true) {
+        s_timer_run();
+        if (!s_list_is_empty(&g_active_tasks)) {
+            s_task_call_next(__await__);
+            return;
+        }
+
+        //Check timers
+        if (!rbt_is_empty(&g_timers)) {
+            //Wait for the recent timer
+            uint64_t timeout = s_timer_wait_recent();
+            my_on_idle(timeout);
+        }
+        else {
+            fprintf(stderr, "error: must not wait so long!\n");
+            my_on_idle((uint64_t)-1);
+        }
+    }
+}
+
+#endif
 
 void s_task_yield(__async__) {
     //Put current task to the waiting list
@@ -407,6 +450,7 @@ void s_mutex_init(s_mutex_t *mutex) {
 void s_mutex_lock(__async__, s_mutex_t *mutex) {
     if(mutex->locked) {
         //Put current task to the event's waiting list
+        s_list_detach(&g_current_task->node);   //no need, for safe
         s_list_attach(&mutex->wait_list, &g_current_task->node);
         s_task_next(__await__);
     }
@@ -434,6 +478,7 @@ void s_event_init(s_event_t *event) {
 /* Wait event */
 void s_event_wait(__async__, s_event_t *event) {
     //Put current task to the event's waiting list
+    s_list_detach(&g_current_task->node);   //no need, for safe
     s_list_attach(&event->wait_list, &g_current_task->node);
     s_task_next(__await__);
 }
@@ -458,7 +503,7 @@ static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
         return;
     }
 
-    s_list_detach(&g_current_task->node);
+    s_list_detach(&g_current_task->node);   //no need, for safe
     s_list_attach(&event->wait_list, &g_current_task->node);
     s_task_next(__await__);
 

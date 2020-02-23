@@ -35,6 +35,8 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 #   endif
 #elif defined STM8S103
 #   include "s_port_stm8s103.h"
+#elif defined USE_LIBUV
+#   include "s_port_libuv.h"
 #elif defined _WIN32
 #   include "s_port_windows.h"
 #else
@@ -75,6 +77,11 @@ void s_task_sleep(__async__, uint32_t sec);
 
 /* Yield current task */
 void s_task_yield(__async__);
+
+#if defined USE_LIBUV
+/* Try to run next tasks, and return wait time if none need to run */
+void s_task_main_loop_once(__async__);
+#endif
 
 /* Get free stack size (for debug) */
 size_t s_task_get_stack_free_size(void);

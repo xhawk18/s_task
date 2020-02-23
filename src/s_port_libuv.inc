@@ -2,17 +2,25 @@
 
 /* Timer functions need to be implemented on a new porting. */
 
+static uv_timer_t g_timer_once;
+
 void my_clock_init(){
+    uv_loop_t* loop = uv_default_loop();
+    uv_timer_init(loop, &g_timer_once);
 }
 
 my_clock_t my_clock() {
-    struct timespec tp;
-    clock_gettime(CLOCK_MONOTONIC, &tp);
-    return (my_clock_t)(tp.tv_sec * 1000 + tp.tv_nsec / 1000000);
+	uv_loop_t* loop = uv_default_loop();
+	return uv_now(loop);
 }
 
-void my_on_idle(uint64_t max_idle_ms) {
-    usleep(max_idle_ms * 1000);
+static void uv_on_timer(uv_timer_t* handle) {
+    //uv_close((uv_handle_t*)handle, NULL);
+}
+
+static void my_on_idle(uint64_t max_idle_ms) {
+    uv_loop_t* loop = uv_default_loop();
+    uv_timer_start(&g_timer_once, uv_on_timer, max_idle_ms, 0);
 }
 
 
@@ -32,19 +40,8 @@ extern
 fcontext_t BOOST_CONTEXT_CALLDECL make_fcontext( void * sp, size_t size, void (* fn)( transfer_t) );
 
 
-
-void create_context(ucontext_t *uc, void *stack, size_t stack_size, void *task) {
-    getcontext(uc);
-    uc->uc_stack.ss_sp = stack;
-    uc->uc_stack.ss_size = stack_size;
-    uc->uc_link = 0;
-    makecontext(uc, (void (*)())&s_task_context_entry, 1, task);
+void create_fcontext(fcontext_t *fc, void * sp, size_t size, void (* fn)( transfer_t)) {
+	sp = (void *)((char *)sp + size);
+	*fc = make_fcontext(sp, size, fn);
 }
-
-
-void create_fcontext(fcontext_t *fc, void *stack, size_t stack_size, void (* fn)( transfer_t)) {
-	stack = (void *)((char *)stack + stack_size);
-	*fc = make_fcontext(stack, stack_size, fn);
-}
-
 

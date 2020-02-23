@@ -1,6 +1,9 @@
 #ifndef INC_S_PORT_H_
 #define INC_S_PORT_H_
 
+#include <Windows.h>
+#include <time.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -8,14 +11,9 @@ extern "C" {
 
 /* Copyright xhawk, MIT license */
 
-/* Size for stack for each stask. */
-#define STACK_SIZE 4096
-
 /* Timer functions need to be implemented on a new porting. */
 
 /* === Timer functions on windows === */
-#include <Windows.h>
-#include <time.h>
 
 //1. define a type for clock
 typedef DWORD my_clock_t;
