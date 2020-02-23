@@ -604,7 +604,8 @@ typedef void (*uv_udp_recv_cb)(uv_udp_t* handle,
                                ssize_t nread,
                                const uv_buf_t* buf,
                                const struct sockaddr* addr,
-                               unsigned flags);
+                               unsigned flags,
+                               void *arg);
 
 /* uv_udp_t is a subclass of uv_handle_t. */
 struct uv_udp_s {

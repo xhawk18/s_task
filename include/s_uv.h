@@ -15,6 +15,23 @@ int s_uv_read(__async__, uv_stream_t* handle, void* buf, size_t buf_len, size_t*
 int s_uv_write_n(__async__, uv_stream_t* handle, const uv_buf_t bufs[], unsigned int nbufs);
 int s_uv_write(__async__, uv_stream_t* handle, const void* buf, size_t buf_len);
 
+int uv_udp_recv(__async__,
+    uv_udp_t* handle,
+    void* buf, size_t buf_len,
+    size_t* nrecv,
+    struct sockaddr* addr,
+    unsigned int* flags);
+
+int s_uv_udp_send_n(__async__,
+    uv_udp_t* handle,
+    const uv_buf_t bufs[],
+    unsigned int nbufs,
+    const struct sockaddr* addr);
+int s_uv_udp_send(__async__, uv_udp_t* handle,
+    const void* buf,
+    size_t buf_len,
+    const struct sockaddr* addr);
+
 #ifdef __cplusplus
 }
 #endif

@@ -172,7 +172,7 @@ static void uv__udp_recvmsg(uv_udp_t* handle) {
     buf = uv_buf_init(NULL, 0);
     handle->alloc_cb((uv_handle_t*) handle, 64 * 1024, &buf, handle->recv_cb_arg);
     if (buf.base == NULL || buf.len == 0) {
-      handle->recv_cb(handle, UV_ENOBUFS, &buf, NULL, 0);
+      handle->recv_cb(handle, UV_ENOBUFS, &buf, NULL, 0, handle->recv_cb_arg);
       return;
     }
     assert(buf.base != NULL);
@@ -188,9 +188,9 @@ static void uv__udp_recvmsg(uv_udp_t* handle) {
 
     if (nread == -1) {
       if (errno == EAGAIN || errno == EWOULDBLOCK)
-        handle->recv_cb(handle, 0, &buf, NULL, 0);
+        handle->recv_cb(handle, 0, &buf, NULL, 0, handle->recv_cb_arg);
       else
-        handle->recv_cb(handle, UV__ERR(errno), &buf, NULL, 0);
+        handle->recv_cb(handle, UV__ERR(errno), &buf, NULL, 0, handle->recv_cb_arg);
     }
     else {
       const struct sockaddr *addr;
@@ -203,7 +203,7 @@ static void uv__udp_recvmsg(uv_udp_t* handle) {
       if (h.msg_flags & MSG_TRUNC)
         flags |= UV_UDP_PARTIAL;
 
-      handle->recv_cb(handle, nread, &buf, addr, flags);
+      handle->recv_cb(handle, nread, &buf, addr, flags, handle->recv_cb_arg);
     }
   }
   /* recv_cb callback may decide to pause or close the handle */
