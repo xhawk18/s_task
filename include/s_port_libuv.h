@@ -18,10 +18,10 @@ typedef int64_t my_clock_diff_t;
 #define MY_CLOCKS_PER_SEC 1000
 
 //3. Implement the initilization function for clock. Leave it blank if not required.
-void my_clock_init();
+void my_clock_init(void);
 
 //4. Implement the function of getting current clock ticks.
-my_clock_t my_clock();
+my_clock_t my_clock(void);
 
 //5. Implement the idle delay function.
 void my_on_idle(uint64_t max_idle_ms);

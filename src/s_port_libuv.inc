@@ -18,8 +18,7 @@ static void uv_on_timer(uv_timer_t* handle) {
     //uv_close((uv_handle_t*)handle, NULL);
 }
 
-static void my_on_idle(uint64_t max_idle_ms) {
-    uv_loop_t* loop = uv_default_loop();
+void my_on_idle(uint64_t max_idle_ms) {
     uv_timer_start(&g_timer_once, uv_on_timer, max_idle_ms, 0);
 }
 

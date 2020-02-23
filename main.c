@@ -9,11 +9,12 @@
 
 
 s_event_t g_event;
+bool g_closed = false;
 
 void sub_task(__async__, void *arg) {
     size_t n = (size_t)arg;
 
-    while (1) {
+    while (!g_closed) {
         s_event_wait_msec(__await__, &g_event, 300);
         //s_task_msleep(__await__, 500);
         PRINTF("task %d wait event OK\n", (int)n);
@@ -45,7 +46,7 @@ void main_task(__async__, void *arg) {
     s_task_create(stack0, sizeof(stack0), sub_task, (void *)1);
     s_task_create(stack1, sizeof(stack1), sub_task, (void *)2);
 
-    for (i = 0; i < 12; ++i) {
+    for (i = 0; i < 5; ++i) {
         PRINTF("task_main arg = %p, i = %d\n", arg, i);
         s_task_msleep(__await__, 500);
         if (i % 3 == 0) {
@@ -59,18 +60,21 @@ void main_task(__async__, void *arg) {
         PRINTF("loop in main_task\n");
         s_task_msleep(__await__, 1000);
     }
+    
+    g_closed = true;
 }
 
-int main(int argc, char *argv) {
-    __init_async__;
+int main(int argc, char *argv[]) {
 
     s_task_init_system();
     s_task_create(stack_main, sizeof(stack_main), main_task, (void *)(size_t)argc);
     
-    //while(1){
-    //    s_task_yield(__await__);
-    //}
+#ifdef USE_LIBUV
+    uv_run(uv_default_loop(), UV_RUN_DEFAULT);
+#else
+    __init_async__;
     s_task_join(__await__, stack_main);
+#endif
     PRINTF("all task is over\n");
     return 0;
 }

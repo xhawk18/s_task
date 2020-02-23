@@ -131,7 +131,7 @@ void dump_timers(int line) {
 #endif
 }
 
-static void s_timer_run() {
+static void s_timer_run(void) {
     my_clock_t current_ticks = my_clock();
 
     RBTreeIterator itr;
@@ -162,7 +162,7 @@ static void s_timer_run() {
 
 }
 
-static uint64_t s_timer_wait_recent() {
+static uint64_t s_timer_wait_recent(void) {
     my_clock_t current_ticks = my_clock();
 
     RBTreeIterator itr;
