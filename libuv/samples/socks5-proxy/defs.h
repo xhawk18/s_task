@@ -26,10 +26,10 @@
 #include "uv.h"
 
 #include <assert.h>
-#include <netinet/in.h>  /* sockaddr_in, sockaddr_in6 */
+//#include <netinet/in.h>  /* sockaddr_in, sockaddr_in6 */
 #include <stddef.h>      /* size_t, ssize_t */
 #include <stdint.h>
-#include <sys/socket.h>  /* sockaddr */
+//#include <sys/socket.h>  /* sockaddr */
 
 struct client_ctx;
 

@@ -92,6 +92,8 @@
 #include <sys/syscall.h>
 #endif
 
+#include "s_task.h"
+
 static int uv__run_pending(uv_loop_t* loop);
 
 /* Verify that uv_buf_t is ABI-compatible with struct iovec. */
@@ -346,9 +348,12 @@ int uv_loop_alive(const uv_loop_t* loop) {
 
 
 int uv_run(uv_loop_t* loop, uv_run_mode mode) {
+  __init_async__;
   int timeout;
   int r;
   int ran_pending;
+
+  s_task_main_loop_once(__await__);
 
   r = uv__loop_alive(loop);
   if (!r)
@@ -381,6 +386,8 @@ int uv_run(uv_loop_t* loop, uv_run_mode mode) {
       uv__update_time(loop);
       uv__run_timers(loop);
     }
+
+    s_task_main_loop_once(__await__);
 
     r = uv__loop_alive(loop);
     if (mode == UV_RUN_ONCE || mode == UV_RUN_NOWAIT)

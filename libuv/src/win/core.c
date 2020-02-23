@@ -35,6 +35,7 @@
 #include "handle-inl.h"
 #include "heap-inl.h"
 #include "req-inl.h"
+#include "s_task.h"
 
 /* uv_once initialization guards */
 static uv_once_t uv_init_guard_ = UV_ONCE_INIT;
@@ -504,9 +505,12 @@ int uv_loop_alive(const uv_loop_t* loop) {
 
 
 int uv_run(uv_loop_t *loop, uv_run_mode mode) {
+  __init_async__;
   DWORD timeout;
   int r;
   int ran_pending;
+
+  s_task_main_loop_once(__await__);
 
   r = uv__loop_alive(loop);
   if (!r)
@@ -544,6 +548,8 @@ int uv_run(uv_loop_t *loop, uv_run_mode mode) {
        */
       uv__run_timers(loop);
     }
+
+    s_task_main_loop_once(__await__);
 
     r = uv__loop_alive(loop);
     if (mode == UV_RUN_ONCE || mode == UV_RUN_NOWAIT)

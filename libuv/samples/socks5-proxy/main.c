@@ -37,7 +37,7 @@ static void usage(void);
 
 static const char *progname = __FILE__;  /* Reset in main(). */
 
-int main(int argc, char **argv) {
+int main1(int argc, char **argv) {
   server_config config;
   int err;
 
