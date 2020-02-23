@@ -170,7 +170,7 @@ static void uv__udp_recvmsg(uv_udp_t* handle) {
 
   do {
     buf = uv_buf_init(NULL, 0);
-    handle->alloc_cb((uv_handle_t*) handle, 64 * 1024, &buf);
+    handle->alloc_cb((uv_handle_t*) handle, 64 * 1024, &buf, handle->recv_cb_arg);
     if (buf.base == NULL || buf.len == 0) {
       handle->recv_cb(handle, UV_ENOBUFS, &buf, NULL, 0);
       return;
@@ -963,7 +963,8 @@ int uv_udp_getsockname(const uv_udp_t* handle,
 
 int uv__udp_recv_start(uv_udp_t* handle,
                        uv_alloc_cb alloc_cb,
-                       uv_udp_recv_cb recv_cb) {
+                       uv_udp_recv_cb recv_cb,
+                       void *recv_cb_arg) {
   int err;
 
   if (alloc_cb == NULL || recv_cb == NULL)
@@ -978,6 +979,7 @@ int uv__udp_recv_start(uv_udp_t* handle,
 
   handle->alloc_cb = alloc_cb;
   handle->recv_cb = recv_cb;
+  handle->recv_cb_arg = recv_cb_arg;
 
   uv__io_start(handle->loop, &handle->io_watcher, POLLIN);
   uv__handle_start(handle);

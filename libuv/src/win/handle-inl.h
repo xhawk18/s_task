@@ -81,7 +81,8 @@
     (handle)->flags |= UV_HANDLE_CLOSED;                                \
                                                                         \
     if ((handle)->close_cb)                                             \
-      (handle)->close_cb((uv_handle_t*) (handle));                      \
+      (handle)->close_cb((uv_handle_t*) (handle),                       \
+                         ((uv_handle_t*) (handle))->close_cb_arg);      \
   } while (0)
 
 

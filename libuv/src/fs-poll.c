@@ -51,7 +51,7 @@ struct poll_ctx {
 static int statbuf_eq(const uv_stat_t* a, const uv_stat_t* b);
 static void poll_cb(uv_fs_t* req);
 static void timer_cb(uv_timer_t* timer);
-static void timer_close_cb(uv_handle_t* handle);
+static void timer_close_cb(uv_handle_t* handle, void* arg);
 
 static uv_stat_t zero_statbuf;
 
@@ -127,7 +127,7 @@ int uv_fs_poll_stop(uv_fs_poll_t* handle) {
    * in progress and poll_cb will take care of the cleanup.
    */
   if (uv_is_active((uv_handle_t*)&ctx->timer_handle))
-    uv_close((uv_handle_t*)&ctx->timer_handle, timer_close_cb);
+    uv_close((uv_handle_t*)&ctx->timer_handle, timer_close_cb, NULL);
 
   uv__handle_stop(handle);
 
@@ -218,7 +218,7 @@ out:
   uv_fs_req_cleanup(req);
 
   if (!uv_is_active((uv_handle_t*)handle) || uv__is_closing(handle)) {
-    uv_close((uv_handle_t*)&ctx->timer_handle, timer_close_cb);
+    uv_close((uv_handle_t*)&ctx->timer_handle, timer_close_cb, NULL);
     return;
   }
 
@@ -231,7 +231,7 @@ out:
 }
 
 
-static void timer_close_cb(uv_handle_t* timer) {
+static void timer_close_cb(uv_handle_t* timer, void* arg) {
   struct poll_ctx* ctx;
   struct poll_ctx* it;
   struct poll_ctx* last;

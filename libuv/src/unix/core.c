@@ -111,11 +111,12 @@ uint64_t uv_hrtime(void) {
 }
 
 
-void uv_close(uv_handle_t* handle, uv_close_cb close_cb) {
+void uv_close(uv_handle_t* handle, uv_close_cb close_cb, void *close_cb_arg) {
   assert(!uv__is_closing(handle));
 
   handle->flags |= UV_HANDLE_CLOSING;
   handle->close_cb = close_cb;
+  handle->close_cb_arg = close_cb_arg;
 
   switch (handle->type) {
   case UV_NAMED_PIPE:
@@ -285,7 +286,7 @@ static void uv__finish_close(uv_handle_t* handle) {
   QUEUE_REMOVE(&handle->handle_queue);
 
   if (handle->close_cb) {
-    handle->close_cb(handle);
+    handle->close_cb(handle, handle->close_cb_arg);
   }
 }
 
@@ -365,6 +366,8 @@ int uv_run(uv_loop_t* loop, uv_run_mode mode) {
     ran_pending = uv__run_pending(loop);
     uv__run_idle(loop);
     uv__run_prepare(loop);
+
+    s_task_main_loop_once(__await__);
 
     timeout = 0;
     if ((mode == UV_RUN_ONCE && !ran_pending) || mode == UV_RUN_DEFAULT)

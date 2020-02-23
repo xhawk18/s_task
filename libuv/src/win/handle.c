@@ -64,7 +64,7 @@ int uv_is_active(const uv_handle_t* handle) {
 }
 
 
-void uv_close(uv_handle_t* handle, uv_close_cb cb) {
+void uv_close(uv_handle_t* handle, uv_close_cb cb, void *cb_arg) {
   uv_loop_t* loop = handle->loop;
 
   if (handle->flags & UV_HANDLE_CLOSING) {
@@ -73,6 +73,7 @@ void uv_close(uv_handle_t* handle, uv_close_cb cb) {
   }
 
   handle->close_cb = cb;
+  handle->close_cb_arg = cb_arg;
 
   /* Handle-specific close actions */
   switch (handle->type) {

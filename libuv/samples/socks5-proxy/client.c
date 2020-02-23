@@ -105,12 +105,13 @@ static void conn_connect_done(uv_connect_t *req, int status);
 static void conn_read(conn *c);
 static void conn_read_done(uv_stream_t *handle,
                            ssize_t nread,
-                           const uv_buf_t *buf);
-static void conn_alloc(uv_handle_t *handle, size_t size, uv_buf_t *buf);
+                           const uv_buf_t *buf,
+                           void *arg);
+static void conn_alloc(uv_handle_t *handle, size_t size, uv_buf_t *buf, void* arg);
 static void conn_write(conn *c, const void *data, unsigned int len);
 static void conn_write_done(uv_write_t *req, int status);
 static void conn_close(conn *c);
-static void conn_close_done(uv_handle_t *handle);
+static void conn_close_done(uv_handle_t *handle, void* arg);
 
 /* |incoming| has been initialized by server.c when this is called. */
 void client_finish_init(server_ctx *sx, client_ctx *cx) {
@@ -654,14 +655,15 @@ static void conn_connect_done(uv_connect_t *req, int status) {
 
 static void conn_read(conn *c) {
   ASSERT(c->rdstate == c_stop);
-  CHECK(0 == uv_read_start(&c->handle.stream, conn_alloc, conn_read_done));
+  CHECK(0 == uv_read_start(&c->handle.stream, conn_alloc, conn_read_done, NULL));
   c->rdstate = c_busy;
   conn_timer_reset(c);
 }
 
 static void conn_read_done(uv_stream_t *handle,
                            ssize_t nread,
-                           const uv_buf_t *buf) {
+                           const uv_buf_t *buf,
+                           void *arg) {
   conn *c;
 
   c = CONTAINER_OF(handle, conn, handle);
@@ -674,7 +676,7 @@ static void conn_read_done(uv_stream_t *handle,
   do_next(c->client);
 }
 
-static void conn_alloc(uv_handle_t *handle, size_t size, uv_buf_t *buf) {
+static void conn_alloc(uv_handle_t *handle, size_t size, uv_buf_t *buf, void *arg) {
   conn *c;
 
   c = CONTAINER_OF(handle, conn, handle);
@@ -724,11 +726,11 @@ static void conn_close(conn *c) {
   c->wrstate = c_dead;
   c->timer_handle.data = c;
   c->handle.handle.data = c;
-  uv_close(&c->handle.handle, conn_close_done);
-  uv_close((uv_handle_t *) &c->timer_handle, conn_close_done);
+  uv_close(&c->handle.handle, conn_close_done, NULL);
+  uv_close((uv_handle_t *) &c->timer_handle, conn_close_done, NULL);
 }
 
-static void conn_close_done(uv_handle_t *handle) {
+static void conn_close_done(uv_handle_t *handle, void *arg) {
   conn *c;
 
   c = handle->data;

@@ -423,11 +423,12 @@ int uv_udp_try_send(uv_udp_t* handle,
 
 int uv_udp_recv_start(uv_udp_t* handle,
                       uv_alloc_cb alloc_cb,
-                      uv_udp_recv_cb recv_cb) {
+                      uv_udp_recv_cb recv_cb,
+                      void *recv_cb_arg) {
   if (handle->type != UV_UDP || alloc_cb == NULL || recv_cb == NULL)
     return UV_EINVAL;
   else
-    return uv__udp_recv_start(handle, alloc_cb, recv_cb);
+    return uv__udp_recv_start(handle, alloc_cb, recv_cb, recv_cb_arg);
 }
 
 

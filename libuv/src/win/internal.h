@@ -75,7 +75,7 @@ typedef struct {
 int uv_tcp_listen(uv_tcp_t* handle, int backlog, uv_connection_cb cb);
 int uv_tcp_accept(uv_tcp_t* server, uv_tcp_t* client);
 int uv_tcp_read_start(uv_tcp_t* handle, uv_alloc_cb alloc_cb,
-    uv_read_cb read_cb);
+    uv_read_cb read_cb, void *read_cb_arg);
 int uv_tcp_write(uv_loop_t* loop, uv_write_t* req, uv_tcp_t* handle,
     const uv_buf_t bufs[], unsigned int nbufs, uv_write_cb cb);
 int uv__tcp_try_write(uv_tcp_t* handle, const uv_buf_t bufs[],
@@ -121,7 +121,7 @@ int uv_stdio_pipe_server(uv_loop_t* loop, uv_pipe_t* handle, DWORD access,
 int uv_pipe_listen(uv_pipe_t* handle, int backlog, uv_connection_cb cb);
 int uv_pipe_accept(uv_pipe_t* server, uv_stream_t* client);
 int uv_pipe_read_start(uv_pipe_t* handle, uv_alloc_cb alloc_cb,
-    uv_read_cb read_cb);
+    uv_read_cb read_cb, void* read_cb_arg);
 void uv__pipe_read_stop(uv_pipe_t* handle);
 int uv__pipe_write(uv_loop_t* loop,
                    uv_write_t* req,
@@ -153,7 +153,7 @@ void uv_pipe_endgame(uv_loop_t* loop, uv_pipe_t* handle);
 void uv_console_init(void);
 
 int uv_tty_read_start(uv_tty_t* handle, uv_alloc_cb alloc_cb,
-    uv_read_cb read_cb);
+    uv_read_cb read_cb, void* read_cb_arg);
 int uv_tty_read_stop(uv_tty_t* handle);
 int uv_tty_write(uv_loop_t* loop, uv_write_t* req, uv_tty_t* handle,
     const uv_buf_t bufs[], unsigned int nbufs, uv_write_cb cb);

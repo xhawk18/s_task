@@ -95,7 +95,7 @@ static void eof_timer_start(uv_pipe_t* pipe);
 static void eof_timer_stop(uv_pipe_t* pipe);
 static void eof_timer_cb(uv_timer_t* timer);
 static void eof_timer_destroy(uv_pipe_t* pipe);
-static void eof_timer_close_cb(uv_handle_t* handle);
+static void eof_timer_close_cb(uv_handle_t* handle, void* arg);
 
 
 static void uv_unique_pipe_name(char* ptr, char* name, size_t size) {
@@ -1180,13 +1180,15 @@ error:
 
 int uv_pipe_read_start(uv_pipe_t* handle,
                        uv_alloc_cb alloc_cb,
-                       uv_read_cb read_cb) {
+                       uv_read_cb read_cb,
+                       void *read_cb_arg) {
   uv_loop_t* loop = handle->loop;
 
   handle->flags |= UV_HANDLE_READING;
   INCREASE_ACTIVE_COUNT(loop, handle);
   handle->read_cb = read_cb;
   handle->alloc_cb = alloc_cb;
+  handle->read_cb_arg = read_cb_arg;
 
   /* If reading was stopped and then started again, there could still be a read
    * request pending. */
@@ -1595,7 +1597,7 @@ static void uv_pipe_read_eof(uv_loop_t* loop, uv_pipe_t* handle,
   handle->flags &= ~UV_HANDLE_READABLE;
   uv_read_stop((uv_stream_t*) handle);
 
-  handle->read_cb((uv_stream_t*) handle, UV_EOF, &buf);
+  handle->read_cb((uv_stream_t*) handle, UV_EOF, &buf, handle->read_cb_arg);
 }
 
 
@@ -1607,7 +1609,7 @@ static void uv_pipe_read_error(uv_loop_t* loop, uv_pipe_t* handle, int error,
 
   uv_read_stop((uv_stream_t*) handle);
 
-  handle->read_cb((uv_stream_t*)handle, uv_translate_sys_error(error), &buf);
+  handle->read_cb((uv_stream_t*)handle, uv_translate_sys_error(error), &buf, handle->read_cb_arg);
 }
 
 
@@ -1672,9 +1674,9 @@ static DWORD uv__pipe_read_data(uv_loop_t* loop,
 
   /* Ask the user for a buffer to read data into. */
   buf = uv_buf_init(NULL, 0);
-  handle->alloc_cb((uv_handle_t*) handle, suggested_bytes, &buf);
+  handle->alloc_cb((uv_handle_t*) handle, suggested_bytes, &buf, handle->read_cb_arg);
   if (buf.base == NULL || buf.len == 0) {
-    handle->read_cb((uv_stream_t*) handle, UV_ENOBUFS, &buf);
+    handle->read_cb((uv_stream_t*) handle, UV_ENOBUFS, &buf, handle->read_cb_arg);
     return 0; /* Break out of read loop. */
   }
 
@@ -1692,7 +1694,7 @@ static DWORD uv__pipe_read_data(uv_loop_t* loop,
   }
 
   /* Call the read callback. */
-  handle->read_cb((uv_stream_t*) handle, bytes_read, &buf);
+  handle->read_cb((uv_stream_t*) handle, bytes_read, &buf, handle->read_cb_arg);
 
   return bytes_read;
 }
@@ -2059,13 +2061,13 @@ static void eof_timer_destroy(uv_pipe_t* pipe) {
   assert(pipe->flags & UV_HANDLE_CONNECTION);
 
   if (pipe->pipe.conn.eof_timer) {
-    uv_close((uv_handle_t*) pipe->pipe.conn.eof_timer, eof_timer_close_cb);
+    uv_close((uv_handle_t*) pipe->pipe.conn.eof_timer, eof_timer_close_cb, NULL);
     pipe->pipe.conn.eof_timer = NULL;
   }
 }
 
 
-static void eof_timer_close_cb(uv_handle_t* handle) {
+static void eof_timer_close_cb(uv_handle_t* handle, void *arg) {
   assert(handle->type == UV_TIMER);
   uv__free(handle);
 }

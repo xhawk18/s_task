@@ -461,6 +461,7 @@ typedef struct {
   int recv_from_len;                                                          \
   uv_udp_recv_cb recv_cb;                                                     \
   uv_alloc_cb alloc_cb;                                                       \
+  void *recv_cb_arg;                                                          \
   LPFN_WSARECV func_wsarecv;                                                  \
   LPFN_WSARECVFROM func_wsarecvfrom;
 

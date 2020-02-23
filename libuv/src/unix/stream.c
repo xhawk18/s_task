@@ -1004,7 +1004,7 @@ static void uv__stream_eof(uv_stream_t* stream, const uv_buf_t* buf) {
   if (!uv__io_active(&stream->io_watcher, POLLOUT))
     uv__handle_stop(stream);
   uv__stream_osx_interrupt_select(stream);
-  stream->read_cb(stream, UV_EOF, buf);
+  stream->read_cb(stream, UV_EOF, buf, stream->read_cb_arg);
   stream->flags &= ~UV_HANDLE_READING;
 }
 
@@ -1135,10 +1135,10 @@ static void uv__read(uv_stream_t* stream) {
     assert(stream->alloc_cb != NULL);
 
     buf = uv_buf_init(NULL, 0);
-    stream->alloc_cb((uv_handle_t*)stream, 64 * 1024, &buf);
+    stream->alloc_cb((uv_handle_t*)stream, 64 * 1024, &buf, stream->read_cb_arg);
     if (buf.base == NULL || buf.len == 0) {
       /* User indicates it can't or won't handle the read. */
-      stream->read_cb(stream, UV_ENOBUFS, &buf);
+      stream->read_cb(stream, UV_ENOBUFS, &buf, stream->read_cb_arg);
       return;
     }
 
@@ -1175,7 +1175,7 @@ static void uv__read(uv_stream_t* stream) {
           uv__io_start(stream->loop, &stream->io_watcher, POLLIN);
           uv__stream_osx_interrupt_select(stream);
         }
-        stream->read_cb(stream, 0, &buf);
+        stream->read_cb(stream, 0, &buf, stream->read_cb_arg);
 #if defined(__CYGWIN__) || defined(__MSYS__)
       } else if (errno == ECONNRESET && stream->type == UV_NAMED_PIPE) {
         uv__stream_eof(stream, &buf);
@@ -1183,7 +1183,7 @@ static void uv__read(uv_stream_t* stream) {
 #endif
       } else {
         /* Error. User should call uv_close(). */
-        stream->read_cb(stream, UV__ERR(errno), &buf);
+        stream->read_cb(stream, UV__ERR(errno), &buf, stream->read_cb_arg);
         if (stream->flags & UV_HANDLE_READING) {
           stream->flags &= ~UV_HANDLE_READING;
           uv__io_stop(stream->loop, &stream->io_watcher, POLLIN);
@@ -1203,7 +1203,7 @@ static void uv__read(uv_stream_t* stream) {
       if (is_ipc) {
         err = uv__stream_recv_cmsg(stream, &msg);
         if (err != 0) {
-          stream->read_cb(stream, err, &buf);
+          stream->read_cb(stream, err, &buf, stream->read_cb_arg);
           return;
         }
       }
@@ -1223,7 +1223,7 @@ static void uv__read(uv_stream_t* stream) {
           nread = uv__recvmsg(uv__stream_fd(stream), &msg, 0);
           err = uv__stream_recv_cmsg(stream, &msg);
           if (err != 0) {
-            stream->read_cb(stream, err, &buf);
+            stream->read_cb(stream, err, &buf, stream->read_cb_arg);
             msg.msg_iov = old;
             return;
           }
@@ -1231,7 +1231,7 @@ static void uv__read(uv_stream_t* stream) {
         msg.msg_iov = old;
       }
 #endif
-      stream->read_cb(stream, nread, &buf);
+      stream->read_cb(stream, nread, &buf, stream->read_cb_arg);
 
       /* Return if we didn't fill the buffer, there is no more data to read. */
       if (nread < buflen) {
@@ -1549,7 +1549,8 @@ int uv_try_write(uv_stream_t* stream,
 
 int uv_read_start(uv_stream_t* stream,
                   uv_alloc_cb alloc_cb,
-                  uv_read_cb read_cb) {
+                  uv_read_cb read_cb,
+                  void *read_cb_arg) {
   assert(stream->type == UV_TCP || stream->type == UV_NAMED_PIPE ||
       stream->type == UV_TTY);
 
@@ -1573,6 +1574,7 @@ int uv_read_start(uv_stream_t* stream,
 
   stream->read_cb = read_cb;
   stream->alloc_cb = alloc_cb;
+  stream->read_cb_arg = read_cb_arg;
 
   uv__io_start(stream->loop, &stream->io_watcher, POLLIN);
   uv__handle_start(stream);

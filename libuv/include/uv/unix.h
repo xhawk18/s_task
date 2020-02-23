@@ -297,6 +297,7 @@ typedef struct {
 #define UV_UDP_PRIVATE_FIELDS                                                 \
   uv_alloc_cb alloc_cb;                                                       \
   uv_udp_recv_cb recv_cb;                                                     \
+  void* recv_cb_arg;                                                          \
   uv__io_t io_watcher;                                                        \
   void* write_queue[2];                                                       \
   void* write_completed_queue[2];                                             \

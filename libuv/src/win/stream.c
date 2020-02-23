@@ -66,7 +66,8 @@ int uv_accept(uv_stream_t* server, uv_stream_t* client) {
 
 
 int uv_read_start(uv_stream_t* handle, uv_alloc_cb alloc_cb,
-    uv_read_cb read_cb) {
+    uv_read_cb read_cb,
+    void *read_cb_arg) {
   int err;
 
   if (handle->flags & UV_HANDLE_READING) {
@@ -80,13 +81,13 @@ int uv_read_start(uv_stream_t* handle, uv_alloc_cb alloc_cb,
   err = ERROR_INVALID_PARAMETER;
   switch (handle->type) {
     case UV_TCP:
-      err = uv_tcp_read_start((uv_tcp_t*)handle, alloc_cb, read_cb);
+      err = uv_tcp_read_start((uv_tcp_t*)handle, alloc_cb, read_cb, read_cb_arg);
       break;
     case UV_NAMED_PIPE:
-      err = uv_pipe_read_start((uv_pipe_t*)handle, alloc_cb, read_cb);
+      err = uv_pipe_read_start((uv_pipe_t*)handle, alloc_cb, read_cb, read_cb_arg);
       break;
     case UV_TTY:
-      err = uv_tty_read_start((uv_tty_t*) handle, alloc_cb, read_cb);
+      err = uv_tty_read_start((uv_tty_t*) handle, alloc_cb, read_cb, read_cb_arg);
       break;
     default:
       assert(0);

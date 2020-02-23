@@ -296,15 +296,17 @@ UV_EXTERN int uv_backend_timeout(const uv_loop_t*);
 
 typedef void (*uv_alloc_cb)(uv_handle_t* handle,
                             size_t suggested_size,
-                            uv_buf_t* buf);
+                            uv_buf_t* buf,
+                            void* arg);
 typedef void (*uv_read_cb)(uv_stream_t* stream,
                            ssize_t nread,
-                           const uv_buf_t* buf);
+                           const uv_buf_t* buf,
+                           void *arg);
 typedef void (*uv_write_cb)(uv_write_t* req, int status);
 typedef void (*uv_connect_cb)(uv_connect_t* req, int status);
 typedef void (*uv_shutdown_cb)(uv_shutdown_t* req, int status);
 typedef void (*uv_connection_cb)(uv_stream_t* server, int status);
-typedef void (*uv_close_cb)(uv_handle_t* handle);
+typedef void (*uv_close_cb)(uv_handle_t* handle, void *arg);
 typedef void (*uv_poll_cb)(uv_poll_t* handle, int status, int events);
 typedef void (*uv_timer_cb)(uv_timer_t* handle);
 typedef void (*uv_async_cb)(uv_async_t* handle);
@@ -417,6 +419,7 @@ struct uv_shutdown_s {
   uv_handle_type type;                                                        \
   /* private */                                                               \
   uv_close_cb close_cb;                                                       \
+  void *close_cb_arg;                                                         \
   void* handle_queue[2];                                                      \
   union {                                                                     \
     int fd;                                                                   \
@@ -450,7 +453,7 @@ UV_EXTERN void uv_walk(uv_loop_t* loop, uv_walk_cb walk_cb, void* arg);
 UV_EXTERN void uv_print_all_handles(uv_loop_t* loop, FILE* stream);
 UV_EXTERN void uv_print_active_handles(uv_loop_t* loop, FILE* stream);
 
-UV_EXTERN void uv_close(uv_handle_t* handle, uv_close_cb close_cb);
+UV_EXTERN void uv_close(uv_handle_t* handle, uv_close_cb close_cb, void *close_cb_arg);
 
 UV_EXTERN int uv_send_buffer_size(uv_handle_t* handle, int* value);
 UV_EXTERN int uv_recv_buffer_size(uv_handle_t* handle, int* value);
@@ -465,6 +468,7 @@ UV_EXTERN uv_buf_t uv_buf_init(char* base, unsigned int len);
   size_t write_queue_size;                                                    \
   uv_alloc_cb alloc_cb;                                                       \
   uv_read_cb read_cb;                                                         \
+  void *read_cb_arg;                                                          \
   /* private */                                                               \
   UV_STREAM_PRIVATE_FIELDS
 
@@ -487,7 +491,8 @@ UV_EXTERN int uv_accept(uv_stream_t* server, uv_stream_t* client);
 
 UV_EXTERN int uv_read_start(uv_stream_t*,
                             uv_alloc_cb alloc_cb,
-                            uv_read_cb read_cb);
+                            uv_read_cb read_cb,
+                            void *read_cb_arg);
 UV_EXTERN int uv_read_stop(uv_stream_t*);
 
 UV_EXTERN int uv_write(uv_write_t* req,
@@ -661,7 +666,8 @@ UV_EXTERN int uv_udp_try_send(uv_udp_t* handle,
                               const struct sockaddr* addr);
 UV_EXTERN int uv_udp_recv_start(uv_udp_t* handle,
                                 uv_alloc_cb alloc_cb,
-                                uv_udp_recv_cb recv_cb);
+                                uv_udp_recv_cb recv_cb,
+                                void* recv_cb_arg);
 UV_EXTERN int uv_udp_recv_stop(uv_udp_t* handle);
 UV_EXTERN size_t uv_udp_get_send_queue_size(const uv_udp_t* handle);
 UV_EXTERN size_t uv_udp_get_send_queue_count(const uv_udp_t* handle);

@@ -166,7 +166,8 @@ int uv__udp_try_send(uv_udp_t* handle,
                      unsigned int addrlen);
 
 int uv__udp_recv_start(uv_udp_t* handle, uv_alloc_cb alloccb,
-                       uv_udp_recv_cb recv_cb);
+                       uv_udp_recv_cb recv_cb,
+                       void *recv_cb_arg);
 
 int uv__udp_recv_stop(uv_udp_t* handle);
 
