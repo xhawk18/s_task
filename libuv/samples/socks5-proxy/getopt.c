@@ -55,10 +55,9 @@ char	*optarg;		/* argument associated with option */
  *	Parse argc/argv argument vector.
  */
 int
-getopt(nargc, nargv, ostr)
-	int nargc;
-	char * const nargv[];
-	const char *ostr;
+getopt(int nargc,
+	char * const nargv[],
+	const char *ostr)
 {
 	static char *place = EMSG;		/* option letter processing */
 	char *oli;				/* option letter list index */
@@ -95,7 +94,7 @@ getopt(nargc, nargv, ostr)
 			++optind;
 		if (opterr && *ostr != ':')
 			(void)fprintf(stderr,
-			    "%s: illegal option -- %c\n", _getprogname(),
+			    "%s: illegal option -- %c\n", nargv[0],
 			    optopt);
 		return (BADCH);
 	}
@@ -121,7 +120,7 @@ getopt(nargc, nargv, ostr)
 			if (opterr)
 				(void)fprintf(stderr,
 				    "%s: option requires an argument -- %c\n",
-				    _getprogname(), optopt);
+                    nargv[0], optopt);
 			return (BADCH);
 		}
 		place = EMSG;
