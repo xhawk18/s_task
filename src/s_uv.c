@@ -47,6 +47,7 @@ static void s_uv_read_start_read_cb(
     const uv_buf_t* buf,
     void* arg) {
     s_uv_read_start_arg_t* arg_ = (s_uv_read_start_arg_t*)arg;
+    uv_read_stop(stream);
     arg_->nread = nread;
     arg_->trigged = true;
     s_event_set(&arg_->event);
