@@ -5,6 +5,7 @@ enable_language(C ASM)
 
 message("CMAKE_SYSTEM_NAME = ${CMAKE_SYSTEM_NAME}")
 message("CMAKE_SYSTEM_PROCESSOR = ${CMAKE_SYSTEM_PROCESSOR}")
+message("CMAKE_C_COMPILER = ${CMAKE_C_COMPILER}")
 
 if(MSVC)
   list(APPEND uv_cflags /W4)
@@ -12,6 +13,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "AppleClang|Clang|GNU")
   list(APPEND uv_cflags -fvisibility=hidden --std=gnu89)
   list(APPEND uv_cflags -Wall -Wextra -Wstrict-prototypes)
   list(APPEND uv_cflags -Wno-unused-parameter)
+  list(APPEND uv_cflags -static)
 endif()
 
 set(uv_sources
@@ -151,28 +153,36 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
        ../libuv/src/unix/linux-syscalls.c
        ../libuv/src/unix/procfs-exepath.c
        ../libuv/src/unix/sysinfo-loadavg.c)
-  if(CMAKE_C_COMPILER MATCHES "arm-linux-gnu")
-    list(APPEND uv_sources
-       s_task/asm/make_arm_aapcs_elf_gas.S
-       s_task/asm/jump_arm_aapcs_elf_gas.S)
-  elseif(CMAKE_C_COMPILER MATCHES "aarch64-linux-gnu")
-    list(APPEND uv_sources
-       s_task/asm/make_arm64_aapcs_elf_gas.S
-       s_task/asm/jump_arm64_aapcs_elf_gas.S)
-  else()
-    if( CMAKE_SYSTEM_PROCESSOR EQUAL 'x86_64' )
+  if(CMAKE_C_COMPILER MATCHES "x86_64-linux-gnu")
       list(APPEND uv_sources
         s_task/asm/make_x86_64_sysv_elf_gas.S
         s_task/asm/jump_x86_64_sysv_elf_gas.S)
-    elseif( CMAKE_SYSTEM_PROCESSOR EQUAL 'i386' )
+  elseif(CMAKE_C_COMPILER MATCHES "i686-linux-gnu")
       list(APPEND uv_sources
         s_task/asm/make_i386_sysv_elf_gas.S
         s_task/asm/jump_i386_sysv_elf_gas.S)
-    elseif( CMAKE_SYSTEM_PROCESSOR EQUAL 'aarch64' )
+  elseif(CMAKE_C_COMPILER MATCHES "aarch64-linux-gnu")
       list(APPEND uv_sources
         s_task/asm/make_arm64_aapcs_elf_gas.S
         s_task/asm/jump_arm64_aapcs_elf_gas.S)
-    elseif( CMAKE_SYSTEM_PROCESSOR EQUAL 'arm' )
+  elseif(CMAKE_C_COMPILER MATCHES "arm-linux-gnu")
+      list(APPEND uv_sources
+        s_task/asm/make_arm_aapcs_elf_gas.S
+        s_task/asm/jump_arm_aapcs_elf_gas.S)
+  else()
+    if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+      list(APPEND uv_sources
+        s_task/asm/make_x86_64_sysv_elf_gas.S
+        s_task/asm/jump_x86_64_sysv_elf_gas.S)
+    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "i686")
+      list(APPEND uv_sources
+        s_task/asm/make_i386_sysv_elf_gas.S
+        s_task/asm/jump_i386_sysv_elf_gas.S)
+    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
+      list(APPEND uv_sources
+        s_task/asm/make_arm64_aapcs_elf_gas.S
+        s_task/asm/jump_arm64_aapcs_elf_gas.S)
+    elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
       list(APPEND uv_sources
         s_task/asm/make_arm_aapcs_elf_gas.S
         s_task/asm/jump_arm_aapcs_elf_gas.S)
