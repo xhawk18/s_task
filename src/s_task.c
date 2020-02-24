@@ -81,6 +81,7 @@ typedef struct {
 } s_jump_t;
 
 typedef struct {
+    s_task_t    main_task;
     s_list_t    active_tasks;
     s_task_t   *current_task;
     RBTree      timers;
@@ -104,7 +105,7 @@ static THREAD_LOCAL s_task_globals_t g_globals;
 
 #if defined USE_LIBUV
 static uv_loop_t* s_task_uv_loop() {
-    return (uv_loop_t *)g_globals.uv_loop;
+    return g_globals.uv_loop;
 }
 static uv_timer_t* s_task_uv_timer() {
     return &g_globals.uv_timer;
@@ -372,8 +373,9 @@ void s_task_init_system(uv_loop_t* uv_loop)
 void s_task_init_system()
 #endif
 {
-    static s_task_t main_task;
-
+#if defined USE_LIBUV
+    g_globals.uv_loop = uv_loop;
+#endif
     s_list_init(&g_globals.active_tasks);
     rbt_create(&g_globals.timers,
         s_timer_comparator,
@@ -381,14 +383,11 @@ void s_task_init_system()
     );
     my_clock_init();
 
-    s_list_init(&main_task.node);
-    s_event_init(&main_task.join_event);
-    main_task.stack_size = 0;
-    main_task.closed = false;
-    g_globals.current_task = &main_task;
-#if defined USE_LIBUV
-    g_globals.uv_loop = uv_loop;
-#endif
+    s_list_init(&g_globals.main_task.node);
+    s_event_init(&g_globals.main_task.join_event);
+    g_globals.main_task.stack_size = 0;
+    g_globals.main_task.closed = false;
+    g_globals.current_task = &g_globals.main_task;
 }
 
 void s_task_create(void *stack, size_t stack_size, s_task_fn_t task_entry, void *task_arg) {
