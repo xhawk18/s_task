@@ -58,7 +58,11 @@ typedef struct {
 
 
 /* Initialize the task system. */
+#if defined USE_LIBUV
+void s_task_init_system(uv_loop_t* uv_loop);
+#else
 void s_task_init_system(void);
+#endif
 
 /* Create a new task */
 void s_task_create(void *stack, size_t stack_size, s_task_fn_t entry, void *arg);

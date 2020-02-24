@@ -80,10 +80,36 @@ typedef struct {
     s_task_t *to;
 } s_jump_t;
 
+typedef struct {
+    s_list_t    active_tasks;
+    s_task_t   *current_task;
+    RBTree      timers;
+#if defined USE_LIBUV
+    uv_loop_t  *uv_loop;
+    uv_timer_t  uv_timer;
+#endif
+} s_task_globals_t;
 
-static s_list_t  g_active_tasks;
-static s_task_t *g_current_task = NULL;
-static RBTree    g_timers;
+#if defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L
+#   define THREAD_LOCAL _Thread_local
+#elif defined _MSC_VER
+#   define THREAD_LOCAL __declspec(thread)
+#elif defined __GNUC__ || defined __clang__
+#   define THREAD_LOCAL __thread
+#else
+#   define THREAD_LOCAL
+#endif
+static THREAD_LOCAL s_task_globals_t g_globals;
+
+
+#if defined USE_LIBUV
+static uv_loop_t* s_task_uv_loop() {
+    return (uv_loop_t *)g_globals.uv_loop;
+}
+static uv_timer_t* s_task_uv_timer() {
+    return &g_globals.uv_timer;
+}
+#endif
 
 /*******************************************************************/
 /* timer                                                           */
@@ -115,7 +141,7 @@ void dump_timers(int line) {
     RBTNode* node_next;
     my_clock_t current_ticks = my_clock();
     printf("=========================== %d\n", line);
-    rbt_begin_iterate(&g_timers, LeftRightWalk, &itr);
+    rbt_begin_iterate(&g_globals.timers, LeftRightWalk, &itr);
     node_next = rbt_iterate(&itr);
     while ((node = node_next) != NULL) {
         s_timer_t* timer = GET_PARENT_ADDR(node, s_timer_t, rbt_node);
@@ -124,7 +150,7 @@ void dump_timers(int line) {
     }
 
     s_list_t* list;
-    for (list = &g_active_tasks.next; list != &g_active_tasks; list = list->next) {
+    for (list = &g_globals.active_tasks.next; list != &g_globals.active_tasks; list = list->next) {
         s_task_t *task = GET_PARENT_ADDR(list, s_task_t, node);
         printf("task: %p\n", task);
     }
@@ -140,7 +166,7 @@ static void s_timer_run(void) {
 	
     dump_timers(__LINE__);
 
-    rbt_begin_iterate(&g_timers, LeftRightWalk, &itr);
+    rbt_begin_iterate(&g_globals.timers, LeftRightWalk, &itr);
     node_next = rbt_iterate(&itr);
     while ((node = node_next) != NULL) {
 
@@ -152,10 +178,10 @@ static void s_timer_run(void) {
         node_next = rbt_iterate(&itr);
         
         s_list_detach(&timer->task->node);
-        s_list_attach(&g_active_tasks, &timer->task->node);
+        s_list_attach(&g_globals.active_tasks, &timer->task->node);
 
         timer->task = NULL;
-        rbt_delete(&g_timers, node);
+        rbt_delete(&g_globals.timers, node);
     }
 
     dump_timers(__LINE__);
@@ -167,7 +193,7 @@ static uint64_t s_timer_wait_recent(void) {
 
     RBTreeIterator itr;
     RBTNode* node;
-    rbt_begin_iterate(&g_timers, LeftRightWalk, &itr);
+    rbt_begin_iterate(&g_globals.timers, LeftRightWalk, &itr);
 
     if ((node = rbt_iterate(&itr)) != NULL) {
         s_timer_t* timer = GET_PARENT_ADDR(node, s_timer_t, rbt_node);
@@ -191,26 +217,26 @@ void s_task_sleep_ticks(__async__, my_clock_t ticks) {
     
     current_ticks = my_clock();
     
-    timer.task = g_current_task;
+    timer.task = g_globals.current_task;
     timer.wakeup_ticks = current_ticks + ticks;
 
     dump_timers(__LINE__);
 
-    if (!rbt_insert(&g_timers, &timer.rbt_node)) {
+    if (!rbt_insert(&g_globals.timers, &timer.rbt_node)) {
         fprintf(stderr, "timer insert failed!\n");
         return;
     }
 
     dump_timers(__LINE__);
 
-    s_list_detach(&g_current_task->node);
+    s_list_detach(&g_globals.current_task->node);
     s_task_next(__await__);
 
     dump_timers(__LINE__);
 
     if (timer.task != NULL) {
         timer.task = NULL;
-        rbt_delete(&g_timers, &timer.rbt_node);
+        rbt_delete(&g_globals.timers, &timer.rbt_node);
     }
 }
 
@@ -259,27 +285,27 @@ static void s_task_call_next(__async__) {
     s_task_t* old_task;
 
     //Check active tasks
-    if (s_list_is_empty(&g_active_tasks)) {
+    if (s_list_is_empty(&g_globals.active_tasks)) {
         fprintf(stderr, "error: must has one task to run\n");
         return;
     }
 
-    old_task = g_current_task;
-    next = s_list_get_next(&g_active_tasks);
+    old_task = g_globals.current_task;
+    next = s_list_get_next(&g_globals.active_tasks);
     
-    //printf("next = %p %p\n", g_current_task, next);
+    //printf("next = %p %p\n", g_globals.current_task, next);
 
-    g_current_task = GET_PARENT_ADDR(next, s_task_t, node);
+    g_globals.current_task = GET_PARENT_ADDR(next, s_task_t, node);
     s_list_detach(next);
 
-    if (old_task != g_current_task) {
+    if (old_task != g_globals.current_task) {
 #if defined   USE_SWAP_CONTEXT
-        swapcontext(&old_task->uc, &g_current_task->uc);
+        swapcontext(&old_task->uc, &g_globals.current_task->uc);
 #elif defined USE_JUMP_FCONTEXT
         s_jump_t jump;
         jump.from = old_task;
-        jump.to = g_current_task;
-        transfer_t t = jump_fcontext(g_current_task->fc, (void*)&jump);
+        jump.to = g_globals.current_task;
+        transfer_t t = jump_fcontext(g_globals.current_task->fc, (void*)&jump);
         s_jump_t* ret = (s_jump_t*)t.data;
         ret->from->fc = t.fctx;
 #endif
@@ -294,15 +320,15 @@ static void s_task_next(__async__) {
 
 void s_task_main_loop_once(__async__) {
     s_timer_run();
-    while (!s_list_is_empty(&g_active_tasks)) {
+    while (!s_list_is_empty(&g_globals.active_tasks)) {
         //Put current task to the waiting list
-        s_list_attach(&g_active_tasks, &g_current_task->node);
+        s_list_attach(&g_globals.active_tasks, &g_globals.current_task->node);
         s_task_call_next(__await__);
         s_timer_run();
     }
 
     //Check timers
-    if (!rbt_is_empty(&g_timers)) {
+    if (!rbt_is_empty(&g_globals.timers)) {
         //Wait for the recent timer
         uint64_t timeout = s_timer_wait_recent();
         my_on_idle(timeout);
@@ -314,13 +340,13 @@ void s_task_main_loop_once(__async__) {
 static void s_task_next(__async__) {
     while (true) {
         s_timer_run();
-        if (!s_list_is_empty(&g_active_tasks)) {
+        if (!s_list_is_empty(&g_globals.active_tasks)) {
             s_task_call_next(__await__);
             return;
         }
 
         //Check timers
-        if (!rbt_is_empty(&g_timers)) {
+        if (!rbt_is_empty(&g_globals.timers)) {
             //Wait for the recent timer
             uint64_t timeout = s_timer_wait_recent();
             my_on_idle(timeout);
@@ -336,15 +362,20 @@ static void s_task_next(__async__) {
 
 void s_task_yield(__async__) {
     //Put current task to the waiting list
-    s_list_attach(&g_active_tasks, &g_current_task->node);
+    s_list_attach(&g_globals.active_tasks, &g_globals.current_task->node);
     s_task_next(__await__);
 }
 
-void s_task_init_system() {
+#if defined USE_LIBUV
+void s_task_init_system(uv_loop_t* uv_loop)
+#else
+void s_task_init_system()
+#endif
+{
     static s_task_t main_task;
 
-    s_list_init(&g_active_tasks);
-    rbt_create(&g_timers,
+    s_list_init(&g_globals.active_tasks);
+    rbt_create(&g_globals.timers,
         s_timer_comparator,
         NULL
     );
@@ -354,7 +385,10 @@ void s_task_init_system() {
     s_event_init(&main_task.join_event);
     main_task.stack_size = 0;
     main_task.closed = false;
-    g_current_task = &main_task;
+    g_globals.current_task = &main_task;
+#if defined USE_LIBUV
+    g_globals.uv_loop = uv_loop;
+#endif
 }
 
 void s_task_create(void *stack, size_t stack_size, s_task_fn_t task_entry, void *task_arg) {
@@ -368,7 +402,7 @@ void s_task_create(void *stack, size_t stack_size, s_task_fn_t task_entry, void 
     task->task_arg   = task_arg;
     task->stack_size = stack_size;
     task->closed = false;
-    s_list_attach(&g_active_tasks, &task->node);
+    s_list_attach(&g_globals.active_tasks, &task->node);
 
     //填全1检查stack大小
     real_stack = (void *)&task[1];
@@ -411,7 +445,7 @@ static size_t s_task_get_stack_free_size_by_task(s_task_t *task) {
 }
 
 size_t s_task_get_stack_free_size() {
-    return s_task_get_stack_free_size_by_task(g_current_task);
+    return s_task_get_stack_free_size_by_task(g_globals.current_task);
 }
 
 void s_task_context_entry(struct tag_s_task_t *task) {
@@ -433,7 +467,7 @@ void s_task_fcontext_entry(transfer_t arg) {
 
     s_jump_t* jump = (s_jump_t*)arg.data;
     jump->from->fc = arg.fctx;
-    //printf("%p %p %p\n", jump, jump->to, g_current_task);
+    //printf("%p %p %p\n", jump, jump->to, g_globals.current_task);
 
     s_task_context_entry(jump->to);
 }
@@ -450,8 +484,8 @@ void s_mutex_init(s_mutex_t *mutex) {
 void s_mutex_lock(__async__, s_mutex_t *mutex) {
     if(mutex->locked) {
         //Put current task to the event's waiting list
-        s_list_detach(&g_current_task->node);   //no need, for safe
-        s_list_attach(&mutex->wait_list, &g_current_task->node);
+        s_list_detach(&g_globals.current_task->node);   //no need, for safe
+        s_list_attach(&mutex->wait_list, &g_globals.current_task->node);
         s_task_next(__await__);
     }
     else
@@ -465,7 +499,7 @@ void s_mutex_unlock(s_mutex_t *mutex) {
     else {
         s_list_t *next = s_list_get_next(&mutex->wait_list);
         s_list_detach(next);
-        s_list_attach(&g_active_tasks, next);
+        s_list_attach(&g_globals.active_tasks, next);
     }
 }
 
@@ -478,14 +512,14 @@ void s_event_init(s_event_t *event) {
 /* Wait event */
 void s_event_wait(__async__, s_event_t *event) {
     //Put current task to the event's waiting list
-    s_list_detach(&g_current_task->node);   //no need, for safe
-    s_list_attach(&event->wait_list, &g_current_task->node);
+    s_list_detach(&g_globals.current_task->node);   //no need, for safe
+    s_list_attach(&event->wait_list, &g_globals.current_task->node);
     s_task_next(__await__);
 }
 
 /* Set event */
 void s_event_set(s_event_t *event) {
-    s_list_attach(&g_active_tasks, &event->wait_list);
+    s_list_attach(&g_globals.active_tasks, &event->wait_list);
     s_list_detach(&event->wait_list);
 }
 
@@ -495,21 +529,21 @@ static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
     s_timer_t timer;
     
     current_ticks = my_clock();
-    timer.task = g_current_task;
+    timer.task = g_globals.current_task;
     timer.wakeup_ticks = current_ticks + ticks;
 
-    if (!rbt_insert(&g_timers, &timer.rbt_node)) {
+    if (!rbt_insert(&g_globals.timers, &timer.rbt_node)) {
         fprintf(stderr, "timer insert failed!\n");
         return;
     }
 
-    s_list_detach(&g_current_task->node);   //no need, for safe
-    s_list_attach(&event->wait_list, &g_current_task->node);
+    s_list_detach(&g_globals.current_task->node);   //no need, for safe
+    s_list_attach(&event->wait_list, &g_globals.current_task->node);
     s_task_next(__await__);
 
     if (timer.task != NULL) {
         timer.task = NULL;
-        rbt_delete(&g_timers, &timer.rbt_node);
+        rbt_delete(&g_globals.timers, &timer.rbt_node);
     }
 }
 

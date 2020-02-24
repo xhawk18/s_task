@@ -65,12 +65,17 @@ void main_task(__async__, void *arg) {
 }
 
 int main(int argc, char *argv[]) {
-
+#ifdef USE_LIBUV
+    uv_loop_t *loop = uv_default_loop();
+    s_task_init_system(loop);
+#else
     s_task_init_system();
+#endif
+
     s_task_create(stack_main, sizeof(stack_main), main_task, (void *)(size_t)argc);
     
 #ifdef USE_LIBUV
-    uv_run(uv_default_loop(), UV_RUN_DEFAULT);
+    uv_run(loop, UV_RUN_DEFAULT);
 #else
     __init_async__;
     s_task_join(__await__, stack_main);

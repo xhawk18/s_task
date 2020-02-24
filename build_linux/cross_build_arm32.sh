@@ -1,5 +1,5 @@
 
-arm-linux-gnueabihf-gcc -O2 -s -static -I../include \
+arm-linux-gnueabihf-gcc -O2 -s -static -I../include -Wall \
 	../main.c \
 	../src/s_task.c \
 	../src/s_rbtree.c \

@@ -1,5 +1,5 @@
 
-gcc -m64 -O2 -s -static -I../include \
+gcc -m64 -O2 -s -static -I../include -Wall \
 	../main.c \
 	../src/s_task.c \
 	../src/s_rbtree.c \

@@ -1,4 +1,4 @@
-aarch64-linux-gnu-gcc -O2 -s -static -I../include \
+aarch64-linux-gnu-gcc -O2 -s -static -I../include -Wall \
 	../main.c \
 	../src/s_task.c \
 	../src/s_rbtree.c \

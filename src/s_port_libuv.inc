@@ -2,15 +2,16 @@
 
 /* Timer functions need to be implemented on a new porting. */
 
-static uv_timer_t g_timer_once;
+static uv_loop_t* s_task_uv_loop(void);
+static uv_timer_t* s_task_uv_timer(void);
 
 void my_clock_init(){
-    uv_loop_t* loop = uv_default_loop();
-    uv_timer_init(loop, &g_timer_once);
+    uv_loop_t* loop = s_task_uv_loop();
+    uv_timer_init(loop, s_task_uv_timer());
 }
 
 my_clock_t my_clock() {
-	uv_loop_t* loop = uv_default_loop();
+	uv_loop_t* loop = s_task_uv_loop();
 	return uv_now(loop);
 }
 
@@ -19,7 +20,7 @@ static void uv_on_timer(uv_timer_t* handle) {
 }
 
 void my_on_idle(uint64_t max_idle_ms) {
-    uv_timer_start(&g_timer_once, uv_on_timer, max_idle_ms, 0);
+    uv_timer_start(s_task_uv_timer(), uv_on_timer, max_idle_ms, 0);
 }
 
 
