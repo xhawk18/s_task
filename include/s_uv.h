@@ -27,10 +27,20 @@ int s_uv_udp_send_n(__async__,
     const uv_buf_t bufs[],
     unsigned int nbufs,
     const struct sockaddr* addr);
-int s_uv_udp_send(__async__, uv_udp_t* handle,
+int s_uv_udp_send(__async__,
+    uv_udp_t* handle,
     const void* buf,
     size_t buf_len,
     const struct sockaddr* addr);
+
+//use uv_freeaddrinfo() to free the return value;
+struct addrinfo* s_uv_getaddrinfo(__async__,
+    uv_loop_t* loop,
+    const char* node,
+    const char* service,
+    const struct addrinfo* hints);
+
+
 
 #ifdef __cplusplus
 }

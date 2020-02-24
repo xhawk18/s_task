@@ -227,3 +227,51 @@ int s_uv_udp_send(__async__, uv_udp_t* handle,
     uv_buf_t uv_buf = uv_buf_init((char*)buf, buf_len);
     return s_uv_udp_send_n(__await__, handle, &uv_buf, 1, addr);
 }
+
+
+
+typedef struct {
+    s_event_t event;
+    uv_getaddrinfo_t req;
+    int status;
+    bool trigged;
+} s_uv_getaddrinfo_t;
+
+static void s_uv_getaddrinfo_cb(uv_getaddrinfo_t* req,
+    int status,
+    struct addrinfo* res) {
+    s_uv_getaddrinfo_t* arg_ = GET_PARENT_ADDR(req, s_uv_getaddrinfo_t, req);
+    arg_->status = status;
+    arg_->trigged = true;
+    s_event_set(&arg_->event);
+}
+
+struct addrinfo *s_uv_getaddrinfo(__async__,
+    uv_loop_t* loop,
+    const char* node,
+    const char* service,
+    const struct addrinfo* hints) {
+
+    int ret;
+    s_uv_getaddrinfo_t arg;
+    arg.trigged = false;
+    arg.req.addrinfo = NULL;
+    //arg.req.addrinfow = NULL;
+    s_event_init(&arg.event);
+
+    ret = uv_getaddrinfo(loop, &arg.req, s_uv_getaddrinfo_cb, node, service, hints);
+    if (ret != 0) {
+        return NULL;
+    }
+
+    while (!arg.trigged)
+        s_event_wait(__await__, &arg.event);
+    ret = arg.status;
+    if (ret != 0) {
+        uv_freeaddrinfo(arg.req.addrinfo);
+    }
+
+    //use uv_freeaddrinfo(arg.req.addrinfo) to free the return value;
+    return arg.req.addrinfo;
+}
+
