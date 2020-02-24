@@ -11,14 +11,14 @@ extern "C" {
 #endif
 
 void s_uv_close(__async__, uv_handle_t* handle);
-int s_uv_read(__async__, uv_stream_t* handle, void* buf, size_t buf_len, size_t* nread);
+int s_uv_read(__async__, uv_stream_t* handle, void* buf, size_t buf_len, ssize_t* nread);
 int s_uv_write_n(__async__, uv_stream_t* handle, const uv_buf_t bufs[], unsigned int nbufs);
 int s_uv_write(__async__, uv_stream_t* handle, const void* buf, size_t buf_len);
 
 int uv_udp_recv(__async__,
     uv_udp_t* handle,
     void* buf, size_t buf_len,
-    size_t* nrecv,
+    ssize_t* nrecv,
     struct sockaddr* addr,
     unsigned int* flags);
 
@@ -40,7 +40,7 @@ struct addrinfo* s_uv_getaddrinfo(__async__,
     const char* service,
     const struct addrinfo* hints);
 
-
+int s_uv_tcp_connect(__async__, uv_tcp_t* handle, const struct sockaddr* addr);
 
 #ifdef __cplusplus
 }

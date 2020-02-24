@@ -27,7 +27,7 @@ typedef struct {
     s_event_t event;
     void* buf;
     size_t buf_len;
-    size_t nread;
+    ssize_t nread;
     bool trigged;
 } s_uv_read_start_arg_t;
 
@@ -52,7 +52,7 @@ static void s_uv_read_start_read_cb(
     s_event_set(&arg_->event);
 }
 
-int s_uv_read(__async__, uv_stream_t* handle, void* buf, size_t buf_len, size_t *nread) {
+int s_uv_read(__async__, uv_stream_t* handle, void* buf, size_t buf_len, ssize_t* nread) {
     int ret;
     s_uv_read_start_arg_t arg;
     arg.buf = buf;
@@ -69,6 +69,7 @@ int s_uv_read(__async__, uv_stream_t* handle, void* buf, size_t buf_len, size_t 
     if (nread != NULL)
         *nread = arg.nread;
 
+    ret = (int)(arg.nread < 0 ? arg.nread : 0);
     return ret;
 }
 
@@ -117,7 +118,7 @@ typedef struct {
     s_event_t event;
     void* buf;
     size_t buf_len;
-    size_t nrecv;
+    ssize_t nrecv;
     struct sockaddr addr;
     unsigned flags;
     bool trigged;
@@ -152,7 +153,7 @@ int uv_udp_recv(__async__,
     uv_udp_t* handle,
     void* buf,
     size_t buf_len,
-    size_t* nrecv,
+    ssize_t* nrecv,
     struct sockaddr* addr,
     unsigned int *flags) {
     int ret;
@@ -176,6 +177,7 @@ int uv_udp_recv(__async__,
     if (flags != NULL)
         *flags = arg.flags;
 
+    ret = (int)(arg.nrecv < 0 ? arg.nrecv : 0);
     return ret;
 }
 
@@ -275,3 +277,35 @@ struct addrinfo *s_uv_getaddrinfo(__async__,
     return arg.req.addrinfo;
 }
 
+
+
+typedef struct {
+    s_event_t event;
+    uv_connect_t req;
+    int status;
+    bool trigged;
+} s_uv_tcp_connect_t;
+
+static void s_uv_connect_cb(uv_connect_t* req, int status) {
+    s_uv_tcp_connect_t* arg_ = GET_PARENT_ADDR(req, s_uv_tcp_connect_t, req);
+    arg_->status = status;
+    arg_->trigged = true;
+    s_event_set(&arg_->event);
+}
+
+int s_uv_tcp_connect(__async__, uv_tcp_t* handle, const struct sockaddr* addr) {
+    int ret;
+    s_uv_tcp_connect_t arg;
+    arg.trigged = false;
+    s_event_init(&arg.event);
+
+    ret = uv_tcp_connect(&arg.req, handle, addr, s_uv_connect_cb);
+    if (ret != 0)
+        return ret;
+
+    while (!arg.trigged)
+        s_event_wait(__await__, &arg.event);
+    ret = arg.status;
+
+    return ret;
+}
