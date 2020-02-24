@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 3.0)
 project(s_task)
 enable_language(C ASM)
 
+message("CMAKE_SYSTEM_NAME = ${CMAKE_SYSTEM_NAME}")
+message("CMAKE_SYSTEM_PROCESSOR = ${CMAKE_SYSTEM_PROCESSOR}")
+
 if(MSVC)
   list(APPEND uv_cflags /W4)
 elseif(CMAKE_C_COMPILER_ID MATCHES "AppleClang|Clang|GNU")
@@ -148,9 +151,33 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
        ../libuv/src/unix/linux-syscalls.c
        ../libuv/src/unix/procfs-exepath.c
        ../libuv/src/unix/sysinfo-loadavg.c)
-  list(APPEND uv_sources
-       ../asm/make_x86_64_sysv_elf_gas.S
-       ../asm/jump_x86_64_sysv_elf_gas.S)
+  if(CMAKE_C_COMPILER MATCHES "arm-linux-gnu")
+    list(APPEND uv_sources
+       s_task/asm/make_arm_aapcs_elf_gas.S
+       s_task/asm/jump_arm_aapcs_elf_gas.S)
+  elseif(CMAKE_C_COMPILER MATCHES "aarch64-linux-gnu")
+    list(APPEND uv_sources
+       s_task/asm/make_arm64_aapcs_elf_gas.S
+       s_task/asm/jump_arm64_aapcs_elf_gas.S)
+  else()
+    if( CMAKE_SYSTEM_PROCESSOR EQUAL 'x86_64' )
+      list(APPEND uv_sources
+        s_task/asm/make_x86_64_sysv_elf_gas.S
+        s_task/asm/jump_x86_64_sysv_elf_gas.S)
+    elseif( CMAKE_SYSTEM_PROCESSOR EQUAL 'i386' )
+      list(APPEND uv_sources
+        s_task/asm/make_i386_sysv_elf_gas.S
+        s_task/asm/jump_i386_sysv_elf_gas.S)
+    elseif( CMAKE_SYSTEM_PROCESSOR EQUAL 'aarch64' )
+      list(APPEND uv_sources
+        s_task/asm/make_arm64_aapcs_elf_gas.S
+        s_task/asm/jump_arm64_aapcs_elf_gas.S)
+    elseif( CMAKE_SYSTEM_PROCESSOR EQUAL 'arm' )
+      list(APPEND uv_sources
+        s_task/asm/make_arm_aapcs_elf_gas.S
+        s_task/asm/jump_arm_aapcs_elf_gas.S)
+    endif()
+  endif()
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "NetBSD")
