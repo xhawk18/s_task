@@ -81,10 +81,10 @@ typedef struct {
     uv_write_t req;
     int status;
     bool trigged;
-} s_uv_write_start_arg_t;
+} s_uv_write_arg_t;
 
 static void s_uv_write_cb(uv_write_t* req, int status) {
-    s_uv_write_start_arg_t* arg_ = GET_PARENT_ADDR(req, s_uv_write_start_arg_t, req);
+    s_uv_write_arg_t* arg_ = GET_PARENT_ADDR(req, s_uv_write_arg_t, req);
     //printf("status = %d\n", status);
 
     arg_->status = status;
@@ -94,7 +94,7 @@ static void s_uv_write_cb(uv_write_t* req, int status) {
 
 int s_uv_write_n(__async__, uv_stream_t* handle, const uv_buf_t bufs[], unsigned int nbufs) {
     int ret;
-    s_uv_write_start_arg_t arg;
+    s_uv_write_arg_t arg;
     arg.trigged = false;
     s_event_init(&arg.event);
 
@@ -144,10 +144,12 @@ static void uv_udp_recv_start_recv_cb(
     void *arg) {
 
     s_uv_recv_start_arg_t* arg_ = (s_uv_recv_start_arg_t*)arg;
+    uv_udp_recv_stop(handle);
     arg_->nrecv = nread;
     arg_->flags = flags;
     arg_->addr = *addr;
     arg_->trigged = true;
+    s_event_set(&arg_->event);
 }
 
 int uv_udp_recv(__async__,
