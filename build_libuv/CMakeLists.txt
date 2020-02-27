@@ -155,37 +155,45 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
        ../libuv/src/unix/sysinfo-loadavg.c)
   if(CMAKE_C_COMPILER MATCHES "x86_64-linux-gnu")
       list(APPEND uv_sources
-        s_task/asm/make_x86_64_sysv_elf_gas.S
-        s_task/asm/jump_x86_64_sysv_elf_gas.S)
+        ../asm/make_x86_64_sysv_elf_gas.S
+        ../asm/jump_x86_64_sysv_elf_gas.S)
   elseif(CMAKE_C_COMPILER MATCHES "i686-linux-gnu")
       list(APPEND uv_sources
-        s_task/asm/make_i386_sysv_elf_gas.S
-        s_task/asm/jump_i386_sysv_elf_gas.S)
+        ../asm/make_i386_sysv_elf_gas.S
+        ../asm/jump_i386_sysv_elf_gas.S)
   elseif(CMAKE_C_COMPILER MATCHES "aarch64-linux-gnu")
       list(APPEND uv_sources
-        s_task/asm/make_arm64_aapcs_elf_gas.S
-        s_task/asm/jump_arm64_aapcs_elf_gas.S)
+        ../asm/make_arm64_aapcs_elf_gas.S
+        ../asm/jump_arm64_aapcs_elf_gas.S)
   elseif(CMAKE_C_COMPILER MATCHES "arm-linux-gnu")
       list(APPEND uv_sources
-        s_task/asm/make_arm_aapcs_elf_gas.S
-        s_task/asm/jump_arm_aapcs_elf_gas.S)
+        ../asm/make_arm_aapcs_elf_gas.S
+        ../asm/jump_arm_aapcs_elf_gas.S)
   else()
     if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
       list(APPEND uv_sources
-        s_task/asm/make_x86_64_sysv_elf_gas.S
-        s_task/asm/jump_x86_64_sysv_elf_gas.S)
+        ../asm/make_x86_64_sysv_elf_gas.S
+        ../asm/jump_x86_64_sysv_elf_gas.S)
     elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "i686")
       list(APPEND uv_sources
-        s_task/asm/make_i386_sysv_elf_gas.S
-        s_task/asm/jump_i386_sysv_elf_gas.S)
+        ../asm/make_i386_sysv_elf_gas.S
+        ../asm/jump_i386_sysv_elf_gas.S)
     elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
       list(APPEND uv_sources
-        s_task/asm/make_arm64_aapcs_elf_gas.S
-        s_task/asm/jump_arm64_aapcs_elf_gas.S)
+        ../asm/make_arm64_aapcs_elf_gas.S
+        ../asm/jump_arm64_aapcs_elf_gas.S)
     elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
       list(APPEND uv_sources
-        s_task/asm/make_arm_aapcs_elf_gas.S
-        s_task/asm/jump_arm_aapcs_elf_gas.S)
+        ../asm/make_arm_aapcs_elf_gas.S
+        ../asm/jump_arm_aapcs_elf_gas.S)
+    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "mips64")
+      list(APPEND uv_sources
+        ../asm/make_mips64_n64_elf_gas.S
+        ../asm/jump_mips64_n64_elf_gas.S)
+    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "mips")
+      list(APPEND uv_sources
+        ../asm/make_mips32_o32_elf_gas.S
+        ../asm/jump_mips32_o32_elf_gas.S)
     endif()
   endif()
 endif()
