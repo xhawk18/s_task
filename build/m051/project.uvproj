@@ -497,11 +497,6 @@
               <FilePath>..\..\include\s_list.h</FilePath>
             </File>
             <File>
-              <FileName>s_port_cortex_m0.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\include\s_port_cortex_m0.h</FilePath>
-            </File>
-            <File>
               <FileName>s_port_m051.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\include\s_port_m051.h</FilePath>

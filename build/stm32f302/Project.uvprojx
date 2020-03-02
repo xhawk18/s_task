@@ -698,11 +698,6 @@
               <FilePath>..\..\include\s_list.h</FilePath>
             </File>
             <File>
-              <FileName>s_port_cortex_m3.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\include\s_port_cortex_m3.h</FilePath>
-            </File>
-            <File>
               <FileName>s_port_stm32f30x.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\include\s_port_stm32f30x.h</FilePath>

@@ -29,13 +29,13 @@ static void s_task_next(__async__);
 #if defined __ARMCC_VERSION
 #   define USE_SWAP_CONTEXT
 #   if defined STM32F10X_MD
-#       include "s_port_cortex_m3.inc"
+#       include "s_port_armv7m.inc"
 #   elif defined STM32F302x8
-#       include "s_port_cortex_m3.inc"
+#       include "s_port_armv7m.inc"
 #   elif defined STM32L1XX_MD
-#       include "s_port_cortex_m3.inc"
-#   else
-#       include "s_port_cortex_m0.inc"
+#       include "s_port_armv7m.inc"
+#   elif defined __TARGET_CPU_CORTEX_M0
+#       include "s_port_armv6m.inc"
 #   endif
 #elif defined STM8S103
 #   define USE_SWAP_CONTEXT

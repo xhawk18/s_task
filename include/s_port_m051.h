@@ -8,6 +8,10 @@
 /* === Timer functions on nuvoton M051 === */
 #include "M051Series.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //1. define a type for clock
 typedef uint32_t my_clock_t;
 typedef int32_t my_clock_diff_t;
@@ -15,7 +19,11 @@ typedef int32_t my_clock_diff_t;
 //2. define the clock ticks count for one second
 #define MY_CLOCKS_PER_SEC 1024
 
-#include "s_port_cortex_m0.h"
+#ifdef __cplusplus
+}
+#endif
+
+#include "s_port_armv6m.h"
 
 #endif
 

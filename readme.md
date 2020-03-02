@@ -140,6 +140,19 @@ void my_on_idle(uint64_t max_idle_ms) {
     makecontext / swapcontext       (slow!!)
 ```
 
+## Compatibility
+
+"s_task" can run as a standalone co-routine library, or work with libuv library.
+
+   | Platform                    | co-routine | libuv |
+   |-----------------------------|------------|-------|
+   | Windows                     | yes        | yes   |
+   | Linux                       | yes        | yes   |
+   | MingW                       | yes        | no    |
+   | ARMv6-M(M051)               | yes        | no    |
+   | ARMv7-M(stm32f103,stm32f302)| yes        | no    |
+   | stm8s103                    | no (todo)  | no    |
+
 ## Issues on embedded system
 The library allocates tasks' stack from the main stack,
 so please take care of the size of main stack and make sure it's big enough.
@@ -154,5 +167,3 @@ and define the stack size of each task to 1K in s_port_stm32f10x.h
 ```c
 #define STACK_SIZE 1024
 ```
-
-

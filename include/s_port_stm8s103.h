@@ -3,6 +3,10 @@
 
 #include "stm8s.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 static void TIM2_Config(void){
 	//Ê±ÖÓÆµÂÊ16M
 	/* Time base configuration */      
@@ -98,5 +102,8 @@ void my_on_idle(uint64_t max_idle_ms) {
     
 }
 
+#ifdef __cplusplus
+}
+#endif
 #endif
 
