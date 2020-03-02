@@ -266,7 +266,7 @@ static void uv__stream_osx_select_cb(uv_async_t* handle) {
 }
 
 
-static void uv__stream_osx_cb_close(uv_handle_t* async) {
+static void uv__stream_osx_cb_close(uv_handle_t* async, void *arg) {
   uv__stream_select_t* s;
 
   s = container_of(async, uv__stream_select_t, async);
@@ -388,7 +388,7 @@ failed_async_sem_init:
 failed_close_sem_init:
   uv__close(fds[0]);
   uv__close(fds[1]);
-  uv_close((uv_handle_t*) &s->async, uv__stream_osx_cb_close);
+  uv_close((uv_handle_t*) &s->async, uv__stream_osx_cb_close, NULL);
   return err;
 
 failed_async_init:
@@ -1646,7 +1646,7 @@ void uv__stream_close(uv_stream_t* handle) {
     uv_sem_destroy(&s->async_sem);
     uv__close(s->fake_fd);
     uv__close(s->int_fd);
-    uv_close((uv_handle_t*) &s->async, uv__stream_osx_cb_close);
+    uv_close((uv_handle_t*) &s->async, uv__stream_osx_cb_close, NULL);
 
     handle->select = NULL;
   }
