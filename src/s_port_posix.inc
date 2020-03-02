@@ -38,7 +38,7 @@ void create_context(ucontext_t *uc, void *stack, size_t stack_size, void *task) 
     uc->uc_stack.ss_sp = stack;
     uc->uc_stack.ss_size = stack_size;
     uc->uc_link = 0;
-    makecontext(uc, (void (*)())&s_task_context_entry, 1, task);
+    makecontext(uc, (void (*)(void))&s_task_context_entry, 1, task);
 }
 
 

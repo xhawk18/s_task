@@ -31,7 +31,7 @@ void main_task(__async__, void* arg) {
     s_task_join(__await__, stack1);
 }
 
-int main(int argc, char* argv) {
+int main(int argc, char* argv[]) {
     __init_async__;
 
     s_task_init_system();

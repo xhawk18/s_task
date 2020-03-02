@@ -2,7 +2,9 @@
 #define INC_S_PORT_H_
 
 #include <time.h>
+#ifndef _XOPEN_SOURCE
 #define _XOPEN_SOURCE
+#endif
 #include <ucontext.h>
 #include <unistd.h>
 

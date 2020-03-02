@@ -8,19 +8,66 @@ message("CMAKE_SYSTEM_PROCESSOR = ${CMAKE_SYSTEM_PROCESSOR}")
 message("CMAKE_C_COMPILER = ${CMAKE_C_COMPILER}")
 
 if(MSVC)
-  list(APPEND uv_cflags /W4)
+  list(APPEND st_cflags /W4)
 elseif(CMAKE_C_COMPILER_ID MATCHES "AppleClang|Clang|GNU")
-  list(APPEND uv_cflags -fvisibility=hidden --std=gnu89)
-  list(APPEND uv_cflags -Wall -Wextra -Wstrict-prototypes)
-  list(APPEND uv_cflags -Wno-unused-parameter)
-  list(APPEND uv_cflags -static)
+  list(APPEND st_cflags -fvisibility=hidden --std=gnu89)
+  list(APPEND st_cflags -Wall -Wextra -Wstrict-prototypes)
+  list(APPEND st_cflags -Wno-unused-parameter)
+  list(APPEND st_cflags -static)
+endif()
+
+set(st_sources
+    ../src/s_task.c
+    ../src/s_list.c
+    ../src/s_rbtree.c)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  if(CMAKE_C_COMPILER MATCHES "x86_64-linux-gnu")
+      list(APPEND st_sources
+        ../asm/make_x86_64_sysv_elf_gas.S
+        ../asm/jump_x86_64_sysv_elf_gas.S)
+  elseif(CMAKE_C_COMPILER MATCHES "i686-linux-gnu")
+      list(APPEND st_sources
+        ../asm/make_i386_sysv_elf_gas.S
+        ../asm/jump_i386_sysv_elf_gas.S)
+  elseif(CMAKE_C_COMPILER MATCHES "aarch64-linux-gnu")
+      list(APPEND st_sources
+        ../asm/make_arm64_aapcs_elf_gas.S
+        ../asm/jump_arm64_aapcs_elf_gas.S)
+  elseif(CMAKE_C_COMPILER MATCHES "arm-linux-gnu")
+      list(APPEND st_sources
+        ../asm/make_arm_aapcs_elf_gas.S
+        ../asm/jump_arm_aapcs_elf_gas.S)
+  else()
+    if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+      list(APPEND st_sources
+        ../asm/make_x86_64_sysv_elf_gas.S
+        ../asm/jump_x86_64_sysv_elf_gas.S)
+    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "i686")
+      list(APPEND st_sources
+        ../asm/make_i386_sysv_elf_gas.S
+        ../asm/jump_i386_sysv_elf_gas.S)
+    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
+      list(APPEND st_sources
+        ../asm/make_arm64_aapcs_elf_gas.S
+        ../asm/jump_arm64_aapcs_elf_gas.S)
+    elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
+      list(APPEND st_sources
+        ../asm/make_arm_aapcs_elf_gas.S
+        ../asm/jump_arm_aapcs_elf_gas.S)
+    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "mips64")
+      list(APPEND st_sources
+        ../asm/make_mips64_n64_elf_gas.S
+        ../asm/jump_mips64_n64_elf_gas.S)
+    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "mips")
+      list(APPEND st_sources
+        ../asm/make_mips32_o32_elf_gas.S
+        ../asm/jump_mips32_o32_elf_gas.S)
+    endif()
+  endif()
 endif()
 
 set(uv_sources
-    ../main.c
-    ../src/s_task.c
-    ../src/s_list.c
-    ../src/s_rbtree.c
     ../libuv/src/fs-poll.c
     ../libuv/src/idna.c
     ../libuv/src/inet.c
@@ -31,11 +78,9 @@ set(uv_sources
     ../libuv/src/uv-data-getter-setters.c
     ../libuv/src/version.c)
 
-list(APPEND uv_defines USE_LIBUV)
-
 if(WIN32)
-  list(APPEND uv_defines WIN32_LEAN_AND_MEAN _WIN32_WINNT=0x0600)
-  list(APPEND uv_libraries
+  list(APPEND st_defines WIN32_LEAN_AND_MEAN _WIN32_WINNT=0x0600)
+  list(APPEND st_libraries
        advapi32
        iphlpapi
        psapi
@@ -70,11 +115,11 @@ if(WIN32)
        ../libuv/src/win/winapi.c
        ../libuv/src/win/winsock.c)
 else()
-  list(APPEND uv_defines _FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE)
+  list(APPEND st_defines _FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE)
   if(NOT CMAKE_SYSTEM_NAME STREQUAL "Android")
     # Android has pthread as part of its c library, not as a separate
     # libpthread.so.
-    list(APPEND uv_libraries pthread)
+    list(APPEND st_libraries pthread)
   endif()
   list(APPEND uv_sources
        ../libuv/src/unix/async.c
@@ -97,12 +142,12 @@ else()
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "AIX")
-  list(APPEND uv_defines
+  list(APPEND st_defines
        _ALL_SOURCE
        _LINUX_SOURCE_COMPAT
        _THREAD_SAFE
        _XOPEN_SOURCE=500)
-  list(APPEND uv_libraries perfstat)
+  list(APPEND st_libraries perfstat)
   list(APPEND uv_sources ../libuv/src/unix/aix.c)
 endif()
 
@@ -129,7 +174,7 @@ endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "DragonFly|FreeBSD|NetBSD|OpenBSD")
   list(APPEND uv_sources ../libuv/src/unix/posix-hrtime.c ../libuv/src/unix/bsd-proctitle.c)
-  list(APPEND uv_libraries kvm)
+  list(APPEND st_libraries kvm)
 endif()
 
 if(APPLE OR CMAKE_SYSTEM_NAME MATCHES "DragonFly|FreeBSD|NetBSD|OpenBSD")
@@ -137,7 +182,7 @@ if(APPLE OR CMAKE_SYSTEM_NAME MATCHES "DragonFly|FreeBSD|NetBSD|OpenBSD")
 endif()
 
 if(APPLE)
-  list(APPEND uv_defines _DARWIN_UNLIMITED_SELECT=1 _DARWIN_USE_64_BIT_INODE=1)
+  list(APPEND st_defines _DARWIN_UNLIMITED_SELECT=1 _DARWIN_USE_64_BIT_INODE=1)
   list(APPEND uv_sources
        ../libuv/src/unix/darwin-proctitle.c
        ../libuv/src/unix/darwin.c
@@ -145,57 +190,14 @@ if(APPLE)
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  list(APPEND uv_defines _GNU_SOURCE _POSIX_C_SOURCE=200112)
-  list(APPEND uv_libraries dl rt)
+  list(APPEND st_defines _GNU_SOURCE _POSIX_C_SOURCE=200112)
+  list(APPEND st_libraries dl rt)
   list(APPEND uv_sources
        ../libuv/src/unix/linux-core.c
        ../libuv/src/unix/linux-inotify.c
        ../libuv/src/unix/linux-syscalls.c
        ../libuv/src/unix/procfs-exepath.c
        ../libuv/src/unix/sysinfo-loadavg.c)
-  if(CMAKE_C_COMPILER MATCHES "x86_64-linux-gnu")
-      list(APPEND uv_sources
-        ../asm/make_x86_64_sysv_elf_gas.S
-        ../asm/jump_x86_64_sysv_elf_gas.S)
-  elseif(CMAKE_C_COMPILER MATCHES "i686-linux-gnu")
-      list(APPEND uv_sources
-        ../asm/make_i386_sysv_elf_gas.S
-        ../asm/jump_i386_sysv_elf_gas.S)
-  elseif(CMAKE_C_COMPILER MATCHES "aarch64-linux-gnu")
-      list(APPEND uv_sources
-        ../asm/make_arm64_aapcs_elf_gas.S
-        ../asm/jump_arm64_aapcs_elf_gas.S)
-  elseif(CMAKE_C_COMPILER MATCHES "arm-linux-gnu")
-      list(APPEND uv_sources
-        ../asm/make_arm_aapcs_elf_gas.S
-        ../asm/jump_arm_aapcs_elf_gas.S)
-  else()
-    if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
-      list(APPEND uv_sources
-        ../asm/make_x86_64_sysv_elf_gas.S
-        ../asm/jump_x86_64_sysv_elf_gas.S)
-    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "i686")
-      list(APPEND uv_sources
-        ../asm/make_i386_sysv_elf_gas.S
-        ../asm/jump_i386_sysv_elf_gas.S)
-    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
-      list(APPEND uv_sources
-        ../asm/make_arm64_aapcs_elf_gas.S
-        ../asm/jump_arm64_aapcs_elf_gas.S)
-    elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
-      list(APPEND uv_sources
-        ../asm/make_arm_aapcs_elf_gas.S
-        ../asm/jump_arm_aapcs_elf_gas.S)
-    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "mips64")
-      list(APPEND uv_sources
-        ../asm/make_mips64_n64_elf_gas.S
-        ../asm/jump_mips64_n64_elf_gas.S)
-    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "mips")
-      list(APPEND uv_sources
-        ../asm/make_mips32_o32_elf_gas.S
-        ../asm/jump_mips32_o32_elf_gas.S)
-    endif()
-  endif()
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "NetBSD")
@@ -207,18 +209,18 @@ if(CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "OS/390")
-  list(APPEND uv_defines PATH_MAX=255)
-  list(APPEND uv_defines _AE_BIMODAL)
-  list(APPEND uv_defines _ALL_SOURCE)
-  list(APPEND uv_defines _LARGE_TIME_API)
-  list(APPEND uv_defines _OPEN_MSGQ_EXT)
-  list(APPEND uv_defines _OPEN_SYS_FILE_EXT)
-  list(APPEND uv_defines _OPEN_SYS_IF_EXT)
-  list(APPEND uv_defines _OPEN_SYS_SOCK_IPV6)
-  list(APPEND uv_defines _UNIX03_SOURCE)
-  list(APPEND uv_defines _UNIX03_THREADS)
-  list(APPEND uv_defines _UNIX03_WITHDRAWN)
-  list(APPEND uv_defines _XOPEN_SOURCE_EXTENDED)
+  list(APPEND st_defines PATH_MAX=255)
+  list(APPEND st_defines _AE_BIMODAL)
+  list(APPEND st_defines _ALL_SOURCE)
+  list(APPEND st_defines _LARGE_TIME_API)
+  list(APPEND st_defines _OPEN_MSGQ_EXT)
+  list(APPEND st_defines _OPEN_SYS_FILE_EXT)
+  list(APPEND st_defines _OPEN_SYS_IF_EXT)
+  list(APPEND st_defines _OPEN_SYS_SOCK_IPV6)
+  list(APPEND st_defines _UNIX03_SOURCE)
+  list(APPEND st_defines _UNIX03_THREADS)
+  list(APPEND st_defines _UNIX03_WITHDRAWN)
+  list(APPEND st_defines _XOPEN_SOURCE_EXTENDED)
   list(APPEND uv_sources
        ../libuv/src/unix/pthread-fixes.c
        ../libuv/src/unix/pthread-barrier.c
@@ -227,20 +229,30 @@ if(CMAKE_SYSTEM_NAME STREQUAL "OS/390")
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "SunOS")
-  list(APPEND uv_defines __EXTENSIONS__ _XOPEN_SOURCE=500)
-  list(APPEND uv_libraries kstat nsl sendfile socket)
+  list(APPEND st_defines __EXTENSIONS__ _XOPEN_SOURCE=500)
+  list(APPEND st_libraries kstat nsl sendfile socket)
   list(APPEND uv_sources ../libuv/src/unix/no-proctitle.c ../libuv/src/unix/sunos.c)
 endif()
 
-#add_library(uv SHARED ${uv_sources})
-#target_compile_definitions(uv PRIVATE ${uv_defines} BUILDING_UV_SHARED=1)
-#target_compile_options(uv PRIVATE ${uv_cflags})
-#target_include_directories(uv PRIVATE include src)
-#target_link_libraries(uv ${uv_libraries})
 
-add_executable(main_uv ${uv_sources})
-target_compile_definitions(main_uv PRIVATE ${uv_defines})
-target_compile_options(main_uv PRIVATE ${uv_cflags})
-target_include_directories(main_uv PRIVATE ../include ../libuv/include ../libuv/src)
-target_link_libraries(main_uv ${uv_libraries})
+add_executable(ex0_task ../examples/ex0_task.c ${st_sources})
+target_compile_definitions(ex0_task PRIVATE ${st_defines})
+target_compile_options(ex0_task PRIVATE ${st_cflags})
+#target_link_options(ex0_task PRIVATE -s)
+target_include_directories(ex0_task PRIVATE ../include ../libuv/include ../libuv/src)
+target_link_libraries(ex0_task ${st_libraries})
+
+add_executable(ex1_event ../examples/ex1_event.c ${st_sources})
+target_compile_definitions(ex1_event PRIVATE ${st_defines})
+target_compile_options(ex1_event PRIVATE ${st_cflags})
+#target_link_options(ex1_event PRIVATE -s)
+target_include_directories(ex1_event PRIVATE ../include ../libuv/include ../libuv/src)
+target_link_libraries(ex1_event ${st_libraries})
+
+add_executable(ex2_libuv ../examples/ex2_libuv.c ${st_sources} ${uv_sources})
+target_compile_definitions(ex2_libuv PRIVATE ${st_defines} USE_LIBUV)
+target_compile_options(ex2_libuv PRIVATE ${st_cflags})
+#target_link_options(ex2_libuv PRIVATE -s)
+target_include_directories(ex2_libuv PRIVATE ../include ../libuv/include ../libuv/src)
+target_link_libraries(ex2_libuv ${st_libraries})
 
