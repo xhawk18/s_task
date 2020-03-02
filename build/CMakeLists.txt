@@ -14,6 +14,8 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "AppleClang|Clang|GNU")
   list(APPEND st_cflags -Wall -Wextra -Wstrict-prototypes)
   list(APPEND st_cflags -Wno-unused-parameter)
   list(APPEND st_cflags -static)
+  #list(APPEND st_libraries -static -s)
+  list(APPEND st_libraries -s)
 endif()
 
 set(st_sources
@@ -234,7 +236,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "SunOS")
   list(APPEND uv_sources ../libuv/src/unix/no-proctitle.c ../libuv/src/unix/sunos.c)
 endif()
 
-
 add_executable(ex0_task ../examples/ex0_task.c ${st_sources})
 target_compile_definitions(ex0_task PRIVATE ${st_defines})
 target_compile_options(ex0_task PRIVATE ${st_cflags})
@@ -248,6 +249,11 @@ target_compile_options(ex1_event PRIVATE ${st_cflags})
 #target_link_options(ex1_event PRIVATE -s)
 target_include_directories(ex1_event PRIVATE ../include ../libuv/include ../libuv/src)
 target_link_libraries(ex1_event ${st_libraries})
+
+#message("${uv_sources}")
+#message("${st_defines}")
+#message("${st_cflags}")
+#message("${st_libraries}")
 
 add_executable(ex2_libuv ../examples/ex2_libuv.c ${st_sources} ${uv_sources})
 target_compile_definitions(ex2_libuv PRIVATE ${st_defines} USE_LIBUV)

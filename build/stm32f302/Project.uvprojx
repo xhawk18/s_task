@@ -338,7 +338,7 @@
               <MiscControls>--C99 --diag_error=warning --vfe</MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F302x8</Define>
               <Undefine></Undefine>
-              <IncludePath>..\include;.\;.\Libraries\CMSIS\Include;.\Libraries\CMSIS\Device\ST\STM32F30x\Include;.\Libraries\STM32F30x_StdPeriph_Driver\inc;.\Libraries\STM32F30x_I2C_CPAL_Driver\inc</IncludePath>
+              <IncludePath>..\..\include;.\;.\Libraries\CMSIS\Include;.\Libraries\CMSIS\Device\ST\STM32F30x\Include;.\Libraries\STM32F30x_StdPeriph_Driver\inc;.\Libraries\STM32F30x_I2C_CPAL_Driver\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -668,24 +668,24 @@
               <FilePath>.\system_stm32f30x.c</FilePath>
             </File>
             <File>
+              <FileName>ex1_event.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\examples\ex1_event.c</FilePath>
+            </File>
+            <File>
               <FileName>s_list.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\src\s_list.c</FilePath>
+              <FilePath>..\..\src\s_list.c</FilePath>
             </File>
             <File>
               <FileName>s_rbtree.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\src\s_rbtree.c</FilePath>
+              <FilePath>..\..\src\s_rbtree.c</FilePath>
             </File>
             <File>
               <FileName>s_task.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\src\s_task.c</FilePath>
-            </File>
-            <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\main.c</FilePath>
+              <FilePath>..\..\src\s_task.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -695,27 +695,27 @@
             <File>
               <FileName>s_list.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\include\s_list.h</FilePath>
+              <FilePath>..\..\include\s_list.h</FilePath>
             </File>
             <File>
               <FileName>s_port_cortex_m3.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\include\s_port_cortex_m3.h</FilePath>
+              <FilePath>..\..\include\s_port_cortex_m3.h</FilePath>
             </File>
             <File>
               <FileName>s_port_stm32f30x.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\include\s_port_stm32f30x.h</FilePath>
+              <FilePath>..\..\include\s_port_stm32f30x.h</FilePath>
             </File>
             <File>
               <FileName>s_rbtree.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\include\s_rbtree.h</FilePath>
+              <FilePath>..\..\include\s_rbtree.h</FilePath>
             </File>
             <File>
               <FileName>s_task.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\include\s_task.h</FilePath>
+              <FilePath>..\..\include\s_task.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -377,7 +377,7 @@
               <MiscControls>--diag_error=warning</MiscControls>
               <Define>DEBUG_ENABLE_SEMIHOST</Define>
               <Undefine></Undefine>
-              <IncludePath>..\include;.\M051SeriesBSP\LibM051Series\CMSIS\CM0\CoreSupport;.\M051SeriesBSP\LibM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series;.\M051SeriesBSP\LibM051Series\StdDriver\inc</IncludePath>
+              <IncludePath>..\..\include;.\M051SeriesBSP\LibM051Series\CMSIS\CM0\CoreSupport;.\M051SeriesBSP\LibM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series;.\M051SeriesBSP\LibM051Series\StdDriver\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -467,24 +467,24 @@
           <GroupName>Src</GroupName>
           <Files>
             <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\main.c</FilePath>
-            </File>
-            <File>
               <FileName>s_list.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\src\s_list.c</FilePath>
+              <FilePath>..\..\src\s_list.c</FilePath>
             </File>
             <File>
               <FileName>s_rbtree.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\src\s_rbtree.c</FilePath>
+              <FilePath>..\..\src\s_rbtree.c</FilePath>
             </File>
             <File>
               <FileName>s_task.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\src\s_task.c</FilePath>
+              <FilePath>..\..\src\s_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>ex1_event.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\examples\ex1_event.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -494,27 +494,27 @@
             <File>
               <FileName>s_list.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\include\s_list.h</FilePath>
+              <FilePath>..\..\include\s_list.h</FilePath>
             </File>
             <File>
               <FileName>s_port_cortex_m0.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\include\s_port_cortex_m0.h</FilePath>
+              <FilePath>..\..\include\s_port_cortex_m0.h</FilePath>
             </File>
             <File>
               <FileName>s_port_m051.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\include\s_port_m051.h</FilePath>
+              <FilePath>..\..\include\s_port_m051.h</FilePath>
             </File>
             <File>
               <FileName>s_rbtree.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\include\s_rbtree.h</FilePath>
+              <FilePath>..\..\include\s_rbtree.h</FilePath>
             </File>
             <File>
               <FileName>s_task.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\include\s_task.h</FilePath>
+              <FilePath>..\..\include\s_task.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -15,53 +15,44 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="..\..\include\s_list.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
+    <ClInclude Include="..\..\include\s_port_windows.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\s_list.h">
+    <ClInclude Include="..\..\include\s_rbtree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\s_port_windows.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\s_rbtree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\s_task.h">
+    <ClInclude Include="..\..\include\s_task.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\s_list.c">
+    <ClCompile Include="..\..\src\s_list.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\s_rbtree.c">
+    <ClCompile Include="..\..\src\s_rbtree.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\s_task.c">
+    <ClCompile Include="..\..\src\s_task.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\main.c">
+    <ClCompile Include="..\..\examples\ex1_event.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="..\asm\jump_x86_64_ms_pe_masm.asm">
+    <MASM Include="..\..\asm\jump_x86_64_ms_pe_masm.asm">
       <Filter>Source Files</Filter>
     </MASM>
-    <MASM Include="..\asm\make_x86_64_ms_pe_masm.asm">
+    <MASM Include="..\..\asm\make_x86_64_ms_pe_masm.asm">
       <Filter>Source Files</Filter>
     </MASM>
-    <MASM Include="..\asm\jump_i386_ms_pe_masm.asm">
+    <MASM Include="..\..\asm\jump_i386_ms_pe_masm.asm">
       <Filter>Source Files</Filter>
     </MASM>
-    <MASM Include="..\asm\make_i386_ms_pe_masm.asm">
+    <MASM Include="..\..\asm\make_i386_ms_pe_masm.asm">
       <Filter>Source Files</Filter>
     </MASM>
   </ItemGroup>

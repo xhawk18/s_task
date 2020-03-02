@@ -156,7 +156,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\main.c</Filename>
+          <Filename>E:\Work\m0_wallet\quantum_ppp\s_task\build\main.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\s_task\../main.c\28</Expression>
         </Bp>
@@ -172,7 +172,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\main.c</Filename>
+          <Filename>E:\Work\m0_wallet\quantum_ppp\s_task\build\main.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\s_task\../main.c\50</Expression>
         </Bp>
@@ -337,7 +337,7 @@
 
   <Group>
     <GroupName>Driver</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -357,7 +357,7 @@
 
   <Group>
     <GroupName>Src</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -368,8 +368,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\main.c</PathWithFileName>
-      <FilenameWithoutPath>main.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\src\s_list.c</PathWithFileName>
+      <FilenameWithoutPath>s_list.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -380,8 +380,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\src\s_list.c</PathWithFileName>
-      <FilenameWithoutPath>s_list.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\src\s_rbtree.c</PathWithFileName>
+      <FilenameWithoutPath>s_rbtree.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -392,8 +392,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\src\s_rbtree.c</PathWithFileName>
-      <FilenameWithoutPath>s_rbtree.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\src\s_task.c</PathWithFileName>
+      <FilenameWithoutPath>s_task.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -404,8 +404,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\src\s_task.c</PathWithFileName>
-      <FilenameWithoutPath>s_task.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\examples\ex1_event.c</PathWithFileName>
+      <FilenameWithoutPath>ex1_event.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -413,7 +413,7 @@
 
   <Group>
     <GroupName>Include</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -424,7 +424,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\include\s_list.h</PathWithFileName>
+      <PathWithFileName>..\..\include\s_list.h</PathWithFileName>
       <FilenameWithoutPath>s_list.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -436,7 +436,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\include\s_port_cortex_m0.h</PathWithFileName>
+      <PathWithFileName>..\..\include\s_port_cortex_m0.h</PathWithFileName>
       <FilenameWithoutPath>s_port_cortex_m0.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -448,7 +448,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\include\s_port_m051.h</PathWithFileName>
+      <PathWithFileName>..\..\include\s_port_m051.h</PathWithFileName>
       <FilenameWithoutPath>s_port_m051.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -460,7 +460,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\include\s_rbtree.h</PathWithFileName>
+      <PathWithFileName>..\..\include\s_rbtree.h</PathWithFileName>
       <FilenameWithoutPath>s_rbtree.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -472,7 +472,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\include\s_task.h</PathWithFileName>
+      <PathWithFileName>..\..\include\s_task.h</PathWithFileName>
       <FilenameWithoutPath>s_task.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
