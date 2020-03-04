@@ -7,7 +7,7 @@
 
 "s_task" uses keywords \_\_await\_\_ and \_\_async\_\_. For functions that may switch to other tasks, call it with 1st parameter \_\_await\_\_, for the caller function of which, define the 1st parameter as \_\_async\_\_, which make it is clear to know about context switching.
 
-[Example 1](examples/ex0_task.c) - simple task creation
+### [Example 1](examples/ex0_task.c) - simple task creation
 
 ```c
 #include <stdio.h>
@@ -52,7 +52,8 @@ int main(int argc, char* argv) {
 }
 ```
 
-[Example 1](examples/ex3_http_client.c) - asynchronized http client without callback function.
+### [Example 2](examples/ex3_http_client.c) - asynchronized http client without callback function.
+
 ```c
 void main_task(__async__, void *arg) {
     uv_loop_t* loop = (uv_loop_t*)arg;
