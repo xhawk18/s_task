@@ -7,7 +7,7 @@
 
 "s_task" uses keywords \_\_await\_\_ and \_\_async\_\_. For functions that may switch to other tasks, call it with 1st parameter \_\_await\_\_, for the caller function of which, define the 1st parameter as \_\_async\_\_, which make it is clear to know about context switching.
 
-[Example](example.c)
+[Example 1](examples/ex0_task.c) - simple task creation
 
 ```c
 #include <stdio.h>
@@ -49,6 +49,68 @@ int main(int argc, char* argv) {
     s_task_join(__await__, stack_main);
     printf("all task is over\n");
     return 0;
+}
+```
+
+[Example 1](examples/ex3_http_client.c) - asynchronized http client without callback function.
+```c
+void main_task(__async__, void *arg) {
+    uv_loop_t* loop = (uv_loop_t*)arg;
+
+    const char *HOST = "baidu.com";
+    const unsigned short PORT = 80;
+
+    //<1> resolve host
+    struct addrinfo* addr = s_uv_getaddrinfo(__await__,
+        loop,
+        HOST,
+        NULL,
+        NULL);
+    if (addr == NULL) {
+        fprintf(stderr, "can not resolve host %s\n", HOST);
+        goto out0;
+    }
+
+    if (addr->ai_addr->sa_family == AF_INET) {
+        struct sockaddr_in* sin = (struct sockaddr_in*)(addr->ai_addr);
+        sin->sin_port = htons(PORT);
+    }
+    else if (addr->ai_addr->sa_family == AF_INET6) {
+        struct sockaddr_in6* sin = (struct sockaddr_in6*)(addr->ai_addr);
+        sin->sin6_port = htons(PORT);
+    }
+
+    //<2> connect
+    uv_tcp_t tcp_client;
+    int ret = uv_tcp_init(loop, &tcp_client);
+    if (ret != 0)
+        goto out1;
+    ret = s_uv_tcp_connect(__await__, &tcp_client, addr->ai_addr);
+    if (ret != 0)
+        goto out2;
+
+    //<3> send request
+    const char *request = "GET / HTTP/1.0\r\n\r\n";
+    uv_stream_t* tcp_stream = (uv_stream_t*)&tcp_client;
+    s_uv_write(__await__, tcp_stream, request, strlen(request));
+
+    //<4> read response
+    ssize_t nread;
+    char buf[1024];
+    while (true) {
+        ret = s_uv_read(__await__, tcp_stream, buf, sizeof(buf), &nread);
+        if (ret != 0) break;
+
+        // output response to console
+        fwrite(buf, 1, nread, stdout);
+    }
+
+    //<5> close connections
+out2:;
+    s_uv_close(__await__, (uv_handle_t*)&tcp_client);
+out1:;
+    uv_freeaddrinfo(addr);
+out0:;
 }
 ```
 

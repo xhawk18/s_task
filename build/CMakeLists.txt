@@ -70,6 +70,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 endif()
 
 set(uv_sources
+    ../src/s_uv.c
     ../libuv/src/fs-poll.c
     ../libuv/src/idna.c
     ../libuv/src/inet.c
@@ -250,15 +251,18 @@ target_compile_options(ex1_event PRIVATE ${st_cflags})
 target_include_directories(ex1_event PRIVATE ../include ../libuv/include ../libuv/src)
 target_link_libraries(ex1_event ${st_libraries})
 
-#message("${uv_sources}")
-#message("${st_defines}")
-#message("${st_cflags}")
-#message("${st_libraries}")
-
 add_executable(ex2_libuv ../examples/ex2_libuv.c ${st_sources} ${uv_sources})
 target_compile_definitions(ex2_libuv PRIVATE ${st_defines} USE_LIBUV)
 target_compile_options(ex2_libuv PRIVATE ${st_cflags})
 #target_link_options(ex2_libuv PRIVATE -s)
 target_include_directories(ex2_libuv PRIVATE ../include ../libuv/include ../libuv/src)
 target_link_libraries(ex2_libuv ${st_libraries})
+
+add_executable(ex3_http_client ../examples/ex3_http_client.c ${st_sources} ${uv_sources})
+target_compile_definitions(ex3_http_client PRIVATE ${st_defines} USE_LIBUV)
+target_compile_options(ex3_http_client PRIVATE ${st_cflags})
+#target_link_options(ex3_http_client PRIVATE -s)
+target_include_directories(ex3_http_client PRIVATE ../include ../libuv/include ../libuv/src)
+target_link_libraries(ex3_http_client ${st_libraries})
+
 
