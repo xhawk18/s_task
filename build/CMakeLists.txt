@@ -12,16 +12,21 @@ if(MSVC)
 elseif(CMAKE_C_COMPILER_ID MATCHES "AppleClang|Clang|GNU")
   list(APPEND st_cflags -fvisibility=hidden --std=gnu89)
   list(APPEND st_cflags -Wall -Wextra -Wstrict-prototypes)
-  list(APPEND st_cflags -Wno-unused-parameter)
+  list(APPEND st_cflags -Wno-unused-parameter -Wno-deprecated-declarations)
   list(APPEND st_cflags -static)
   #list(APPEND st_libraries -static -s)
-  list(APPEND st_libraries -s)
 endif()
 
 set(st_sources
     ../src/s_task.c
     ../src/s_list.c
     ../src/s_rbtree.c)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  list(APPEND st_sources
+    ../asm/make_x86_64_sysv_macho_gas.S
+    ../asm/jump_x86_64_sysv_macho_gas.S)
+endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   if(CMAKE_C_COMPILER MATCHES "x86_64-linux-gnu")

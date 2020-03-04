@@ -903,7 +903,7 @@ int uv__fsevents_close(uv_fs_event_t* handle) {
   /* Wait for deinitialization */
   uv_sem_wait(&state->fsevent_sem);
 
-  uv_close((uv_handle_t*) handle->cf_cb, (uv_close_cb) uv__free);
+  uv_close((uv_handle_t*) handle->cf_cb, (uv_close_cb) uv__free, NULL);
   handle->cf_cb = NULL;
 
   /* Free data in queue */

@@ -62,8 +62,9 @@ typedef struct tag_s_task_t {
     void        *task_arg;
 #if defined   USE_SWAP_CONTEXT
     ucontext_t   uc;
+    char dummy[512]; //it seems darwin ucontext has no enough memory.
 #elif defined USE_JUMP_FCONTEXT
-	fcontext_t   fc;
+    fcontext_t   fc;
 #endif
     size_t       stack_size;
     bool         closed;

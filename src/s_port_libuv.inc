@@ -40,8 +40,24 @@ extern
 fcontext_t BOOST_CONTEXT_CALLDECL make_fcontext( void * sp, size_t size, void (* fn)( transfer_t) );
 
 
+#if 0	//use swapcontext
+#ifndef _XOPEN_SOURCE
+#define _XOPEN_SOURCE
+#endif
+#include <ucontext.h>
+
+void create_context(ucontext_t *uc, void *stack, size_t stack_size, void *task) {
+    getcontext(uc);
+    uc->uc_stack.ss_sp = stack;
+    uc->uc_stack.ss_size = stack_size;
+    uc->uc_link = 0;
+    makecontext(uc, (void (*)(void))&s_task_context_entry, 1, task);
+}
+#endif
+
 void create_fcontext(fcontext_t *fc, void * sp, size_t size, void (* fn)( transfer_t)) {
 	sp = (void *)((char *)sp + size);
 	*fc = make_fcontext(sp, size, fn);
 }
+
 

@@ -210,6 +210,7 @@ void my_on_idle(uint64_t max_idle_ms) {
    |-----------------------------|------------|-------|
    | Windows                     | yes        | yes   |
    | Linux                       | yes        | yes   |
+   | MacOS                       | yes        | yes   |
    | MingW                       | yes        | no    |
    | ARMv6-M(M051)               | yes        | no    |
    | ARMv7-M(stm32f103,stm32f302)| yes        | no    |
