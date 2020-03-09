@@ -39,8 +39,7 @@ transfer_t BOOST_CONTEXT_CALLDECL jump_fcontext( fcontext_t const to, void * vp)
 extern
 fcontext_t BOOST_CONTEXT_CALLDECL make_fcontext( void * sp, size_t size, void (* fn)( transfer_t) );
 
-
-#if 0	//use swapcontext
+#ifdef USE_SWAP_CONTEXT
 #ifndef _XOPEN_SOURCE
 #define _XOPEN_SOURCE
 #endif
@@ -55,9 +54,10 @@ void create_context(ucontext_t *uc, void *stack, size_t stack_size, void *task) 
 }
 #endif
 
+#ifdef USE_JUMP_FCONTEXT
 void create_fcontext(fcontext_t *fc, void * sp, size_t size, void (* fn)( transfer_t)) {
 	sp = (void *)((char *)sp + size);
 	*fc = make_fcontext(sp, size, fn);
 }
-
+#endif
 
