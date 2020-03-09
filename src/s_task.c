@@ -52,7 +52,7 @@ static void s_task_next(__async__);
 #endif
 
 /*******************************************************************/
-/* tasks                                                           */
+/* s_task type definitions                                         */
 /*******************************************************************/
 
 typedef struct tag_s_task_t {
@@ -62,7 +62,9 @@ typedef struct tag_s_task_t {
     void        *task_arg;
 #if defined   USE_SWAP_CONTEXT
     ucontext_t   uc;
-    char dummy[512]; //it seems darwin ucontext has no enough memory.
+#   ifdef __APPLE__
+    char dummy[512]; //it seems darwin ucontext has no enough memory ?
+#   endif
 #elif defined USE_JUMP_FCONTEXT
     fcontext_t   fc;
 #endif
@@ -113,10 +115,11 @@ static uv_timer_t* s_task_uv_timer() {
 }
 #endif
 
+
+
 /*******************************************************************/
 /* timer                                                           */
 /*******************************************************************/
-
 
 static int s_timer_comparator(const RBTNode* a, const RBTNode* b, void* arg) {
     s_timer_t* timer_a = GET_PARENT_ADDR(a, s_timer_t, rbt_node);
@@ -212,6 +215,10 @@ static uint64_t s_timer_wait_recent(void) {
     return (uint64_t)-1;    //max
 }
 
+
+/*******************************************************************/
+/* tasks                                                           */
+/*******************************************************************/
 
 void s_task_sleep_ticks(__async__, my_clock_t ticks) {
     my_clock_t current_ticks;
@@ -474,6 +481,12 @@ void s_task_fcontext_entry(transfer_t arg) {
 #endif
 
 
+
+/*******************************************************************/
+/* mutex                                                           */
+/*******************************************************************/
+
+
 /* Initialize a mutex */
 void s_mutex_init(s_mutex_t *mutex) {
     s_list_init(&mutex->wait_list);
@@ -503,6 +516,11 @@ void s_mutex_unlock(s_mutex_t *mutex) {
     }
 }
 
+
+
+/*******************************************************************/
+/* event                                                           */
+/*******************************************************************/
 
 /* Initialize a wait event */
 void s_event_init(s_event_t *event) {
