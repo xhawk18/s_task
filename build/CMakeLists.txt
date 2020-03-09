@@ -1,6 +1,6 @@
 # TODO: determine CMAKE_SYSTEM_NAME on OS/390.  Currently assumes "OS/390".
-cmake_minimum_required(VERSION 3.0)
-project(s_task LANGUAGES C ASM)
+cmake_minimum_required(VERSION 2.8)
+project(s_task C ASM)
 enable_language(C ASM)
 
 message("CMAKE_SYSTEM_NAME = ${CMAKE_SYSTEM_NAME}")
@@ -45,6 +45,10 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
       list(APPEND st_sources
         ../asm/make_arm_aapcs_elf_gas.S
         ../asm/jump_arm_aapcs_elf_gas.S)
+  elseif(CMAKE_C_COMPILER MATCHES "mipsel-")
+      list(APPEND st_sources
+        ../asm/make_mips32_o32_elf_gas.S
+        ../asm/jump_mips32_o32_elf_gas.S)
   else()
     if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
       list(APPEND st_sources

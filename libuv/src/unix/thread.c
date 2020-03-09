@@ -475,10 +475,12 @@ static uv_once_t glibc_version_check_once = UV_ONCE_INIT;
 static int platform_needs_custom_semaphore = 0;
 
 static void glibc_version_check(void) {
+#ifndef __UCLIBC__
   const char* version = gnu_get_libc_version();
   platform_needs_custom_semaphore =
       version[0] == '2' && version[1] == '.' &&
       atoi(version + 2) < 21;
+#endif
 }
 
 #elif defined(__MVS__)
