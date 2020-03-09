@@ -11,7 +11,7 @@ static void *stack_main[512*1024];
 void main_task(__async__, void *arg) {
     uv_loop_t* loop = (uv_loop_t*)arg;
 
-    const char *HOST = "baidu.com";
+    const char *HOST = "www.baidu.com";
     const unsigned short PORT = 80;
 
     //<1> resolve host
