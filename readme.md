@@ -172,6 +172,29 @@ void s_event_wait_msec(__async__, s_event_t *event, uint32_t msec);
 void s_event_wait_sec(__async__, s_event_t *event, uint32_t msec);
 ```
 
+## Compatibility
+
+"s_task" can run as standalone co-routine library, or work with library libuv.
+
+   | Platform                    | co-routine | libuv |
+   |-----------------------------|------------|-------|
+   | Windows                     | yes        | yes   |
+   | Linux                       | yes        | yes   |
+   | MacOS                       | yes        | yes   |
+   | MingW                       | yes        | no    |
+   | ARMv6-M(M051)               | yes        | no    |
+   | ARMv7-M(stm32f103,stm32f302)| yes        | no    |
+   | stm8s103                    | no (todo)  | no    |
+
+   linux tested on 
+   * i686 (ubuntu-16.04)
+   * x86_64 (centos-8.1)
+   * arm (raspiberry 32bit)
+   * aarch64 (raspiberry 64bit)
+   * mipsel (openwrt)
+   * mips64 (fedora for loongson 3A-4000)
+
+
 ## How to make port?
 To make a port of "s_task" to new system is very simple.
 Here's an example for linux porting, s_port_posix.h --
@@ -202,28 +225,6 @@ void my_on_idle(uint64_t max_idle_ms) {
     or 
     makecontext / swapcontext       (slow!!)
 ```
-
-## Compatibility
-
-"s_task" can run as a standalone co-routine library, or work with libuv library.
-
-   | Platform                    | co-routine | libuv |
-   |-----------------------------|------------|-------|
-   | Windows                     | yes        | yes   |
-   | Linux                       | yes        | yes   |
-   | MacOS                       | yes        | yes   |
-   | MingW                       | yes        | no    |
-   | ARMv6-M(M051)               | yes        | no    |
-   | ARMv7-M(stm32f103,stm32f302)| yes        | no    |
-   | stm8s103                    | no (todo)  | no    |
-
-   linux tested on 
-   * i686 (ubuntu-16.04)
-   * x86_64 (centos-8.1)
-   * arm (raspiberry 32bit)
-   * aarch64 (raspiberry 64bit)
-   * mipsel (openwrt)
-   * mips64 (fedora for loongson 3A-4000)
 
 ## Issues on embedded system
 The library allocates tasks' stack from the main stack,
