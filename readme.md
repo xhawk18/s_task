@@ -129,9 +129,6 @@ void s_task_create(void *stack, size_t stack_size, s_task_fn_t entry, void *arg)
 /* Wait a task to exit */
 void s_task_join(__async__, void *stack);
 
-/* Kill a task */
-void s_task_kill(void *stack);
-
 /* Sleep in milliseconds */
 void s_task_msleep(__async__, uint32_t msec);
 
