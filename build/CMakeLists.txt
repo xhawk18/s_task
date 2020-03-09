@@ -1,6 +1,6 @@
 # TODO: determine CMAKE_SYSTEM_NAME on OS/390.  Currently assumes "OS/390".
 cmake_minimum_required(VERSION 3.0)
-project(s_task)
+project(s_task LANGUAGES C ASM)
 enable_language(C ASM)
 
 message("CMAKE_SYSTEM_NAME = ${CMAKE_SYSTEM_NAME}")
