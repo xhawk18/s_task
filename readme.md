@@ -217,6 +217,14 @@ void my_on_idle(uint64_t max_idle_ms) {
    | ARMv7-M(stm32f103,stm32f302)| yes        | no    |
    | stm8s103                    | no (todo)  | no    |
 
+   linux tested on 
+   * i686 (ubuntu-16.04)
+   * x86_64 (centos-8.1)
+   * arm (raspiberry 32bit)
+   * aarch64 (raspiberry 64bit)
+   * mipsel (openwrt)
+   * mips64 (fedora for loongson 3A-4000)
+
 ## Issues on embedded system
 The library allocates tasks' stack from the main stack,
 so please take care of the size of main stack and make sure it's big enough.
