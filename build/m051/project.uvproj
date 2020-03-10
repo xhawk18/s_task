@@ -375,7 +375,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>--diag_error=warning</MiscControls>
-              <Define>DEBUG_ENABLE_SEMIHOST</Define>
+              <Define>DEBUG_ENABLE_SEMIHOST,NDEBUG</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\include;.\M051SeriesBSP\LibM051Series\CMSIS\CM0\CoreSupport;.\M051SeriesBSP\LibM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series;.\M051SeriesBSP\LibM051Series\StdDriver\inc</IncludePath>
             </VariousControls>

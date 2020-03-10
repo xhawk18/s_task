@@ -336,7 +336,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>--C99 --diag_error=warning --vfe</MiscControls>
-              <Define>USE_STDPERIPH_DRIVER,STM32F302x8</Define>
+              <Define>USE_STDPERIPH_DRIVER,STM32F302x8,NDEBUG</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\include;.\;.\Libraries\CMSIS\Include;.\Libraries\CMSIS\Device\ST\STM32F30x\Include;.\Libraries\STM32F30x_StdPeriph_Driver\inc;.\Libraries\STM32F30x_I2C_CPAL_Driver\inc</IncludePath>
             </VariousControls>
