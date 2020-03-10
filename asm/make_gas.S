@@ -14,7 +14,7 @@
     #include "make_arm64_aapcs_elf_gas.S"
 #elif defined(__arm__)
     #include "make_arm_aapcs_elf_gas.S"
-#elif defined(__mips64__)
+#elif defined(__mips64)
     #include "make_mips64_n64_elf_gas.S"
 #elif defined(__mips__)
     #include "make_mips32_o32_elf_gas.S"

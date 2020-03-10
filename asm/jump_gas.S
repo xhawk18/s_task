@@ -14,7 +14,7 @@
     #include "jump_arm64_aapcs_elf_gas.S"
 #elif defined(__arm__)
     #include "jump_arm_aapcs_elf_gas.S"
-#elif defined(__mips64__)
+#elif defined(__mips64)
     #include "jump_mips64_n64_elf_gas.S"
 #elif defined(__mips__)
     #include "jump_mips32_o32_elf_gas.S"
