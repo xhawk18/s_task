@@ -1,4 +1,3 @@
-# TODO: determine CMAKE_SYSTEM_NAME on OS/390.  Currently assumes "OS/390".
 cmake_minimum_required(VERSION 2.8)
 project(s_task C ASM)
 enable_language(C ASM)
@@ -6,6 +5,7 @@ enable_language(C ASM)
 message("CMAKE_SYSTEM_NAME = ${CMAKE_SYSTEM_NAME}")
 message("CMAKE_SYSTEM_PROCESSOR = ${CMAKE_SYSTEM_PROCESSOR}")
 message("CMAKE_C_COMPILER = ${CMAKE_C_COMPILER}")
+message("CMAKE_ASM_COMPILER = ${CMAKE_ASM_COMPILER}")
 
 if(MSVC)
   list(APPEND st_cflags /W4)
@@ -22,61 +22,10 @@ set(st_sources
     ../src/s_list.c
     ../src/s_rbtree.c)
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  list(APPEND st_sources
-    ../asm/make_x86_64_sysv_macho_gas.S
-    ../asm/jump_x86_64_sysv_macho_gas.S)
-endif()
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  if(CMAKE_C_COMPILER MATCHES "x86_64-linux-gnu")
-      list(APPEND st_sources
-        ../asm/make_x86_64_sysv_elf_gas.S
-        ../asm/jump_x86_64_sysv_elf_gas.S)
-  elseif(CMAKE_C_COMPILER MATCHES "i686-linux-gnu")
-      list(APPEND st_sources
-        ../asm/make_i386_sysv_elf_gas.S
-        ../asm/jump_i386_sysv_elf_gas.S)
-  elseif(CMAKE_C_COMPILER MATCHES "aarch64-linux-gnu")
-      list(APPEND st_sources
-        ../asm/make_arm64_aapcs_elf_gas.S
-        ../asm/jump_arm64_aapcs_elf_gas.S)
-  elseif(CMAKE_C_COMPILER MATCHES "arm-linux-gnu")
-      list(APPEND st_sources
-        ../asm/make_arm_aapcs_elf_gas.S
-        ../asm/jump_arm_aapcs_elf_gas.S)
-  elseif(CMAKE_C_COMPILER MATCHES "mipsel-")
-      list(APPEND st_sources
-        ../asm/make_mips32_o32_elf_gas.S
-        ../asm/jump_mips32_o32_elf_gas.S)
-  else()
-    if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
-      list(APPEND st_sources
-        ../asm/make_x86_64_sysv_elf_gas.S
-        ../asm/jump_x86_64_sysv_elf_gas.S)
-    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "i686")
-      list(APPEND st_sources
-        ../asm/make_i386_sysv_elf_gas.S
-        ../asm/jump_i386_sysv_elf_gas.S)
-    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
-      list(APPEND st_sources
-        ../asm/make_arm64_aapcs_elf_gas.S
-        ../asm/jump_arm64_aapcs_elf_gas.S)
-    elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
-      list(APPEND st_sources
-        ../asm/make_arm_aapcs_elf_gas.S
-        ../asm/jump_arm_aapcs_elf_gas.S)
-    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "mips64")
-      list(APPEND st_sources
-        ../asm/make_mips64_n64_elf_gas.S
-        ../asm/jump_mips64_n64_elf_gas.S)
-    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "mips")
-      list(APPEND st_sources
-        ../asm/make_mips32_o32_elf_gas.S
-        ../asm/jump_mips32_o32_elf_gas.S)
-    endif()
-  endif()
-endif()
+# TODO: the two asm files may be replaced to target platform.
+list(APPEND st_sources
+    ../asm/make_gas.S
+    ../asm/jump_gas.S)
 
 set(uv_sources
     ../src/s_uv.c
