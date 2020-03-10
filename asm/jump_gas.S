@@ -2,6 +2,12 @@
 
 #if defined(__APPLE__)
     #include "jump_combined_sysv_macho_gas.S"
+#elif defined(_WIN32)
+    #if defined(__x86_64__)
+        #include "jump_x86_64_ms_pe_gas.asm"
+    #elif defined(__i386__)
+        #include "jump_i386_ms_pe_gas.asm"
+    #endif
 #elif defined(__x86_64__)
     #include "jump_x86_64_sysv_elf_gas.S"
 #elif defined(__i386__)

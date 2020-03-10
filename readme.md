@@ -171,7 +171,7 @@ void s_event_wait_sec(__async__, s_event_t *event, uint32_t msec);
 
 ## Compatibility
 
-"s_task" can run as standalone co-routine library, or work with library libuv.
+"s_task" can run as standalone co-routine library, or work with library libuv (compiling with macro **USE_LIBUV**).
 
    | Platform                    | co-routine | libuv |
    |-----------------------------|------------|-------|
