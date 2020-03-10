@@ -232,7 +232,9 @@ void s_task_sleep_ticks(__async__, my_clock_t ticks) {
     dump_timers(__LINE__);
 
     if (!rbt_insert(&g_globals.timers, &timer.rbt_node)) {
+#ifndef NDEBUG
         fprintf(stderr, "timer insert failed!\n");
+#endif
         return;
     }
 
@@ -295,7 +297,9 @@ static void s_task_call_next(__async__) {
 
     //Check active tasks
     if (s_list_is_empty(&g_globals.active_tasks)) {
+#ifndef NDEBUG
         fprintf(stderr, "error: must has one task to run\n");
+#endif
         return;
     }
 
@@ -361,7 +365,9 @@ static void s_task_next(__async__) {
             my_on_idle(timeout);
         }
         else {
+#ifndef NDEBUG
             fprintf(stderr, "error: must not wait so long!\n");
+#endif
             my_on_idle((uint64_t)-1);
         }
     }
@@ -551,7 +557,9 @@ static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
     timer.wakeup_ticks = current_ticks + ticks;
 
     if (!rbt_insert(&g_globals.timers, &timer.rbt_node)) {
+#ifndef NDEBUG
         fprintf(stderr, "timer insert failed!\n");
+#endif
         return;
     }
 

@@ -914,8 +914,10 @@ rbt_begin_iterate(RBTree *rbt, RBTOrderControl ctrl, RBTreeIterator *iter)
 		case RightLeftWalk:		/* visit right, then self, then left */
 			iter->iterate = rbt_right_left_iterator;
 			break;
-		default:
+		default:;
+#ifndef NDEBUG
 			fprintf(stderr, "unrecognized rbtree iteration order: %d", ctrl);
+#endif
 	}
 }
 
@@ -944,7 +946,9 @@ bool rbt_is_empty(const RBTree* rbt) {
     bool ret2 = (node == NULL);
 
     if (ret1 != ret2) {
+#ifndef NDEBUG
         fprintf(stderr, "is_empty\n");
+#endif
         //exit(0);
     }
     return ret1;
