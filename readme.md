@@ -222,18 +222,3 @@ void my_on_idle(uint64_t max_idle_ms) {
     or 
     makecontext / swapcontext       (slow!!)
 ```
-
-## Issues on embedded system
-The library allocates tasks' stack from the main stack,
-so please take care of the size of main stack and make sure it's big enough.
-
-For example, for stm32f103, we adjust the main stack size to 8K,
-in file build_stm32f103\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\arm\startup_stm32f10x_md.s
-```asm
-    Stack_Size      EQU     0x00002000
-```
-
-and define the stack size of each task to 1K in s_port_stm32f10x.h
-```c
-#define STACK_SIZE 1024
-```
