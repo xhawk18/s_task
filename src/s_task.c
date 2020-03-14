@@ -264,7 +264,7 @@ static uint64_t s_timer_wait_recent() {
         my_clock_diff_t ticks_to_wakeup = (my_clock_diff_t)(timer->wakeup_ticks - current_ticks);
         //printf("ticks_to_wakeup = %d %d %d \n", ticks_to_wakeup, (int)current_ticks, (int)timer->wakeup_ticks);
         if (ticks_to_wakeup > 0) {
-            uint64_t wait = ((uint64_t)ticks_to_wakeup * 1000  / MY_CLOCKS_PER_SEC);
+            uint64_t wait = ((uint64_t)ticks_to_wakeup * 1000 / MY_CLOCKS_PER_SEC);
 			return wait;
 		}
         else

@@ -20,7 +20,8 @@ static void uv_on_timer(uv_timer_t* handle) {
 }
 
 void my_on_idle(uint64_t max_idle_ms) {
-    uv_timer_start(s_task_uv_timer(), uv_on_timer, max_idle_ms, 0);
+    if(max_idle_ms != (uint64_t)-1)
+        uv_timer_start(s_task_uv_timer(), uv_on_timer, max_idle_ms, 0);
 }
 
 
