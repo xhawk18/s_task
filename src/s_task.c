@@ -269,8 +269,8 @@ my_clock_t sec_to_ticks(uint32_t sec) {
     return (my_clock_t)((uint64_t)sec * (uint64_t)MY_CLOCKS_PER_SEC);
 }
 
-#define TICKS_DEVIDER   (4096*1024)
-#define TICKS_PER_SEC_1 (TICKS_DEVIDER / MY_CLOCKS_PER_SEC)
+#define TICKS_DEVIDER   (uint32_t)(4096*1024)
+#define TICKS_PER_SEC_1 (uint32_t)(TICKS_DEVIDER / MY_CLOCKS_PER_SEC)
 
 uint32_t ticks_to_msec(my_clock_t ticks) {
     uint64_t u64_msec = 1000 * (uint64_t)ticks * TICKS_PER_SEC_1 / TICKS_DEVIDER;

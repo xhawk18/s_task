@@ -83,7 +83,7 @@
         </option>
         <option>
           <name>GenStackSize</name>
-          <state>0x300</state>
+          <state>0x100</state>
         </option>
         <option>
           <name>GenHeapSize</name>
@@ -258,6 +258,7 @@
         <option>
           <name>CCIncludePath2</name>
           <state>$PROJ_DIR$\</state>
+          <state>$PROJ_DIR$\..\..\include</state>
           <state>$PROJ_DIR$\STM8S_StdPeriph_Lib\Libraries\STM8S_StdPeriph_Driver\inc</state>
         </option>
         <option>
@@ -1648,13 +1649,22 @@
   <group>
     <name>User</name>
     <file>
-      <name>$PROJ_DIR$\..\main.c</name>
+      <name>$PROJ_DIR$\..\..\examples\ex1_event.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\src\s_list.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\s_port_stm8s103.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\s_task.c</name>
+      <name>$PROJ_DIR$\..\..\src\s_port_stm8s103.s</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\src\s_rbtree.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\src\s_task.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\s_task.h</name>

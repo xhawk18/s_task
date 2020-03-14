@@ -41,7 +41,7 @@
         </option>
         <option>
           <name>DynDriver</name>
-          <state>STLINK_STM8</state>
+          <state>SIMULATOR_STM8</state>
         </option>
         <option>
           <name>CSpyDDFOverride</name>

@@ -181,6 +181,7 @@ void s_event_wait_sec(__async__, s_event_t *event, uint32_t msec);
    | MingW                       | yes        | no    |
    | ARMv6-M(M051)               | yes        | no    |
    | ARMv7-M(stm32f103,stm32f302)| yes        | no    |
+   | stm8s103                    | yes        | no    |
 
    linux tested on 
    * i686 (ubuntu-16.04)

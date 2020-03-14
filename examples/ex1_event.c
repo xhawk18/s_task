@@ -6,10 +6,14 @@
 
 s_event_t  g_event;
 bool       g_closed = false;
-#if defined __ARMCC_VERSION || defined STM8S103
+#if defined __ARMCC_VERSION
 void      *stack_main[256];
 void      *stack0[256];
 void      *stack1[256];
+#elif defined STM8S103
+char       stack_main[192];
+char       stack0[192];
+char       stack1[192];
 #else
 void      *stack_main[512*1024];
 void      *stack0[512*1024];
@@ -34,9 +38,13 @@ void main_task(__async__, void *arg) {
     s_task_create(stack0, sizeof(stack0), sub_task, (void *)1);
     s_task_create(stack1, sizeof(stack1), sub_task, (void *)2);
 
-    for (i = 0; i < 5; ++i) {
+    while(true) {
+        ++i;
         printf("task_main arg = %p, i = %d\n", arg, i);
-        s_task_msleep(__await__, 500);
+
+        s_task_yield(__await__);
+        //s_task_msleep(__await__, 500);
+
         if (i % 3 == 0) {
             printf("task main set event\n");
             s_event_set(&g_event);
