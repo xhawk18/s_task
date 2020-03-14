@@ -15,9 +15,9 @@ char       stack_main[192];
 char       stack0[192];
 char       stack1[192];
 #else
-void      *stack_main[512*1024];
-void      *stack0[512*1024];
-void      *stack1[512*1024];
+void      *stack_main[256*1024];
+void      *stack0[256*1024];
+void      *stack1[256*1024];
 #endif
 
 
@@ -38,8 +38,7 @@ void main_task(__async__, void *arg) {
     s_task_create(stack0, sizeof(stack0), sub_task, (void *)1);
     s_task_create(stack1, sizeof(stack1), sub_task, (void *)2);
 
-    while(true) {
-        ++i;
+    for(i = 0; i < 10; ++i) {
         printf("task_main arg = %p, i = %d\n", arg, i);
 
         s_task_yield(__await__);
