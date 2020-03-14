@@ -1,5 +1,10 @@
 /* Copyright xhawk, MIT license */
 
+//#define USE_SWAP_CONTEXT
+//#define USE_JUMP_FCONTEXT
+//#define USE_LIST_TIMER_CONTAINER	//for very small memory footprint
+
+
 #include <setjmp.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -23,12 +28,10 @@ void s_task_fcontext_entry(transfer_t arg);
 /* Run next task, but not set myself for ready to run */
 static void s_task_next(__async__);
 
-//#define USE_SWAP_CONTEXT
-//#define USE_JUMP_FCONTEXT
-
 
 #if defined __ARMCC_VERSION
 #   define USE_SWAP_CONTEXT
+#   define USE_LIST_TIMER_CONTAINER
 #   if defined STM32F10X_MD
 #       include "s_port_armv7m.inc"
 #   elif defined STM32F302x8
@@ -40,6 +43,7 @@ static void s_task_next(__async__);
 #   endif
 #elif defined STM8S103
 #   define USE_SWAP_CONTEXT
+#   define USE_LIST_TIMER_CONTAINER
 #   include "s_port_stm8s103.inc"
 #elif defined USE_LIBUV
 #   define USE_JUMP_FCONTEXT
@@ -74,7 +78,11 @@ typedef struct tag_s_task_t {
 } s_task_t;
 
 typedef struct {
+#ifndef USE_LIST_TIMER_CONTAINER
     RBTNode    rbt_node;
+#else
+    s_list_t   node;
+#endif
     s_task_t  *task;
     my_clock_t wakeup_ticks;
 } s_timer_t;
@@ -88,7 +96,13 @@ typedef struct {
     s_task_t    main_task;
     s_list_t    active_tasks;
     s_task_t   *current_task;
+
+#ifndef USE_LIST_TIMER_CONTAINER
     RBTree      timers;
+#else
+    s_list_t    timers;
+#endif
+
 #if defined USE_LIBUV
     uv_loop_t  *uv_loop;
     uv_timer_t  uv_timer;
@@ -121,6 +135,8 @@ static uv_timer_t* s_task_uv_timer() {
 /*******************************************************************/
 /* timer                                                           */
 /*******************************************************************/
+
+#ifndef USE_LIST_TIMER_CONTAINER
 
 static int s_timer_comparator(const RBTNode* a, const RBTNode* b, void* arg) {
     s_timer_t* timer_a = GET_PARENT_ADDR(a, s_timer_t, rbt_node);
@@ -216,11 +232,54 @@ static uint64_t s_timer_wait_recent(void) {
     return (uint64_t)-1;    //max
 }
 
+#else
+
+static void s_timer_run() {
+    my_clock_t current_ticks = my_clock();
+
+    s_list_t *node = s_list_get_next(&g_globals.timers);
+    while (node != &g_globals.timers) {
+        s_timer_t *timer = GET_PARENT_ADDR(node, s_timer_t, node);
+
+        my_clock_diff_t ticks_to_wakeup = (my_clock_diff_t)(timer->wakeup_ticks - current_ticks);
+        if (ticks_to_wakeup > 0) break;
+
+        s_list_t *node_next = s_list_get_next(node);
+
+        s_list_detach(&timer->task->node);
+        s_list_attach(&g_globals.active_tasks, &timer->task->node);
+
+        timer->task = NULL;
+        s_list_detach(node);
+        node = node_next;
+    }
+}
+
+static uint64_t s_timer_wait_recent() {
+    my_clock_t current_ticks = my_clock();
+    s_list_t *node = s_list_get_next(&g_globals.timers);
+    if (node != &g_globals.timers) {
+        s_timer_t *timer = GET_PARENT_ADDR(node, s_timer_t, node);
+        
+        my_clock_diff_t ticks_to_wakeup = (my_clock_diff_t)(timer->wakeup_ticks - current_ticks);
+        //printf("ticks_to_wakeup = %d %d %d \n", ticks_to_wakeup, (int)current_ticks, (int)timer->wakeup_ticks);
+        if (ticks_to_wakeup > 0) {
+            uint64_t wait = ((uint64_t)ticks_to_wakeup * 1000  / MY_CLOCKS_PER_SEC);
+			return wait;
+		}
+        else
+            return 0;
+    }
+    return (uint64_t)-1;    //max
+}
+
+#endif
+
 
 /*******************************************************************/
 /* tasks                                                           */
 /*******************************************************************/
-
+#ifndef USE_LIST_TIMER_CONTAINER
 void s_task_sleep_ticks(__async__, my_clock_t ticks) {
     my_clock_t current_ticks;
     s_timer_t timer;
@@ -241,7 +300,7 @@ void s_task_sleep_ticks(__async__, my_clock_t ticks) {
 
     dump_timers(__LINE__);
 
-    s_list_detach(&g_globals.current_task->node);
+    s_list_detach(&g_globals.current_task->node);   //no need, for safe
     s_task_next(__await__);
 
     dump_timers(__LINE__);
@@ -251,6 +310,39 @@ void s_task_sleep_ticks(__async__, my_clock_t ticks) {
         rbt_delete(&g_globals.timers, &timer.rbt_node);
     }
 }
+
+#else
+void s_task_sleep_ticks(__async__, my_clock_t ticks) {
+    my_clock_t current_ticks;
+    s_list_t *node;
+    s_timer_t timer;
+    
+    current_ticks = my_clock();
+
+    s_list_init(&timer.node);
+    timer.task = g_globals.current_task;
+    timer.wakeup_ticks = current_ticks + ticks;
+
+    for(node = s_list_get_next(&g_globals.timers);
+        node != &g_globals.timers;
+        node = s_list_get_next(node)) {
+        s_timer_t *timer = GET_PARENT_ADDR(node, s_timer_t, node);
+
+        my_clock_diff_t ticks_to_wakeup = (my_clock_diff_t)(timer->wakeup_ticks - current_ticks);
+        if (ticks_to_wakeup >= 0 && (my_clock_t)ticks_to_wakeup > ticks)
+            break;
+    }
+    s_list_attach(node, &timer.node);
+
+    s_list_detach(&timer.task->node);   //no need, for safe
+    s_task_next(__await__);
+
+    if (timer.task != NULL) {
+        timer.task = NULL;
+        s_list_detach(&timer.node);
+    }
+}
+#endif
 
 void s_task_msleep(__async__, uint32_t msec) {
     my_clock_t ticks = msec_to_ticks(msec);
@@ -370,7 +462,11 @@ static void s_task_next(__async__) {
         }
 
         //Check timers
+#ifndef USE_LIST_TIMER_CONTAINER
         if (!rbt_is_empty(&g_globals.timers)) {
+#else
+        if (!s_list_is_empty(&g_globals.timers)) {
+#endif
             //Wait for the recent timer
             uint64_t timeout = s_timer_wait_recent();
             my_on_idle(timeout);
@@ -402,10 +498,16 @@ void s_task_init_system()
     g_globals.uv_loop = uv_loop;
 #endif
     s_list_init(&g_globals.active_tasks);
+
+#ifndef USE_LIST_TIMER_CONTAINER
     rbt_create(&g_globals.timers,
         s_timer_comparator,
         NULL
     );
+#else
+    s_list_init(&g_globals.timers);
+#endif
+
     my_clock_init();
 
     s_list_init(&g_globals.main_task.node);
@@ -559,6 +661,7 @@ void s_event_set(s_event_t *event) {
 }
 
 /* Wait event */
+#ifndef USE_LIST_TIMER_CONTAINER
 static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
     my_clock_t current_ticks;
     s_timer_t timer;
@@ -575,6 +678,7 @@ static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
     }
 
     s_list_detach(&g_globals.current_task->node);   //no need, for safe
+    //Put current task to the event's waiting list
     s_list_attach(&event->wait_list, &g_globals.current_task->node);
     s_task_next(__await__);
 
@@ -583,6 +687,39 @@ static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
         rbt_delete(&g_globals.timers, &timer.rbt_node);
     }
 }
+#else
+static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
+    my_clock_t current_ticks;
+    s_list_t *node;
+    s_timer_t timer;
+    
+    current_ticks = my_clock();
+    s_list_init(&timer.node);
+    timer.task = g_globals.current_task;
+    timer.wakeup_ticks = current_ticks + ticks;
+
+    for(node = s_list_get_next(&g_globals.timers);
+        node != &g_globals.timers;
+        node = s_list_get_next(node)) {
+        s_timer_t *timer = GET_PARENT_ADDR(node, s_timer_t, node);
+
+        my_clock_diff_t ticks_to_wakeup = (my_clock_diff_t)(timer->wakeup_ticks - current_ticks);
+        if (ticks_to_wakeup >= 0 && (my_clock_t)ticks_to_wakeup > ticks)
+            break;
+    }
+    s_list_attach(node, &timer.node);
+
+    s_list_detach(&timer.task->node);   //no need, for safe
+    //Put current task to the event's waiting list
+    s_list_attach(&event->wait_list, &g_globals.current_task->node);
+    s_task_next(__await__);
+
+    if (timer.task != NULL) {
+        timer.task = NULL;
+        s_list_detach(&timer.node);
+    }
+}
+#endif
 
 void s_event_wait_msec(__async__, s_event_t *event, uint32_t msec) {
     my_clock_t ticks = msec_to_ticks(msec);
