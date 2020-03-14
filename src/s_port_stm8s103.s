@@ -1,93 +1,92 @@
 #include <vregs.inc>
 
-	module  s_port_stm8s
+    module  s_port_stm8s
 
-save_registers	macro
-	push	CC
-	pushw	Y
-	pushw	X
-	push	A
+save_registers    macro
+    push    CC
+    pushw    Y
+    pushw    X
+    push    A
     endm
 
-restore_registers	macro
-	pop	A
-	popw	X
-	popw	Y
-	pop	CC
+restore_registers    macro
+    pop    A
+    popw    X
+    popw    Y
+    pop    CC
     endm
 
 save_virtual_registers   macro
-	push	?b0
-	push	?b1
-	push	?b2
-	push	?b3
-	push	?b4
-	push	?b5
-	push	?b6
-	push	?b7
-	push	?b8
-	push	?b9
-	push	?b10
-	push	?b11
-	push	?b12
-	push	?b13
-	push	?b14
-	push	?b15
+    push    ?b0
+    push    ?b1
+    push    ?b2
+    push    ?b3
+    push    ?b4
+    push    ?b5
+    push    ?b6
+    push    ?b7
+    push    ?b8
+    push    ?b9
+    push    ?b10
+    push    ?b11
+    push    ?b12
+    push    ?b13
+    push    ?b14
+    push    ?b15
     endm
 
 restore_virtual_registers  macro
-	pop	?b15
-	pop	?b14
-	pop	?b13
-	pop	?b12
-	pop	?b11
-	pop	?b10
-	pop	?b9
-	pop	?b8
-	pop	?b7
-	pop	?b6
-	pop	?b5
-	pop	?b4
-	pop	?b3
-	pop	?b2
-	pop	?b1
-	pop	?b0
+    pop    ?b15
+    pop    ?b14
+    pop    ?b13
+    pop    ?b12
+    pop    ?b11
+    pop    ?b10
+    pop    ?b9
+    pop    ?b8
+    pop    ?b7
+    pop    ?b6
+    pop    ?b5
+    pop    ?b4
+    pop    ?b3
+    pop    ?b2
+    pop    ?b1
+    pop    ?b0
     endm
 
 ;-------------------------------------------------------------------------------
-	public  swapcontext
+    public  swapcontext
 
 #if __CODE_MODEL__ == __SMALL_CODE_MODEL__
-	section `.near_func.text`:CODE:NOROOT(0)
+    section `.near_func.text`:CODE:NOROOT(0)
 #else
-	section `.far_func.text`:CODE:NOROOT(0)
+    section `.far_func.text`:CODE:NOROOT(0)
 #endif
 
 ;-------------------------------------------------------------------------------
 ;extern void swapcontext(ucontext_t *oucp, const ucontext_t *ucp);
 
 swapcontext:
-        save_registers
-		save_virtual_registers
+    save_registers
+    save_virtual_registers
 
-		
-		ldw		Y,SP		;load sp to Y
-		ldw		(X),Y		;save sp to oucp
-		ldw		X,(20,SP)	;load ucp to X
-		ldw		X,(X)
-		ldw     SP, X		;load sp from ucp
+    ldw        Y,SP        ;load sp to Y
+    ldw        (X),Y        ;save sp to oucp
+    ldw        X,(20,SP)    ;load ucp to X
+    ldw        X,(X)
+    ldw     SP, X        ;load sp from ucp
 
-        restore_virtual_registers
-        restore_registers
+    restore_virtual_registers
+    restore_registers
         
 #if __CODE_MODEL__ == __SMALL_CODE_MODEL__
-	ret
+    ret
 #else
-	retf
+    retf
 #endif
 
 ;-------------------------------------------------------------------------------
 
-      end
+    end
 ;*******************************************************************************
 
