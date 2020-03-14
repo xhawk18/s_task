@@ -70,11 +70,11 @@ swapcontext:
     save_registers
     save_virtual_registers
 
-    ldw        Y,SP        ;load sp to Y
-    ldw        (X),Y        ;save sp to oucp
-    ldw        X,(20,SP)    ;load ucp to X
-    ldw        X,(X)
-    ldw     SP, X        ;load sp from ucp
+    ldw     Y,SP        ;save sp to Y
+    ldw     (X),Y       ;save Y to oucp
+    ldw     X,(20,SP)   ;load X from ucp
+    ldw     X,(X)       ;load X from *ucp
+    ldw     SP, X       ;save X to sp
 
     restore_virtual_registers
     restore_registers
