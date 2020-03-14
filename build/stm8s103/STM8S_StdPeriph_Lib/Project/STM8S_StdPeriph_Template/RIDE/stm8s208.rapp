@@ -1,0 +1,106 @@
+
+<ApplicationBuild Header="stm8s208" Extern=".\stm8s208.rapp" Path=".\stm8s208.rapp" OutputFile=".\Debug\stm8s208.aof" sate="66" >
+	<Group Header="STM8S_EVAL" Marker="-1" OutputFile="" sate="0" >
+		<NodeC Path="..\..\..\Utilities\STM8S_EVAL\stm8s_eval.c" Header="stm8s_eval.c" Marker="-1" OutputFile=".\Debug\stm8s_eval.obj" sate="0" />
+						
+	</Group>
+	<Group Header="StdPeriph_Drivers" Marker="-1" OutputFile="" sate="64" >
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_adc2.c" Header="stm8s_adc2.c" Marker="-1" OutputFile=".\Debug\stm8s_adc2.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_awu.c" Header="stm8s_awu.c" Marker="-1" OutputFile=".\Debug\stm8s_awu.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_beep.c" Header="stm8s_beep.c" Marker="-1" OutputFile=".\Debug\stm8s_beep.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_can.c" Header="stm8s_can.c" Marker="-1" OutputFile=".\Debug\stm8s_can.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_clk.c" Header="stm8s_clk.c" Marker="-1" OutputFile=".\Debug\stm8s_clk.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_exti.c" Header="stm8s_exti.c" Marker="-1" OutputFile=".\Debug\stm8s_exti.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_flash.c" Header="stm8s_flash.c" Marker="-1" OutputFile=".\Debug\stm8s_flash.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_gpio.c" Header="stm8s_gpio.c" Marker="-1" OutputFile=".\Debug\stm8s_gpio.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_i2c.c" Header="stm8s_i2c.c" Marker="-1" OutputFile=".\Debug\stm8s_i2c.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_itc.c" Header="stm8s_itc.c" Marker="-1" OutputFile=".\Debug\stm8s_itc.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_iwdg.c" Header="stm8s_iwdg.c" Marker="-1" OutputFile=".\Debug\stm8s_iwdg.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_rst.c" Header="stm8s_rst.c" Marker="-1" OutputFile=".\Debug\stm8s_rst.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_spi.c" Header="stm8s_spi.c" Marker="-1" OutputFile=".\Debug\stm8s_spi.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_tim1.c" Header="stm8s_tim1.c" Marker="-1" OutputFile=".\Debug\stm8s_tim1.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_tim2.c" Header="stm8s_tim2.c" Marker="-1" OutputFile=".\Debug\stm8s_tim2.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_tim3.c" Header="stm8s_tim3.c" Marker="-1" OutputFile=".\Debug\stm8s_tim3.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_tim4.c" Header="stm8s_tim4.c" Marker="-1" OutputFile=".\Debug\stm8s_tim4.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_uart1.c" Header="stm8s_uart1.c" Marker="-1" OutputFile=".\Debug\stm8s_uart1.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_uart3.c" Header="stm8s_uart3.c" Marker="-1" OutputFile=".\Debug\stm8s_uart3.obj" sate="0" />
+		<NodeC Path="..\..\..\Libraries\STM8S_StdPeriph_Driver\src\stm8s_wwdg.c" Header="stm8s_wwdg.c" Marker="-1" OutputFile=".\Debug\stm8s_wwdg.obj" sate="0" />
+						
+	</Group>
+	<Group Header="Source files" Marker="-1" OutputFile="" sate="0" >
+		<NodeASM Path=".\STM8_OB.asm" Header="STM8_OB.asm" Marker="-1" OutputFile=".\Debug\STM8_OB.obj" sate="0" />
+		<NodeC Path="..\stm8s_it.c" Header="stm8s_it.c" Marker="-1" OutputFile=".\Debug\stm8s_it.obj" sate="0" />
+		<NodeC Path="..\main.c" Header="main.c" Marker="-1" OutputFile=".\Debug\main.obj" sate="0" />
+						
+	</Group>
+	<Options>
+		<Config Header="Standard" >
+			<Set Header="ApplicationBuild" >
+				<Section Header="General" >
+					<Property Header="TargetFamily" Value="ST7" />
+																									
+				</Section>
+				<Section Header="Directories" >
+					<Property Header="IncDir" Value="$(RkitInc);$(RkitInc)\ST7;$(ApplicationDir)\..\..\..\Libraries\STM8S_StdPeriph_Driver\inc;$(ApplicationDir)\..\..\..\Utilities\STM8S_EVAL;$(ApplicationDir)\..\..\..\Utilities\STM8S_EVAL\Common;$(ApplicationDir)\..\..\..\Utilities\STM8S_EVAL\STM8-128_EVAL;$(ApplicationDir);$(ApplicationDir)\.." Removable="1" />
+					<Property Header="OutDir" Value="$(ApplicationDir)\Debug" Removable="1" />
+					<Property Header="ListDir" Value="$(ApplicationDir)\Debug" Removable="1" />
+																									
+				</Section>
+																			
+			</Set>
+			<Set Header="Target" >
+				<Section Header="ProcessorST7" >
+					<Property Header="Processor" Value="STM8S208MB" Removable="1" />
+																									
+				</Section>
+				<Section Header="ToolSetST7" >
+					<Property Header="BuildToolSetST7" Value="ST7\RaisonanceTools.config" Removable="1" />
+					<Property Header="ArelocInfo" Value="" Removable="1" />
+																									
+				</Section>
+				<Section Header="DebugST7" >
+					<Property Header="DebugTool_STM8" Value="RLINK_STM8" Removable="1" />
+																									
+				</Section>
+																			
+			</Set>
+			<Set Header="RCST7" >
+				<Section Header="Model" >
+					<Property Header="ModelP" Value="STM8(LARGE)" Removable="1" />
+					<Property Header="GlobalMemory" Value="DGC(DATA)" Removable="1" />
+																									
+				</Section>
+				<Section Header="CodeGen" >
+					<Property Header="INITSTAT" Value="INITSTATICVAR" Removable="1" />
+																									
+				</Section>
+				<Section Header="LISTING" >
+					<Property Header="LST" Value="NOPRINT" Removable="1" />
+					<Property Header="CODE" Value="" Removable="1" />
+																									
+				</Section>
+				<Section Header="Defines" >
+					<Property Header="Defines" Value="USE_STM8_128_EVAL;STM8S208" Removable="1" />
+																									
+				</Section>
+																			
+			</Set>
+			<Set Header="RLST7" >
+				<Section Header="More" >
+					<Property Header="More" Value="rmun" Removable="1" />
+																									
+				</Section>
+																			
+			</Set>
+			<Set Header="MAST7" >
+				<Section Header="Set" >
+					<Property Header="More" Value="MODESTM8" Removable="1" />
+																									
+				</Section>
+																			
+			</Set>
+										
+		</Config>
+						
+	</Options>
+</ApplicationBuild>
