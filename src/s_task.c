@@ -32,19 +32,21 @@ static void s_task_next(__async__);
 #if defined __ARMCC_VERSION
 #   define USE_SWAP_CONTEXT
 #   define USE_LIST_TIMER_CONTAINER
-#   if defined STM32F10X_MD
-#       include "s_port_armv7m.inc"
-#   elif defined STM32F302x8
-#       include "s_port_armv7m.inc"
-#   elif defined STM32L1XX_MD
-#       include "s_port_armv7m.inc"
-#   elif defined __TARGET_CPU_CORTEX_M0
+#   if defined __TARGET_CPU_CORTEX_M0
 #       include "s_port_armv6m.inc"
+#   elif defined __TARGET_CPU_CORTEX_M3
+#       include "s_port_armv7m.inc"
+#   elif defined __TARGET_CPU_CORTEX_M4
+#       include "s_port_armv7m.inc"
+#   elif defined __TARGET_CPU_CORTEX_M4_FP
+#       include "s_port_armv7m.inc"
+#   else
+#       error "no arch detected"
 #   endif
-#elif defined STM8S103
+#elif defined __ICCSTM8__
 #   define USE_SWAP_CONTEXT
 #   define USE_LIST_TIMER_CONTAINER
-#   include "s_port_stm8s103.inc"
+#   include "s_port_stm8s.inc"
 #elif defined USE_LIBUV
 #   define USE_JUMP_FCONTEXT
 #   include "s_port_libuv.inc"

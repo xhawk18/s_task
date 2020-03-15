@@ -33,8 +33,8 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 #   else
 #       include "s_port_m051.h"
 #   endif
-#elif defined STM8S103
-#   include "s_port_stm8s103.h"
+#elif defined __ICCSTM8__
+#   include "s_port_stm8s.h"
 #elif defined USE_LIBUV
 #   include "s_port_libuv.h"
 #elif defined _WIN32
