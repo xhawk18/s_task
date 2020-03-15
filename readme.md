@@ -227,3 +227,9 @@ void my_on_idle(uint64_t max_idle_ms) {
     or 
     makecontext / swapcontext       (slow!!)
 ```
+
+## Contact
+
+使用中遇到任何问题或建议，欢迎QQ加群 567780316 交流，您可能第一个加群的哦。。
+
+![s_task交流群](qq.png)
