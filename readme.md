@@ -208,7 +208,7 @@ void s_event_wait_sec(__async__, s_event_t *event, uint32_t msec);
 
 | Platform  | Project                        | IDE                    |
 |-----------|--------------------------------|------------------------|
-| Windows   | build\windows\s_task.sln       | visual stdio 2019      |
+| Windows   | build\windows\s_task.sln       | visual studio 2019     |
 | STM8S103  | build\stm8s103\Project.eww     | IAR workbench for STM8 |
 | STM32F103 | build\stm32f103\Project.uvproj | Keil uVision5          |
 | STM32F302 | build\stm32f302\Project.uvporj | Keil uVision5          |
