@@ -14,6 +14,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "AppleClang|Clang|GNU")
   list(APPEND st_cflags -Wall -Wextra -Wstrict-prototypes)
   list(APPEND st_cflags -Wno-unused-parameter -Wno-deprecated-declarations)
   list(APPEND st_cflags -static)
+  #list(APPEND st_libraries -s)
   #list(APPEND st_libraries -static -s)
 endif()
 
@@ -122,7 +123,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Android")
        ../libuv/src/unix/procfs-exepath.c
        ../libuv/src/unix/pthread-fixes.c
        ../libuv/src/unix/sysinfo-loadavg.c
-       ../libuv/src/unix/sysinfo-memory.c)
+       #../libuv/src/unix/sysinfo-memory.c
+       )
 endif()
 
 if(APPLE OR CMAKE_SYSTEM_NAME MATCHES "Android|Linux|OS/390")
