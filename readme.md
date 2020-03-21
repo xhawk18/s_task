@@ -193,7 +193,7 @@ void s_event_wait_sec(__async__, s_event_t *event, uint32_t msec);
    * x86_64 (centos-8.1)
    * arm (raspiberry 32bit)
    * aarch64 (raspiberry 64bit)
-   * mipsel (openwrt)
+   * mipsel (openwrt 3.10.14 for MT7628)
    * mips64 (fedora for loongson 3A-4000)
 
 
