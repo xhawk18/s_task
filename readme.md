@@ -178,24 +178,41 @@ void s_event_wait_sec(__async__, s_event_t *event, uint32_t msec);
 
 "s_task" can run as standalone co-routine library, or work with library libuv (compiling with macro **USE_LIBUV**).
 
-   | Platform                    | co-routine | libuv |
-   |-----------------------------|------------|-------|
-   | Windows                     | yes        | yes   |
-   | Linux                       | yes        | yes   |
-   | MacOS                       | yes        | yes   |
-   | MingW                       | yes        | no    |
-   | ARMv6-M(M051)               | yes        | no    |
-   | ARMv7-M(stm32f103,stm32f302)| yes        | no    |
-   | stm8s103                    | yes        | no    |
+| Platform                     | co-routine | libuv |
+|------------------------------|------------|-------|
+| Windows                      | yes        | yes   |
+| Linux                        | yes        | yes   |
+| MacOS                        | yes        | yes   |
+| MingW                        | yes        | no    |
+| ARMv6-M(M051)                | yes        | no    |
+| ARMv7-M(STM32F103,STM32F302) | yes        | no    |
+| STM8S103                     | yes        | no    |
 
    linux tested on 
    * i686 (ubuntu-16.04)
    * x86_64 (centos-8.1)
    * arm (raspiberry 32bit)
    * aarch64 (raspiberry 64bit)
-   * mipsel (openwrt 3.10.14 for MT7628)
+   * mipsel (openwrt ucLinux 3.10.14 for MT7628)
    * mips64 (fedora for loongson 3A-4000)
 
+## Build
+
+### Linux / MacOS
+
+    cd build
+    cmake .
+    make
+
+### IDE projects
+
+| Platform  | Project                        | IDE                    |
+|-----------|--------------------------------|------------------------|
+| Windows   | build\windows\s_task.sln       | visual stdio 2019      |
+| STM8S103  | build\stm8s103\Project.eww     | IAR workbench for STM8 |
+| STM32F103 | build\stm32f103\Project.uvproj | Keil uVision5          |
+| STM32F302 | build\stm32f302\Project.uvporj | Keil uVision5          |
+| M051      | build\m051\Project.uvporj      | Keil uVision5          |
 
 ## How to make port?
 To make a port of "s_task" to new system is very simple.
