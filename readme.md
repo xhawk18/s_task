@@ -4,7 +4,7 @@
 
  * "s_task" is a co-routine library written in pure C and asm (from boost library), **without** **C++** required.
  * supports various platforms, such as windows, linux, android, macos, stm32, and even stm8.
- * supports keywords **\_\_await\_\_** and **\_\_async\_\_**. For functions that may switch to other tasks, call it with 1st parameter \_\_await\_\_, for the caller function of which, define the 1st parameter as \_\_async\_\_, which make it is clear to know about context switching.
+ * supports keywords **\_\_await\_\_** and **\_\_async\_\_** . :triangular_flag_on_post: For functions that may switch to other tasks, call it with 1st parameter \_\_await\_\_, for the caller function of which, define the 1st parameter as \_\_async\_\_, which make it is clear to know about context switching ::.
  * works with libuv for network programming.
 
 ### Special features on embedded platfrom (stm32/stm8/m051)
