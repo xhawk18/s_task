@@ -2,11 +2,13 @@
 #define INC_S_PORT_H_
 
 #include <time.h>
-#ifndef _XOPEN_SOURCE
-#define _XOPEN_SOURCE
-#endif
-#include <ucontext.h>
 #include <unistd.h>
+#ifdef USE_SWAP_CONTEXT
+#   ifndef _XOPEN_SOURCE
+#       define _XOPEN_SOURCE
+#   endif
+#   include <ucontext.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {

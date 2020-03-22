@@ -5,6 +5,7 @@
 extern "C" {
 #endif
 
+//1+. define a type ucontext_t
 typedef struct {
     int regs[12];   //psp,r4-r12,lr,sp
 } ucontext_t;

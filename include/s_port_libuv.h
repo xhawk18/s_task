@@ -3,6 +3,12 @@
 #define INC_S_PORT_H_
 
 #include "uv.h"
+#ifdef USE_SWAP_CONTEXT
+#   ifndef _XOPEN_SOURCE
+#       define _XOPEN_SOURCE
+#   endif
+#   include <ucontext.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
