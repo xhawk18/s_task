@@ -1654,7 +1654,13 @@
       <name>$PROJ_DIR$\..\..\examples\ex1_event.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\src\s_event.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\src\s_list.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\src\s_mutex.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\include\s_port_stm8s.h</name>
@@ -1673,6 +1679,12 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\include\s_task.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\src\s_timer_fast.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\src\s_timer_small.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\stm8s_conf.h</name>

@@ -27,8 +27,12 @@ typedef struct {
 /* === Timer functions on posix/linux === */
 #include <time.h>
 
-//1. define a type for clock
+//1. define a type for clock and ucontext_t
 typedef uint16_t my_clock_t;
+
+typedef struct {
+    int sp;
+} ucontext_t;
 
 //2. define the clock ticks count for one second
 #define MY_CLOCKS_PER_SEC ((uint32_t)16*1000*1000/16384)

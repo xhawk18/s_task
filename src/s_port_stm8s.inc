@@ -71,11 +71,6 @@ void my_on_idle(uint32_t max_idle_ms) {
 }
 
 
-
-typedef struct {
-    int sp;
-} ucontext_t;
-
 extern void swapcontext(ucontext_t *oucp, const ucontext_t *ucp);
 
 static void create_context(ucontext_t *oucp, void *stack, size_t stack_size, void *task) {
