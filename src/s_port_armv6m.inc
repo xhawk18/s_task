@@ -20,11 +20,6 @@ void my_on_idle(uint64_t max_idle_ms) {
 }
 
 
-typedef struct {
-    int regs[12];   //psp,r4-r12,lr,sp
-} ucontext_t;
-
-
 __asm static void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
     MOV     r3, lr
     STM     r0!, {r3-r7}

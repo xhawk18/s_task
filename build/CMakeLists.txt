@@ -20,6 +20,10 @@ endif()
 
 set(st_sources
     ../src/s_task.c
+    ../src/s_mutex.c
+    ../src/s_event.c
+    ../src/s_timer_fast.c
+    ../src/s_timer_small.c
     ../src/s_list.c
     ../src/s_rbtree.c)
 

@@ -897,6 +897,26 @@
               <FileType>1</FileType>
               <FilePath>..\..\src\s_task.c</FilePath>
             </File>
+            <File>
+              <FileName>s_event.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\s_event.c</FilePath>
+            </File>
+            <File>
+              <FileName>s_mutex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\s_mutex.c</FilePath>
+            </File>
+            <File>
+              <FileName>s_timer_fast.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\s_timer_fast.c</FilePath>
+            </File>
+            <File>
+              <FileName>s_timer_small.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\s_timer_small.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

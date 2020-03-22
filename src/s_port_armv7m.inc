@@ -19,11 +19,6 @@ void my_on_idle(uint64_t max_idle_ms) {
     __WFE();
 }
 
-typedef struct {
-    int regs[12];   //psp,r4-r12,lr,sp
-} ucontext_t;
-
-
 __asm static void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
     STM     r0!, {r4-r12,lr}
     STR     sp, [r0]

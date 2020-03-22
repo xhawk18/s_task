@@ -3,10 +3,12 @@
 
 /* Copyright xhawk, MIT license */
 
+#include <stdio.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
 #include "s_list.h"
+#include "s_rbtree.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,7 +25,15 @@ typedef struct{
 /* Function type for task entrance */
 typedef void(*s_task_fn_t)(__async__, void *arg);
 
+
+//#define USE_SWAP_CONTEXT
+//#define USE_JUMP_FCONTEXT
+//#define USE_LIST_TIMER_CONTAINER	//for very small memory footprint
+
+
 #if defined __ARMCC_VERSION
+#   define USE_SWAP_CONTEXT
+#   define USE_LIST_TIMER_CONTAINER
 #   if defined STM32F10X_MD
 #       include "s_port_stm32f10x.h"
 #   elif defined STM32F302x8
@@ -34,12 +44,17 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 #       include "s_port_m051.h"
 #   endif
 #elif defined __ICCSTM8__
+#   define USE_SWAP_CONTEXT
+#   define USE_LIST_TIMER_CONTAINER
 #   include "s_port_stm8s.h"
 #elif defined USE_LIBUV
+#   define USE_JUMP_FCONTEXT
 #   include "s_port_libuv.h"
 #elif defined _WIN32
+#   define USE_JUMP_FCONTEXT
 #   include "s_port_windows.h"
 #else
+#   define USE_JUMP_FCONTEXT
 #   include "s_port_posix.h"
 #endif
 
@@ -53,7 +68,7 @@ typedef struct {
 } s_event_t;
 
 
-
+#include "s_task_internal.h"
 
 
 
@@ -72,6 +87,9 @@ void s_task_join(__async__, void *stack);
 
 /* Kill a task */
 void s_task_kill(void *stack);
+
+/* Sleep in ticks */
+void s_task_sleep_ticks(__async__, my_clock_t ticks);
 
 /* Sleep in milliseconds */
 void s_task_msleep(__async__, uint32_t msec);

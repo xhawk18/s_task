@@ -4,6 +4,10 @@ CC=armv7a-linux-androideabi21-clang
 
 ST_SOURCE=(
     ../../src/s_task.c
+    ../../src/s_mutex.c
+    ../../src/s_event.c
+    ../../src/s_timer_fast.c
+    ../../src/s_timer_small.c
     ../../src/s_rbtree.c
     ../../src/s_list.c
     ../../asm/make_gas.S
