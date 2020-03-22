@@ -3,8 +3,9 @@
 #ifndef INC_S_UV_H_
 #define INC_S_UV_H_
 
-#include "uv.h"
 #include "s_task.h"
+#ifdef USE_LIBUV
+#include "uv.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,4 +47,4 @@ int s_uv_tcp_connect(__async__, uv_tcp_t* handle, const struct sockaddr* addr);
 }
 #endif
 #endif
-
+#endif

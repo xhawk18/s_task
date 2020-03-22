@@ -1,6 +1,8 @@
 #include "s_task.h"
 #include "s_uv.h"
 
+#ifdef USE_LIBUV
+
 typedef struct {
     s_event_t event;
     bool trigged;
@@ -312,3 +314,5 @@ int s_uv_tcp_connect(__async__, uv_tcp_t* handle, const struct sockaddr* addr) {
 
     return ret;
 }
+
+#endif
