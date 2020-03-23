@@ -40,6 +40,16 @@ my_clock_t my_clock(void);
 //5. Implement the idle delay function.
 void my_on_idle(uint32_t max_idle_ms);
 
+//6. Define irq enable/disable functions
+static inline void S_IRQ_DISABLE(){
+	disableInterrupts();
+}
+
+static inline void S_IRQ_ENABLE(){
+	enableInterrupts();
+}
+
+
 #ifdef __cplusplus
 }
 #endif
