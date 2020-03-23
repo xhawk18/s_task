@@ -225,19 +225,18 @@ int s_event_wait_sec(__async__, s_event_t *event, uint32_t sec);
 | STM32F302 | build\stm32f302\Project.uvporj    | Keil uVision5                                 |
 | M051      | build\m051\Project.uvporj         | Keil uVision5                                 |
 
-<!--
-## Used in my project
+## How to use in your project ?
 
-Please just add source files to your project to compile.
+On linux/unix like system, after cmake build, you may get the libraries for your project
 
-* include
-* src
-* asm (select according to your platform)
-* libuv/include
-* libuv/src
--->
+* add libs_task.a to your project
+* #include "s_task.h"
+* #include "s_uv.h"
+* build with predefined macro USE_LIBUV
 
-## How to make port?
+On windows or other system, please find the project in folder "build" as the project template.
+
+## How to make port ?
 
 [Please find document here](porting.md)
 

@@ -216,18 +216,24 @@ target_compile_options(ex1_event PRIVATE ${st_cflags})
 target_include_directories(ex1_event PRIVATE ../include ../libuv/include ../libuv/src)
 target_link_libraries(ex1_event ${st_libraries})
 
-add_executable(ex2_libuv ../examples/ex2_libuv.c ${st_sources} ${uv_sources})
+add_library(s_task STATIC ${st_sources} ${uv_sources})
+target_compile_definitions(s_task PRIVATE ${st_defines} USE_LIBUV)
+target_compile_options(s_task PRIVATE ${st_cflags})
+target_include_directories(s_task PRIVATE ../include ../libuv/include ../libuv/src)
+target_link_libraries(s_task ${st_libraries})
+
+add_executable(ex2_libuv ../examples/ex2_libuv.c)
 target_compile_definitions(ex2_libuv PRIVATE ${st_defines} USE_LIBUV)
 target_compile_options(ex2_libuv PRIVATE ${st_cflags})
 #target_link_options(ex2_libuv PRIVATE -s)
 target_include_directories(ex2_libuv PRIVATE ../include ../libuv/include ../libuv/src)
-target_link_libraries(ex2_libuv ${st_libraries})
+target_link_libraries(ex2_libuv ${st_libraries} s_task)
 
-add_executable(ex3_http_client ../examples/ex3_http_client.c ${st_sources} ${uv_sources})
+add_executable(ex3_http_client ../examples/ex3_http_client.c)
 target_compile_definitions(ex3_http_client PRIVATE ${st_defines} USE_LIBUV)
 target_compile_options(ex3_http_client PRIVATE ${st_cflags})
 #target_link_options(ex3_http_client PRIVATE -s)
 target_include_directories(ex3_http_client PRIVATE ../include ../libuv/include ../libuv/src)
-target_link_libraries(ex3_http_client ${st_libraries})
+target_link_libraries(ex3_http_client ${st_libraries} s_task)
 
 
