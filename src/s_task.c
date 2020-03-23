@@ -56,14 +56,14 @@ static uv_timer_t* s_task_uv_timer() {
 /*******************************************************************/
 
 
-void s_task_msleep(__async__, uint32_t msec) {
+int s_task_msleep(__async__, uint32_t msec) {
     my_clock_t ticks = msec_to_ticks(msec);
-    s_task_sleep_ticks(__await__, ticks);
+    return s_task_sleep_ticks(__await__, ticks);
 }
 
-void s_task_sleep(__async__, uint32_t sec) {
+int s_task_sleep(__async__, uint32_t sec) {
     my_clock_t ticks = sec_to_ticks(sec);
-    s_task_sleep_ticks(__await__, ticks);
+    return s_task_sleep_ticks(__await__, ticks);
 }
 
 my_clock_t msec_to_ticks(uint32_t msec) {
@@ -142,6 +142,7 @@ static void s_task_call_next(__async__) {
 
 #if defined USE_LIBUV
 void s_task_next(__async__) {
+    g_globals.current_task->waiting_cancelled = false;
     s_timer_run();
     s_task_call_next(__await__);
 }
@@ -166,6 +167,7 @@ void s_task_main_loop_once(__async__) {
 #else
 
 void s_task_next(__async__) {
+    g_globals.current_task->waiting_cancelled = false;
     while (true) {
 #ifdef USE_IN_EMBEDDED
         if(g_globals.irq_actived){
@@ -208,6 +210,7 @@ void s_task_yield(__async__) {
     //Put current task to the waiting list
     s_list_attach(&g_globals.active_tasks, &g_globals.current_task->node);
     s_task_next(__await__);
+    g_globals.current_task->waiting_cancelled = false;
 }
 
 #if defined USE_LIBUV
@@ -242,6 +245,7 @@ void s_task_init_system()
     s_event_init(&g_globals.main_task.join_event);
     g_globals.main_task.stack_size = 0;
     g_globals.main_task.closed = false;
+    g_globals.main_task.waiting_cancelled = false;
     g_globals.current_task = &g_globals.main_task;
 }
 
@@ -256,6 +260,7 @@ void s_task_create(void *stack, size_t stack_size, s_task_fn_t task_entry, void 
     task->task_arg   = task_arg;
     task->stack_size = stack_size;
     task->closed = false;
+    task->waiting_cancelled = false;
     s_list_attach(&g_globals.active_tasks, &task->node);
 
     //填全1检查stack大小
@@ -272,10 +277,14 @@ void s_task_create(void *stack, size_t stack_size, s_task_fn_t task_entry, void 
 #endif
 }
 
-void s_task_join(__async__, void *stack) {
+int s_task_join(__async__, void *stack) {
     s_task_t *task = (s_task_t *)stack;
-    while(!task->closed)
-        s_event_wait(__await__, &task->join_event);
+    while (!task->closed) {
+        int ret = s_event_wait(__await__, &task->join_event);
+        if (ret != 0)
+            return ret;
+    }
+    return 0;
 }
 
 //timer conflict with this function!!!
@@ -283,6 +292,14 @@ void s_task_join(__async__, void *stack) {
 void s_task_kill__remove(void *stack) {
     s_task_t *task = (s_task_t *)stack;
     s_list_detach(&task->node);
+}
+
+void s_task_cancel_wait(void* stack) {
+    s_task_t* task = (s_task_t*)stack;
+
+    task->waiting_cancelled = true;
+    s_list_detach(&task->node);
+    s_list_attach(&g_globals.active_tasks, &task->node);
 }
 
 

@@ -90,27 +90,25 @@ void s_task_init_system(void);
 void s_task_create(void *stack, size_t stack_size, s_task_fn_t entry, void *arg);
 
 /* Wait a task to exit */
-void s_task_join(__async__, void *stack);
+int s_task_join(__async__, void *stack);
 
 /* Kill a task */
 void s_task_kill(void *stack);
 
 /* Sleep in ticks */
-void s_task_sleep_ticks(__async__, my_clock_t ticks);
+int s_task_sleep_ticks(__async__, my_clock_t ticks);
 
 /* Sleep in milliseconds */
-void s_task_msleep(__async__, uint32_t msec);
+int s_task_msleep(__async__, uint32_t msec);
 
 /* Sleep in seconds */
-void s_task_sleep(__async__, uint32_t sec);
+int s_task_sleep(__async__, uint32_t sec);
 
 /* Yield current task */
 void s_task_yield(__async__);
 
-#if defined USE_LIBUV
-/* Try to run next tasks, and return wait time if none need to run */
-void s_task_main_loop_once(__async__);
-#endif
+/* Cancel task waiting and make it running */
+void s_task_cancel_wait(void* stack);
 
 /* Get free stack size (for debug) */
 size_t s_task_get_stack_free_size(void);
@@ -122,7 +120,7 @@ size_t s_task_get_stack_free_size(void);
 void s_mutex_init(s_mutex_t *mutex);
 
 /* Lock the mutex */
-void s_mutex_lock(__async__, s_mutex_t *mutex);
+int s_mutex_lock(__async__, s_mutex_t *mutex);
 
 /* Unlock the mutex */
 void s_mutex_unlock(s_mutex_t *mutex);
@@ -133,14 +131,17 @@ void s_event_init(s_event_t *event);
 /* Set event */
 void s_event_set(s_event_t *event);
 
-/* Wait event */
-void s_event_wait(__async__, s_event_t *event);
+/* Wait event
+ *  return 0 on event set
+ *  return -1 on event waiting cancelled
+ */
+int s_event_wait(__async__, s_event_t *event);
 
 /* Wait event with timeout */
-void s_event_wait_msec(__async__, s_event_t *event, uint32_t msec);
+int s_event_wait_msec(__async__, s_event_t *event, uint32_t msec);
 
 /* Wait event with timeout */
-void s_event_wait_sec(__async__, s_event_t *event, uint32_t msec);
+int s_event_wait_sec(__async__, s_event_t *event, uint32_t msec);
 
 #ifdef USE_IN_EMBEDDED
 
@@ -154,11 +155,11 @@ void s_event_set_irq(s_event_t *event);
  *   ...
  *   S_IRQ_ENABLE()
  */
-void s_event_wait_irq(__async__, s_event_t *event);
+int s_event_wait_irq(__async__, s_event_t *event);
 /* Wait event from irq, disable irq before call this function! */
-void s_event_wait_irq_msec(__async__, s_event_t *event, uint32_t msec);
+int s_event_wait_irq_msec(__async__, s_event_t *event, uint32_t msec);
 /* Wait event from irq, disable irq before call this function! */
-void s_event_wait_irq_sec(__async__, s_event_t *event, uint32_t sec);
+int s_event_wait_irq_sec(__async__, s_event_t *event, uint32_t sec);
 
 #endif
 

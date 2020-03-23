@@ -33,6 +33,7 @@ typedef struct tag_s_task_t {
     fcontext_t   fc;
 #endif
     size_t       stack_size;
+    bool         waiting_cancelled;
     bool         closed;
 } s_task_t;
 
@@ -96,6 +97,11 @@ void s_task_fcontext_entry(transfer_t arg);
 
 /* Run next task, but not set myself for ready to run */
 void s_task_next(__async__);
+
+#if defined USE_LIBUV
+/* Try to run next tasks, and return wait time if none need to run */
+void s_task_main_loop_once(__async__);
+#endif
 
 void s_timer_run(void);
 uint64_t s_timer_wait_recent(void);

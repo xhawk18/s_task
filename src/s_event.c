@@ -9,12 +9,18 @@ void s_event_init(s_event_t *event) {
     s_list_init(&event->wait_list);
 }
 
-/* Wait event */
-void s_event_wait(__async__, s_event_t *event) {
+/* Wait event
+ *  return 0 on event set
+ *  return -1 on event waiting cancelled
+ */
+int s_event_wait(__async__, s_event_t *event) {
     //Put current task to the event's waiting list
     s_list_detach(&g_globals.current_task->node);   //no need, for safe
     s_list_attach(&event->wait_list, &g_globals.current_task->node);
     s_task_next(__await__);
+    int ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
+    g_globals.current_task->waiting_cancelled = false;
+    return ret;
 }
 
 /* Set event */
@@ -25,7 +31,7 @@ void s_event_set(s_event_t *event) {
 
 /* Wait event */
 #ifndef USE_LIST_TIMER_CONTAINER
-static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
+static int s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
     my_clock_t current_ticks;
     s_timer_t timer;
     
@@ -37,7 +43,7 @@ static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
 #ifndef NDEBUG
         fprintf(stderr, "timer insert failed!\n");
 #endif
-        return;
+        return -1;
     }
 
     s_list_detach(&g_globals.current_task->node);   //no need, for safe
@@ -49,9 +55,13 @@ static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
         timer.task = NULL;
         rbt_delete(&g_globals.timers, &timer.rbt_node);
     }
+
+    int ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
+    g_globals.current_task->waiting_cancelled = false;
+    return ret;
 }
 #else
-static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
+static int s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
     my_clock_t current_ticks;
     s_list_t *node;
     s_timer_t timer;
@@ -81,17 +91,21 @@ static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
         timer.task = NULL;
         s_list_detach(&timer.node);
     }
+
+    int ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
+    g_globals.current_task->waiting_cancelled = false;
+    return ret;
 }
 #endif
 
 /* Wait event */
-void s_event_wait_msec(__async__, s_event_t *event, uint32_t msec) {
+int s_event_wait_msec(__async__, s_event_t *event, uint32_t msec) {
     my_clock_t ticks = msec_to_ticks(msec);
-    s_event_wait_ticks(__await__, event, ticks);
+    return s_event_wait_ticks(__await__, event, ticks);
 }
 
 /* Wait event */
-void s_event_wait_sec(__async__, s_event_t *event, uint32_t sec) {
+int s_event_wait_sec(__async__, s_event_t *event, uint32_t sec) {
     my_clock_t ticks = sec_to_ticks(sec);
-    s_event_wait_ticks(__await__, event, ticks);
+    return s_event_wait_ticks(__await__, event, ticks);
 }

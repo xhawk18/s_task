@@ -102,7 +102,7 @@ uint64_t s_timer_wait_recent(void) {
     return (uint64_t)-1;    //max
 }
 
-void s_task_sleep_ticks(__async__, my_clock_t ticks) {
+int s_task_sleep_ticks(__async__, my_clock_t ticks) {
     my_clock_t current_ticks;
     s_timer_t timer;
     
@@ -117,7 +117,7 @@ void s_task_sleep_ticks(__async__, my_clock_t ticks) {
 #ifndef NDEBUG
         fprintf(stderr, "timer insert failed!\n");
 #endif
-        return;
+        return -1;
     }
 
     dump_timers(__LINE__);
@@ -131,6 +131,10 @@ void s_task_sleep_ticks(__async__, my_clock_t ticks) {
         timer.task = NULL;
         rbt_delete(&g_globals.timers, &timer.rbt_node);
     }
+
+    int ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
+    g_globals.current_task->waiting_cancelled = false;
+    return ret;
 }
 
 

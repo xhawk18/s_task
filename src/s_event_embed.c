@@ -13,13 +13,16 @@
  *   ...
  *   S_IRQ_ENABLE()
  */
-void s_event_wait_irq(__async__, s_event_t *event) {
+int s_event_wait_irq(__async__, s_event_t *event) {
     //Put current task to the event's waiting list
     s_list_detach(&g_globals.current_task->node);   //no need, for safe
     s_list_attach(&event->wait_list, &g_globals.current_task->node);
     S_IRQ_ENABLE();
     s_task_next(__await__);
     S_IRQ_DISABLE();
+    int ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
+    g_globals.current_task->waiting_cancelled = false;
+    return ret;
 }
 
 /* Set event in irq */
@@ -31,7 +34,7 @@ void s_event_set_irq(s_event_t *event) {
 
 /* Wait event */
 #ifndef USE_LIST_TIMER_CONTAINER
-static void s_event_wait_irq_ticks(__async__, s_event_t *event, my_clock_t ticks) {
+static int s_event_wait_irq_ticks(__async__, s_event_t *event, my_clock_t ticks) {
     my_clock_t current_ticks;
     s_timer_t timer;
     
@@ -43,7 +46,7 @@ static void s_event_wait_irq_ticks(__async__, s_event_t *event, my_clock_t ticks
 #ifndef NDEBUG
         fprintf(stderr, "timer insert failed!\n");
 #endif
-        return;
+        return -1;
     }
 
     s_list_detach(&g_globals.current_task->node);   //no need, for safe
@@ -57,9 +60,13 @@ static void s_event_wait_irq_ticks(__async__, s_event_t *event, my_clock_t ticks
         timer.task = NULL;
         rbt_delete(&g_globals.timers, &timer.rbt_node);
     }
+
+    int ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
+    g_globals.current_task->waiting_cancelled = false;
+    return ret;
 }
 #else
-static void s_event_wait_irq_ticks(__async__, s_event_t *event, my_clock_t ticks) {
+static int s_event_wait_irq_ticks(__async__, s_event_t *event, my_clock_t ticks) {
     my_clock_t current_ticks;
     s_list_t *node;
     s_timer_t timer;
@@ -91,6 +98,10 @@ static void s_event_wait_irq_ticks(__async__, s_event_t *event, my_clock_t ticks
         timer.task = NULL;
         s_list_detach(&timer.node);
     }
+
+    int ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
+    g_globals.current_task->waiting_cancelled = false;
+    return ret;
 }
 #endif
 
@@ -101,9 +112,9 @@ static void s_event_wait_irq_ticks(__async__, s_event_t *event, my_clock_t ticks
  *   ...
  *   S_IRQ_ENABLE()
  */
-void s_event_wait_irq_msec(__async__, s_event_t *event, uint32_t msec) {
+int s_event_wait_irq_msec(__async__, s_event_t *event, uint32_t msec) {
     my_clock_t ticks = msec_to_ticks(msec);
-    s_event_wait_irq_ticks(__await__, event, ticks);
+    return s_event_wait_irq_ticks(__await__, event, ticks);
 }
 
 /* Wait event from irq, disable irq before call this function!
@@ -113,9 +124,9 @@ void s_event_wait_irq_msec(__async__, s_event_t *event, uint32_t msec) {
  *   ...
  *   S_IRQ_ENABLE()
  */
-void s_event_wait_irq_sec(__async__, s_event_t *event, uint32_t sec) {
+int s_event_wait_irq_sec(__async__, s_event_t *event, uint32_t sec) {
     my_clock_t ticks = sec_to_ticks(sec);
-    s_event_wait_irq_ticks(__await__, event, ticks);
+    return s_event_wait_irq_ticks(__await__, event, ticks);
 }
 
 #endif

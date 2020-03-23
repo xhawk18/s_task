@@ -47,7 +47,7 @@ uint64_t s_timer_wait_recent() {
     return (uint64_t)-1;    //max
 }
 
-void s_task_sleep_ticks(__async__, my_clock_t ticks) {
+int s_task_sleep_ticks(__async__, my_clock_t ticks) {
     my_clock_t current_ticks;
     s_list_t *node;
     s_timer_t timer;
@@ -76,6 +76,10 @@ void s_task_sleep_ticks(__async__, my_clock_t ticks) {
         timer.task = NULL;
         s_list_detach(&timer.node);
     }
+
+    int ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
+    g_globals.current_task->waiting_cancelled = false;
+    return ret;
 }
 
 

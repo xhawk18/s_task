@@ -125,6 +125,12 @@ out0:;
 ### Task
 
 ```c
+/* Return values -- 
+ * For all functions marked by __async__ and hava an int return value, will
+ *     return 0 on waiting successfully,
+ *     return -1 on waiting cancalled by s_task_cancel_wait() called by other task.
+ */
+
 /* Function type for task entrance */
 typedef void(*s_task_fn_t)(__async__, void *arg);
 
@@ -132,16 +138,19 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 void s_task_create(void *stack, size_t stack_size, s_task_fn_t entry, void *arg);
 
 /* Wait a task to exit */
-void s_task_join(__async__, void *stack);
+int s_task_join(__async__, void *stack);
 
 /* Sleep in milliseconds */
-void s_task_msleep(__async__, uint32_t msec);
+int s_task_msleep(__async__, uint32_t msec);
 
 /* Sleep in seconds */
-void s_task_sleep(__async__, uint32_t sec);
+int s_task_sleep(__async__, uint32_t sec);
 
 /* Yield current task */
 void s_task_yield(__async__);
+
+/* Cancel task waiting and make it running */
+void s_task_cancel_wait(void* stack);
 ```
 
 ### Mutex
@@ -150,7 +159,7 @@ void s_task_yield(__async__);
 void s_mutex_init(s_mutex_t *mutex);
 
 /* Lock the mutex */
-void s_mutex_lock(__async__, s_mutex_t *mutex);
+int s_mutex_lock(__async__, s_mutex_t *mutex);
 
 /* Unlock the mutex */
 void s_mutex_unlock(s_mutex_t *mutex);
@@ -162,16 +171,16 @@ void s_mutex_unlock(s_mutex_t *mutex);
 void s_event_init(s_event_t *event);
 
 /* Wait event */
-void s_event_wait(__async__, s_event_t *event);
+int s_event_wait(__async__, s_event_t *event);
 
 /* Set event */
 void s_event_set(s_event_t *event);
 
 /* Wait event with timeout */
-void s_event_wait_msec(__async__, s_event_t *event, uint32_t msec);
+int s_event_wait_msec(__async__, s_event_t *event, uint32_t msec);
 
 /* Wait event with timeout */
-void s_event_wait_sec(__async__, s_event_t *event, uint32_t msec);
+int s_event_wait_sec(__async__, s_event_t *event, uint32_t sec);
 ```
 
 ## Compatibility

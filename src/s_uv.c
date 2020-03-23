@@ -14,14 +14,18 @@ static void s_uv_close_cb(uv_handle_t* handle, void *arg) {
     s_event_set(&arg_->event);
 }
 
-void s_uv_close(__async__, uv_handle_t* handle) {
+int s_uv_close(__async__, uv_handle_t* handle) {
     s_uv_close_arg_t arg;
     arg.trigged = false;
     s_event_init(&arg.event);
 
     uv_close(handle, s_uv_close_cb, &arg);
-    while(!arg.trigged)
-        s_event_wait(__await__, &arg.event);
+    while (!arg.trigged) {
+        int ret = s_event_wait(__await__, &arg.event);
+        if (ret != 0)
+            return ret;
+    }
+    return 0;
 }
 
 
@@ -66,8 +70,12 @@ int s_uv_read(__async__, uv_stream_t* handle, void* buf, size_t buf_len, ssize_t
     ret = uv_read_start(handle, s_uv_read_start_alloc_cb, s_uv_read_start_read_cb, &arg);
     if (ret != 0)
         return ret;
-    while (!arg.trigged)
-        s_event_wait(__await__, &arg.event);
+    while (!arg.trigged) {
+        ret = s_event_wait(__await__, &arg.event);
+        if (ret != 0)
+            return ret;
+    }
+    uv_read_stop(handle);
 
     if (nread != NULL)
         *nread = arg.nread;
@@ -104,8 +112,12 @@ int s_uv_write_n(__async__, uv_stream_t* handle, const uv_buf_t bufs[], unsigned
     if (ret != 0)
         return ret;
 
-    while (!arg.trigged)
-        s_event_wait(__await__, &arg.event);
+    while (!arg.trigged) {
+        ret = s_event_wait(__await__, &arg.event);
+        if (ret != 0)
+            return ret;
+    }
+
     ret = arg.status;
 
     return ret;
@@ -172,8 +184,12 @@ int uv_udp_recv(__async__,
 
     if (ret != 0)
         return ret;
-    while (!arg.trigged)
-        s_event_wait(__await__, &arg.event);
+    while (!arg.trigged) {
+        ret = s_event_wait(__await__, &arg.event);
+        if (ret != 0)
+            return ret;
+    }
+    uv_udp_recv_stop(handle);
 
     if (nrecv != NULL)
         *nrecv = arg.nrecv;
@@ -220,8 +236,12 @@ int s_uv_udp_send_n(__async__,
     if (ret != 0)
         return ret;
 
-    while (!arg.trigged)
-        s_event_wait(__await__, &arg.event);
+    while (!arg.trigged) {
+        ret = s_event_wait(__await__, &arg.event);
+        if (ret != 0)
+            return ret;
+    }
+
     ret = arg.status;
 
     return ret;
@@ -268,18 +288,26 @@ struct addrinfo *s_uv_getaddrinfo(__async__,
 
     ret = uv_getaddrinfo(loop, &arg.req, s_uv_getaddrinfo_cb, node, service, hints);
     if (ret != 0) {
+        goto out;
+    }
+
+    while (!arg.trigged) {
+        ret = s_event_wait(__await__, &arg.event);
+        if (ret != 0) goto out;
+    }
+
+    ret = arg.status;
+
+out:;
+    if (ret != 0) {
+        if(arg.req.addrinfo != NULL)
+            uv_freeaddrinfo(arg.req.addrinfo);
         return NULL;
     }
-
-    while (!arg.trigged)
-        s_event_wait(__await__, &arg.event);
-    ret = arg.status;
-    if (ret != 0) {
-        uv_freeaddrinfo(arg.req.addrinfo);
+    else {
+        //use uv_freeaddrinfo(arg.req.addrinfo) to free the return value;
+        return arg.req.addrinfo;
     }
-
-    //use uv_freeaddrinfo(arg.req.addrinfo) to free the return value;
-    return arg.req.addrinfo;
 }
 
 
@@ -308,8 +336,11 @@ int s_uv_tcp_connect(__async__, uv_tcp_t* handle, const struct sockaddr* addr) {
     if (ret != 0)
         return ret;
 
-    while (!arg.trigged)
-        s_event_wait(__await__, &arg.event);
+    while (!arg.trigged) {
+        ret = s_event_wait(__await__, &arg.event);
+        if (ret != 0)
+            return ret;
+    }
     ret = arg.status;
 
     return ret;
