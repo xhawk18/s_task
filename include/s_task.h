@@ -29,9 +29,11 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 //#define USE_SWAP_CONTEXT
 //#define USE_JUMP_FCONTEXT
 //#define USE_LIST_TIMER_CONTAINER	//for very small memory footprint
+//#define USE_IN_EMBEDDED
 
 
 #if defined __ARMCC_VERSION
+#   define USE_IN_EMBEDDED
 #   define USE_SWAP_CONTEXT
 #   define USE_LIST_TIMER_CONTAINER
 #   if defined STM32F10X_MD
@@ -44,6 +46,7 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 #       include "s_port_m051.h"
 #   endif
 #elif defined __ICCSTM8__
+#   define USE_IN_EMBEDDED
 #   define USE_SWAP_CONTEXT
 #   define USE_LIST_TIMER_CONTAINER
 #   include "s_port_stm8s.h"
@@ -56,6 +59,10 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 #else
 #   define USE_JUMP_FCONTEXT
 #   include "s_port_posix.h"
+#endif
+
+#if defined USE_LIBUV && defined USE_IN_EMBEDDED
+#   error "libuv can not used in embedded system"
 #endif
 
 typedef struct {
@@ -123,17 +130,37 @@ void s_mutex_unlock(s_mutex_t *mutex);
 /* Initialize a wait event */
 void s_event_init(s_event_t *event);
 
-/* Wait event */
-void s_event_wait(__async__, s_event_t *event);
-
 /* Set event */
 void s_event_set(s_event_t *event);
+
+/* Wait event */
+void s_event_wait(__async__, s_event_t *event);
 
 /* Wait event with timeout */
 void s_event_wait_msec(__async__, s_event_t *event, uint32_t msec);
 
 /* Wait event with timeout */
 void s_event_wait_sec(__async__, s_event_t *event, uint32_t msec);
+
+#ifdef USE_IN_EMBEDDED
+
+/* Set event in irq */
+void s_event_set_irq(s_event_t *event);
+
+/* Wait event from irq, disable irq before call this function!
+ *   S_IRQ_DISABLE()
+ *   ...
+ *   s_event_wait_irq(...)
+ *   ...
+ *   S_IRQ_ENABLE()
+ */
+void s_event_wait_irq(__async__, s_event_t *event);
+/* Wait event from irq, disable irq before call this function! */
+void s_event_wait_irq_msec(__async__, s_event_t *event, uint32_t msec);
+/* Wait event from irq, disable irq before call this function! */
+void s_event_wait_irq_sec(__async__, s_event_t *event, uint32_t sec);
+
+#endif
 
 /* milliseconds to ticks */
 my_clock_t msec_to_ticks(uint32_t msec);

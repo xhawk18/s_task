@@ -917,6 +917,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\src\s_timer_small.c</FilePath>
             </File>
+            <File>
+              <FileName>s_event_embed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\s_event_embed.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

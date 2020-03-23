@@ -167,6 +167,16 @@ void s_task_main_loop_once(__async__) {
 
 void s_task_next(__async__) {
     while (true) {
+#ifdef USE_IN_EMBEDDED
+        if(g_globals.irq_actived){
+            S_IRQ_DISABLE();
+            g_globals.irq_actived = 0;
+            s_list_attach(&g_globals.active_tasks, &g_globals.irq_active_tasks);
+            s_list_detach(&g_globals.irq_active_tasks);
+            S_IRQ_ENABLE();
+        }
+#endif
+
         s_timer_run();
         if (!s_list_is_empty(&g_globals.active_tasks)) {
             s_task_call_next(__await__);
@@ -209,6 +219,12 @@ void s_task_init_system()
 #if defined USE_LIBUV
     g_globals.uv_loop = uv_loop;
 #endif
+    
+#if defined USE_IN_EMBEDDED    
+    s_list_init(&g_globals.irq_active_tasks);
+    g_globals.irq_actived = 0;
+#endif
+
     s_list_init(&g_globals.active_tasks);
 
 #ifndef USE_LIST_TIMER_CONTAINER

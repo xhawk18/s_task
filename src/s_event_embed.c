@@ -1,31 +1,37 @@
 #include "s_task.h"
 
+#ifdef USE_IN_EMBEDDED
+
 /*******************************************************************/
-/* event                                                           */
+/* event for communication between irq and task                    */
 /*******************************************************************/
 
-/* Initialize a wait event */
-void s_event_init(s_event_t *event) {
-    s_list_init(&event->wait_list);
-}
-
-/* Wait event */
-void s_event_wait(__async__, s_event_t *event) {
+/* Wait event from irq, disable irq before call this function!
+ *   S_IRQ_DISABLE()
+ *   ...
+ *   s_event_wait_irq(...)
+ *   ...
+ *   S_IRQ_ENABLE()
+ */
+void s_event_wait_irq(__async__, s_event_t *event) {
     //Put current task to the event's waiting list
     s_list_detach(&g_globals.current_task->node);   //no need, for safe
     s_list_attach(&event->wait_list, &g_globals.current_task->node);
+    S_IRQ_ENABLE();
     s_task_next(__await__);
+    S_IRQ_DISABLE();
 }
 
-/* Set event */
-void s_event_set(s_event_t *event) {
-    s_list_attach(&g_globals.active_tasks, &event->wait_list);
+/* Set event in irq */
+void s_event_set_irq(s_event_t *event) {
+    s_list_attach(&g_globals.irq_active_tasks, &event->wait_list);
     s_list_detach(&event->wait_list);
+    g_globals.irq_actived = 1;
 }
 
 /* Wait event */
 #ifndef USE_LIST_TIMER_CONTAINER
-static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
+static void s_event_wait_irq_ticks(__async__, s_event_t *event, my_clock_t ticks) {
     my_clock_t current_ticks;
     s_timer_t timer;
     
@@ -43,7 +49,9 @@ static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
     s_list_detach(&g_globals.current_task->node);   //no need, for safe
     //Put current task to the event's waiting list
     s_list_attach(&event->wait_list, &g_globals.current_task->node);
+    S_IRQ_ENABLE();
     s_task_next(__await__);
+    S_IRQ_DISABLE(); 
 
     if (timer.task != NULL) {
         timer.task = NULL;
@@ -51,7 +59,7 @@ static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
     }
 }
 #else
-static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
+static void s_event_wait_irq_ticks(__async__, s_event_t *event, my_clock_t ticks) {
     my_clock_t current_ticks;
     s_list_t *node;
     s_timer_t timer;
@@ -72,10 +80,12 @@ static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
     }
     s_list_attach(node, &timer.node);
 
-    s_list_detach(&timer.task->node);   //no need, for safe
+    s_list_detach(&timer.task->node);   //no need, for safe 
     //Put current task to the event's waiting list
     s_list_attach(&event->wait_list, &g_globals.current_task->node);
+    S_IRQ_ENABLE();
     s_task_next(__await__);
+    S_IRQ_DISABLE(); 
 
     if (timer.task != NULL) {
         timer.task = NULL;
@@ -84,14 +94,28 @@ static void s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
 }
 #endif
 
-/* Wait event */
-void s_event_wait_msec(__async__, s_event_t *event, uint32_t msec) {
+/* Wait event from irq, disable irq before call this function!
+ *   S_IRQ_DISABLE()
+ *   ...
+ *   s_event_wait_irq(...)
+ *   ...
+ *   S_IRQ_ENABLE()
+ */
+void s_event_wait_irq_msec(__async__, s_event_t *event, uint32_t msec) {
     my_clock_t ticks = msec_to_ticks(msec);
-    s_event_wait_ticks(__await__, event, ticks);
+    s_event_wait_irq_ticks(__await__, event, ticks);
 }
 
-/* Wait event */
-void s_event_wait_sec(__async__, s_event_t *event, uint32_t sec) {
+/* Wait event from irq, disable irq before call this function!
+ *   S_IRQ_DISABLE()
+ *   ...
+ *   s_event_wait_irq_sec(...)
+ *   ...
+ *   S_IRQ_ENABLE()
+ */
+void s_event_wait_irq_sec(__async__, s_event_t *event, uint32_t sec) {
     my_clock_t ticks = sec_to_ticks(sec);
-    s_event_wait_ticks(__await__, event, ticks);
+    s_event_wait_irq_ticks(__await__, event, ticks);
 }
+
+#endif

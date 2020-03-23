@@ -66,6 +66,11 @@ typedef struct {
     uv_loop_t  *uv_loop;
     uv_timer_t  uv_timer;
 #endif
+
+#if defined USE_IN_EMBEDDED    
+    s_list_t         irq_active_tasks;
+    volatile uint8_t irq_actived;
+#endif
 } s_task_globals_t;
 
 #if defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L
