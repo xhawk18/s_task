@@ -208,7 +208,7 @@ int s_event_wait_sec(__async__, s_event_t *event, uint32_t sec);
 
 ## Build
 
-### Linux / MacOS
+### Linux / MacOS / MingW(MSYS2)
 
     cd build
     cmake .
