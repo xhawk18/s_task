@@ -183,4 +183,7 @@ uint32_t ticks_to_sec(my_clock_t ticks);
 #ifdef __cplusplus
 }
 #endif
+
+#include "s_uv.h"
+
 #endif

@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "s_task.h"
-#include "s_uv.h"
 
 static void *stack_main[512*1024];
 

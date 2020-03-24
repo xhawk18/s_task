@@ -1,5 +1,21 @@
 # s_task - a co-routine library for C
 
+  - [Features](#features)
+    - [Special features on embedded platfrom (stm32/stm8/m051)](#special-features-on-embedded-platfrom-stm32stm8m051)
+    - [Example 1 - simple task creation](#example-1---simple-task-creation)
+    - [Example 2 - asynchronized http client without callback function.](#example-2---asynchronized-http-client-without-callback-function)
+  - [Compatibility](#compatibility)
+  - [Build](#build)
+    - [Linux / MacOS / MingW(MSYS2)](#linux--macos--mingwmsys2)
+    - [Windows and other platforms](#windows-and-other-platforms)
+  - [How to use in your project ?](#how-to-use-in-your-project)
+  - [API](#api)
+    - [Task](#task)
+    - [Mutex](#mutex)
+    - [Event](#event)
+  - [How to make port ?](#how-to-make-port)
+  - [Contact](#contact)
+  
 ## Features
 
  * "s_task" is a co-routine library written in pure C and asm (from boost library), **without** **C++** required.
@@ -120,6 +136,59 @@ out0:;
 }
 ```
 
+
+## Compatibility
+
+"s_task" can run as standalone co-routine library, or work with library libuv (compiling with macro **USE_LIBUV**).
+
+| Platform                       | co-routine         | libuv              |
+|--------------------------------|--------------------|--------------------|
+| Windows                        | :heavy_check_mark: | :heavy_check_mark: |
+| Linux                          | :heavy_check_mark: | :heavy_check_mark: |
+| MacOS                          | :heavy_check_mark: | :heavy_check_mark: |
+| Android                        | :heavy_check_mark: | :heavy_check_mark: |
+| MingW (https://www.msys2.org/) | :heavy_check_mark: | :heavy_check_mark: |
+| ARMv6-M(M051)                  | :heavy_check_mark: | :x:                |
+| ARMv7-M(STM32F103,STM32F302)   | :heavy_check_mark: | :x:                |
+| STM8S103                       | :heavy_check_mark: | :x:                |
+
+   linux tested on 
+   * i686 (ubuntu-16.04)
+   * x86_64 (centos-8.1)
+   * arm (raspiberry 32bit)
+   * aarch64 (raspiberry 64bit)
+   * mipsel (openwrt ucLinux 3.10.14 for MT7628)
+   * mips64 (fedora for loongson 3A-4000)
+
+## Build
+
+### Linux / MacOS / MingW(MSYS2)
+
+    cd build
+    cmake .
+    make
+
+### Windows and other platforms
+
+| Platform  | Project                           | Tool chain                                    |
+|-----------|-----------------------------------|-----------------------------------------------|
+| Windows   | build\windows\s_task.sln          | visual studio 2019                            |
+| Android   | build\android\cross_build_arm*.sh | android ndk 20, API level 21 (test in termux) |
+| STM8S103  | build\stm8s103\Project.eww        | IAR workbench for STM8                        |
+| STM32F103 | build\stm32f103\Project.uvproj    | Keil uVision5                                 |
+| STM32F302 | build\stm32f302\Project.uvporj    | Keil uVision5                                 |
+| M051      | build\m051\Project.uvporj         | Keil uVision5                                 |
+
+## How to use in your project ?
+
+On linux/unix like system, after cmake build, you may get the libraries for your project
+
+* add libs_task.a to your project
+* #include "s_task.h"
+* build with predefined macro USE_LIBUV
+
+On windows or other system, please find the project in folder "build" as the project template.
+
 ## API
 
 ### Task
@@ -182,59 +251,6 @@ int s_event_wait_msec(__async__, s_event_t *event, uint32_t msec);
 /* Wait event with timeout */
 int s_event_wait_sec(__async__, s_event_t *event, uint32_t sec);
 ```
-
-## Compatibility
-
-"s_task" can run as standalone co-routine library, or work with library libuv (compiling with macro **USE_LIBUV**).
-
-| Platform                       | co-routine         | libuv              |
-|--------------------------------|--------------------|--------------------|
-| Windows                        | :heavy_check_mark: | :heavy_check_mark: |
-| Linux                          | :heavy_check_mark: | :heavy_check_mark: |
-| MacOS                          | :heavy_check_mark: | :heavy_check_mark: |
-| Android                        | :heavy_check_mark: | :heavy_check_mark: |
-| MingW (https://www.msys2.org/) | :heavy_check_mark: | :heavy_check_mark: |
-| ARMv6-M(M051)                  | :heavy_check_mark: | :x:                |
-| ARMv7-M(STM32F103,STM32F302)   | :heavy_check_mark: | :x:                |
-| STM8S103                       | :heavy_check_mark: | :x:                |
-
-   linux tested on 
-   * i686 (ubuntu-16.04)
-   * x86_64 (centos-8.1)
-   * arm (raspiberry 32bit)
-   * aarch64 (raspiberry 64bit)
-   * mipsel (openwrt ucLinux 3.10.14 for MT7628)
-   * mips64 (fedora for loongson 3A-4000)
-
-## Build
-
-### Linux / MacOS / MingW(MSYS2)
-
-    cd build
-    cmake .
-    make
-
-### Other platforms
-
-| Platform  | Project                           | Tool chain                                    |
-|-----------|-----------------------------------|-----------------------------------------------|
-| Windows   | build\windows\s_task.sln          | visual studio 2019                            |
-| Android   | build\android\cross_build_arm*.sh | android ndk 20, API level 21 (test in termux) |
-| STM8S103  | build\stm8s103\Project.eww        | IAR workbench for STM8                        |
-| STM32F103 | build\stm32f103\Project.uvproj    | Keil uVision5                                 |
-| STM32F302 | build\stm32f302\Project.uvporj    | Keil uVision5                                 |
-| M051      | build\m051\Project.uvporj         | Keil uVision5                                 |
-
-## How to use in your project ?
-
-On linux/unix like system, after cmake build, you may get the libraries for your project
-
-* add libs_task.a to your project
-* #include "s_task.h"
-* #include "s_uv.h"
-* build with predefined macro USE_LIBUV
-
-On windows or other system, please find the project in folder "build" as the project template.
 
 ## How to make port ?
 
