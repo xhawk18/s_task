@@ -45,7 +45,11 @@ set(uv_sources
     ../libuv/src/uv-data-getter-setters.c
     ../libuv/src/version.c)
 
-if(WIN32)
+if(WIN32 OR MINGW)
+  if(WIN32 OR MINGW)
+    list(APPEND st_libraries -static -s)
+  endif()
+
   list(APPEND st_defines WIN32_LEAN_AND_MEAN _WIN32_WINNT=0x0600)
   list(APPEND st_libraries
        advapi32
