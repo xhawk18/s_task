@@ -79,7 +79,7 @@ UV_SOURCE_CYGWIN=(
     ../../libuv/src/unix/no-fsevents.c
 )
 
-if gcc -dM -E - < /dev/null | grep __MSYS__; then
+if gcc -dM -E - < /dev/null | grep __CYGWIN__; then
     # for cygwin / msys
     UV_SOURCE=("${UV_SOURCE[@]}" "${UV_SOURCE_CYGWIN[@]}")
     ST_LIBS=( -lpthread -ldl -lrt )

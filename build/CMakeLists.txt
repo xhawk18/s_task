@@ -112,7 +112,7 @@ else()
        ../libuv/src/unix/udp.c)
 endif()
 
-if(MSYS)
+if(MSYS OR CYGWIN)
     list(APPEND st_defines _GNU_SOURCE)
     list(APPEND uv_sources
         ../libuv/src/unix/posix-hrtime.c
