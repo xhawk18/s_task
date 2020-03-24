@@ -1,7 +1,7 @@
-# s_task - awaitable co-routine library for C
+# s_task - awaitable coroutine library for C
 
   - [Features](#features)
-    - [Special features on embedded platfrom (stm32/stm8/m051)](#special-features-on-embedded-platfrom-stm32stm8m051)
+  - [Examples](#examples)
     - [Example 1 - simple task creation](#example-1---simple-task-creation)
     - [Example 2 - asynchronized http client without callback function.](#example-2---asynchronized-http-client-without-callback-function)
   - [Compatibility](#compatibility)
@@ -19,15 +19,15 @@
   
 ## Features
 
- * "s_task" is a co-routine library written in pure C and asm (from boost library), **without** **C++** required.
- * supports various platforms, such as windows, linux, android, macos, stm32, and even stm8.
- * supports keywords **\_\_await\_\_** and **\_\_async\_\_** . :triangular_flag_on_post: For functions that may switch to other tasks, call it with 1st parameter \_\_await\_\_, for the caller function of which, define the 1st parameter as \_\_async\_\_, which make it is clear to know about context switching.
- * works with libuv for network programming.
+ + "s_task" is a coroutine library written in pure C and asm (from boost library), **without** **C++** required.
+ + supports various platforms, such as windows, linux, android, macos, stm32, and even stm8.
+ + supports keywords **\_\_await\_\_** and **\_\_async\_\_** . :triangular_flag_on_post: For functions that may switch to other tasks, call it with 1st parameter \_\_await\_\_, for the caller function of which, define the 1st parameter as \_\_async\_\_, which make it is clear to know about context switching.
+ + works with libuv for network programming.
+ + Special features on embedded platfrom (stm32/stm8/m051)
+   - no dynamical memory allocation
+   - very small memory footprint ( increased by ROM<1.5K, RAM<128 bytes + task stack size)
 
-### Special features on embedded platfrom (stm32/stm8/m051)
-
- * no dynamical memory allocation
- * very small memory footprint ( increased by ROM<1.5K, RAM<128 bytes + task stack size)
+## Examples
 
 ### [Example 1](examples/ex0_task.c) - simple task creation
 
@@ -140,9 +140,9 @@ out0:;
 
 ## Compatibility
 
-"s_task" can run as standalone co-routine library, or work with library libuv (compiling with macro **USE_LIBUV**).
+"s_task" can run as standalone coroutine library, or work with library libuv (compiling with macro **USE_LIBUV**).
 
-| Platform                       | co-routine         | libuv              |
+| Platform                       | coroutine          | libuv              |
 |--------------------------------|--------------------|--------------------|
 | Windows                        | :heavy_check_mark: | :heavy_check_mark: |
 | Linux                          | :heavy_check_mark: | :heavy_check_mark: |
