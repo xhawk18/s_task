@@ -108,6 +108,15 @@ else()
        ../libuv/src/unix/udp.c)
 endif()
 
+if(MSYS)
+    list(APPEND st_defines _GNU_SOURCE)
+    list(APPEND uv_sources
+        ../libuv/src/unix/posix-hrtime.c
+        ../libuv/src/unix/posix-poll.c
+        ../libuv/src/unix/no-fsevents.c
+    )
+endif()
+
 if(CMAKE_SYSTEM_NAME STREQUAL "AIX")
   list(APPEND st_defines
        _ALL_SOURCE

@@ -51,13 +51,21 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 #   define USE_LIST_TIMER_CONTAINER
 #   include "s_port_stm8s.h"
 #elif defined USE_LIBUV
-#   define USE_JUMP_FCONTEXT
+#   ifdef __MSYS__
+#       define USE_SWAP_CONTEXT
+#   else
+#       define USE_JUMP_FCONTEXT
+#   endif
 #   include "s_port_libuv.h"
 #elif defined _WIN32
 #   define USE_JUMP_FCONTEXT
 #   include "s_port_windows.h"
 #else
-#   define USE_JUMP_FCONTEXT
+#   ifdef __MSYS__
+#       define USE_SWAP_CONTEXT
+#   else
+#       define USE_JUMP_FCONTEXT
+#   endif
 #   include "s_port_posix.h"
 #endif
 

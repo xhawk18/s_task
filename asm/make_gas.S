@@ -2,7 +2,7 @@
 
 #if defined(__APPLE__)
     #include "make_combined_sysv_macho_gas.S"
-#elif defined(_WIN32)
+#elif defined(_WIN32) || defined(__MINGW32__) || defined(__MINGW64__) || defined(__CYGWIN__) || defined(__MSYS__)
     #if defined(__x86_64__)
         #include "make_x86_64_ms_pe_gas.asm"
     #elif defined(__i386__)

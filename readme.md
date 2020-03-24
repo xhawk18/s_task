@@ -187,16 +187,16 @@ int s_event_wait_sec(__async__, s_event_t *event, uint32_t sec);
 
 "s_task" can run as standalone co-routine library, or work with library libuv (compiling with macro **USE_LIBUV**).
 
-| Platform                     | co-routine         | libuv              |
-|------------------------------|--------------------|--------------------|
-| Windows                      | :heavy_check_mark: | :heavy_check_mark: |
-| Linux                        | :heavy_check_mark: | :heavy_check_mark: |
-| MacOS                        | :heavy_check_mark: | :heavy_check_mark: |
-| Android                      | :heavy_check_mark: | :heavy_check_mark: |
-| MingW                        | :heavy_check_mark: | :x:                |
-| ARMv6-M(M051)                | :heavy_check_mark: | :x:                |
-| ARMv7-M(STM32F103,STM32F302) | :heavy_check_mark: | :x:                |
-| STM8S103                     | :heavy_check_mark: | :x:                |
+| Platform                       | co-routine         | libuv              |
+|--------------------------------|--------------------|--------------------|
+| Windows                        | :heavy_check_mark: | :heavy_check_mark: |
+| Linux                          | :heavy_check_mark: | :heavy_check_mark: |
+| MacOS                          | :heavy_check_mark: | :heavy_check_mark: |
+| Android                        | :heavy_check_mark: | :heavy_check_mark: |
+| MingW (https://www.msys2.org/) | :heavy_check_mark: | :heavy_check_mark: |
+| ARMv6-M(M051)                  | :heavy_check_mark: | :x:                |
+| ARMv7-M(STM32F103,STM32F302)   | :heavy_check_mark: | :x:                |
+| STM8S103                       | :heavy_check_mark: | :x:                |
 
    linux tested on 
    * i686 (ubuntu-16.04)
