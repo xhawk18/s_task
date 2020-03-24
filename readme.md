@@ -1,4 +1,4 @@
-# s_task - a co-routine library for C
+# s_task - awaitable co-routine library for C
 
   - [Features](#features)
     - [Special features on embedded platfrom (stm32/stm8/m051)](#special-features-on-embedded-platfrom-stm32stm8m051)
@@ -15,6 +15,7 @@
     - [Event](#event)
   - [How to make port ?](#how-to-make-port)
   - [Contact](#contact)
+  - [VS.](#vs)
   
 ## Features
 
@@ -261,3 +262,22 @@ int s_event_wait_sec(__async__, s_event_t *event, uint32_t sec);
 使用中有任何问题或建议，欢迎QQ加群 567780316 交流，您可能第一个加群的哦。。
 
 ![s_task交流群](qq.png)
+
+## VS. 
++ coro: http://www.goron.de/~froese/coro/
++ coroutine(a asymmetric coroutine library for C): https://github.com/cloudwu/coroutine
++ coroutine(a asymmetric coroutine (lua like) with fixed-size stack): https://github.com/xphh/coroutine
++ coroutine(coroutine library with pthread-like interface in pure C): https://github.com/Marcus366/coroutine
++ coroutines(A lightweight coroutine library written in C and assembler): https://github.com/xya/coroutines
++ fcontext: https://github.com/reginaldl/fcontext
++ libtask: https://code.google.com/p/libtask/
++ libaco: https://github.com/hnes/libaco
++ libconcurrency: http://code.google.com/p/libconcurrency/
++ libconcurrent: https://github.com/sharow/libconcurrent
++ libcoro: http://software.schmorp.de/pkg/libcoro.html
++ libcoroutine: https://github.com/stevedekorte/coroutine
++ libfiber: http://www.rkeene.org/projects/info/wiki/22
++ libwire: https://github.com/baruch/libwire
++ micro: https://github.com/mikewei/micoro
++ mill: https://github.com/sustrik/mill
++ Portable Coroutine Library (PCL): http://xmailserver.org/libpcl.html
