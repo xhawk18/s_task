@@ -271,6 +271,7 @@ int s_event_wait_sec(__async__, s_event_t *event, uint32_t sec);
 + coroutine(coroutine library with pthread-like interface in pure C): https://github.com/Marcus366/coroutine
 + coroutines(A lightweight coroutine library written in C and assembler): https://github.com/xya/coroutines
 + fcontext: https://github.com/reginaldl/fcontext
++ hev-task-system: https://github.com/heiher/hev-task-system
 + libaco: https://github.com/hnes/libaco
 + libconcurrency: http://code.google.com/p/libconcurrency/
 + libconcurrent: https://github.com/sharow/libconcurrent
