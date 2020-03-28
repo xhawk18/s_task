@@ -249,4 +249,12 @@ target_compile_options(ex3_http_client PRIVATE ${st_cflags})
 target_include_directories(ex3_http_client PRIVATE ../include ../libuv/include ../libuv/src)
 target_link_libraries(ex3_http_client ${st_libraries} s_task)
 
+add_executable(ex4_echo_server ../examples/ex4_echo_server.c)
+target_compile_definitions(ex4_echo_server PRIVATE ${st_defines} USE_LIBUV)
+target_compile_options(ex4_echo_server PRIVATE ${st_cflags})
+#target_link_options(ex4_echo_server PRIVATE -s)
+target_include_directories(ex4_echo_server PRIVATE ../include ../libuv/include ../libuv/src)
+target_link_libraries(ex4_echo_server ${st_libraries} s_task)
+
+
 

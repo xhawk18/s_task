@@ -107,3 +107,9 @@ fi
     "${ST_SOURCE[@]}" "${UV_SOURCE[@]}" \
     "${ST_LIBS[@]}" \
     ../../examples/ex3_http_client.c -o ex3_http_client
+
+"$GCC" -O2 -s -static -I../../include -I../../libuv/include -I../../libuv/src -Wall\
+     -DUSE_LIBUV -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE \
+    "${ST_SOURCE[@]}" "${UV_SOURCE[@]}" \
+    "${ST_LIBS[@]}" \
+    ../../examples/ex4_echo_server.c -o ex4_echo_server

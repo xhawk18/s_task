@@ -69,3 +69,9 @@ UV_SOURCE=(
     "${ST_SOURCE[@]}" "${UV_SOURCE[@]}" \
     -ldl \
     ../../examples/ex3_http_client.c -o ex3_http_client
+
+"$CC" -O2 -s -I../../include -I../../libuv/include -I../../libuv/src -Wall\
+     -DUSE_LIBUV -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE -D_POSIX_C_SOURCE=200112 \
+    "${ST_SOURCE[@]}" "${UV_SOURCE[@]}" \
+    -ldl \
+    ../../examples/ex4_echo_server.c -o ex4_echo_server
