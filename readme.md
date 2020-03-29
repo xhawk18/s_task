@@ -8,7 +8,7 @@
   - [Build](#build)
     - [Linux / MacOS / MingW(MSYS2)](#linux--macos--mingwmsys2)
     - [Windows and other platforms](#windows-and-other-platforms)
-  - [How to use in your project ?](#how-to-use-in-your-project)
+  - [How to use in your project?](#how-to-use-in-your-project)
   - [API](#api)
     - [Task](#task)
     - [Mutex](#mutex)
@@ -181,7 +181,7 @@ out0:;
 | STM32F302 | build\stm32f302\Project.uvporj    | Keil uVision5                                 |
 | M051      | build\m051\Project.uvporj         | Keil uVision5                                 |
 
-## How to use in your project ?
+## How to use in your project?
 
 On linux/unix like system, after cmake build, you may get the libraries for your project
 
