@@ -13,7 +13,7 @@
     - [Task](#task)
     - [Mutex](#mutex)
     - [Event](#event)
-  - [How to make port ?](#how-to-make-port)
+  - [How to make port?](#how-to-make-port)
   - [Contact](#contact)
   - [VS.](#vs)
   
@@ -280,7 +280,7 @@ int s_event_wait_irq_sec(__async__, s_event_t *event, uint32_t sec);
 
 
 
-## How to make port ?
+## How to make port?
 
 [Please find document here](porting.md)
 
