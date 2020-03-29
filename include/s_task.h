@@ -153,10 +153,10 @@ int s_event_wait_sec(__async__, s_event_t *event, uint32_t msec);
 
 #ifdef USE_IN_EMBEDDED
 
-/* Set event in irq */
+/* Set event in interrupt */
 void s_event_set_irq(s_event_t *event);
 
-/* Wait event from irq, disable irq before call this function!
+/* Wait event from interrupt, need to disable interrupt before call this function!
  *   S_IRQ_DISABLE()
  *   ...
  *   s_event_wait_irq(...)
@@ -164,9 +164,11 @@ void s_event_set_irq(s_event_t *event);
  *   S_IRQ_ENABLE()
  */
 int s_event_wait_irq(__async__, s_event_t *event);
-/* Wait event from irq, disable irq before call this function! */
+
+/* Wait event from interrupt, need to disable interrupt before call this function! */
 int s_event_wait_irq_msec(__async__, s_event_t *event, uint32_t msec);
-/* Wait event from irq, disable irq before call this function! */
+
+/* Wait event from interrupt, need to disable interrupt before call this function! */
 int s_event_wait_irq_sec(__async__, s_event_t *event, uint32_t sec);
 
 #endif

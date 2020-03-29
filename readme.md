@@ -224,6 +224,7 @@ void s_task_cancel_wait(void* stack);
 ```
 
 ### Mutex
+
 ```c
 /* Initialize a mutex */
 void s_mutex_init(s_mutex_t *mutex);
@@ -236,6 +237,7 @@ void s_mutex_unlock(s_mutex_t *mutex);
 ```
 
 ### Event
+
 ```c
 /* Initialize a wait event */
 void s_event_init(s_event_t *event);
@@ -252,6 +254,30 @@ int s_event_wait_msec(__async__, s_event_t *event, uint32_t msec);
 /* Wait event with timeout */
 int s_event_wait_sec(__async__, s_event_t *event, uint32_t sec);
 ```
+
+#### Event for interrupt (for embeded only, STM8/STM32/M051)
+
+```c
+/* Set event in interrupt */
+void s_event_set_irq(s_event_t *event);
+
+/* Wait event from interrupt, need to disable interrupt before call this function!
+ *   S_IRQ_DISABLE()
+ *   ...
+ *   s_event_wait_irq(...)
+ *   ...
+ *   S_IRQ_ENABLE()
+ */
+int s_event_wait_irq(__async__, s_event_t *event);
+
+/* Wait event from interrupt, need to disable interrupt before call this function! */
+int s_event_wait_irq_msec(__async__, s_event_t *event, uint32_t msec);
+
+/* Wait event from interrupt, need to disable interrupt before call this function! */
+int s_event_wait_irq_sec(__async__, s_event_t *event, uint32_t sec);
+```
+
+
 
 ## How to make port ?
 
