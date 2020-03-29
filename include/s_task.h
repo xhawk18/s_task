@@ -60,6 +60,10 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 #elif defined _WIN32
 #   define USE_JUMP_FCONTEXT
 #   include "s_port_windows.h"
+#elif defined __AVR__
+#   define USE_SWAP_CONTEXT
+#   define USE_LIST_TIMER_CONTAINER
+#   include "s_port_avr.h"
 #else
 #   ifdef __CYGWIN__
 #       define USE_SWAP_CONTEXT

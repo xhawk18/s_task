@@ -148,3 +148,8 @@ The externally maintained libraries used by libuv are:
   - android-ifaddrs.h, android-ifaddrs.c, copyright Berkeley Software Design
     Inc, Kenneth MacKay and Emergya (Cloud4all, FP7/2007-2013, grant agreement
     n° 289016). Three clause BSD license.
+
+================================================================================
+The AVR code from
+   https://github.com/LeeReindeer/ROS 
+with MIT License

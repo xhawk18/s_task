@@ -34,6 +34,8 @@ THREAD_LOCAL s_task_globals_t g_globals;
 #   include "s_port_libuv.inc"
 #elif defined _WIN32
 #   include "s_port_windows.inc"
+#elif defined __AVR__
+#   include "s_port_avr.inc.h"
 #else
 #   include "s_port_posix.inc"
 #endif
