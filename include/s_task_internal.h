@@ -89,7 +89,7 @@ extern THREAD_LOCAL s_task_globals_t g_globals;
 struct tag_s_task_t;
 /* */
 #ifdef USE_SWAP_CONTEXT
-void s_task_context_entry(struct tag_s_task_t* task);
+void s_task_context_entry(void);
 #endif
 #ifdef USE_JUMP_FCONTEXT
 void s_task_fcontext_entry(transfer_t arg);

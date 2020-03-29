@@ -48,18 +48,10 @@ __asm static void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
 }
 
 
-__asm void task_helper_entry_asm() {
+__asm static void makecontext(ucontext_t *oucp, void *stack) {
     PRESERVE8
     import s_task_context_entry
-    POP     {r0, r1}
-    LDR     r2, =s_task_context_entry
-    BX      r2
-}
-
-//dummy_arg is not used now
-__asm static void makecontext(ucontext_t *oucp, void *stack, void *task, void *dummy_arg) {
-    PUSH    {r2, r3}
-    LDR     r3, =task_helper_entry_asm  //将恢复为lr
+    LDR     r3, =s_task_context_entry  //将恢复为lr
     STM     r0!, {r3-r7}
     MOV     r2, r8
     MOV     r3, r9
@@ -70,16 +62,15 @@ __asm static void makecontext(ucontext_t *oucp, void *stack, void *task, void *d
     SUBS    r7, r7, #8                  //将恢复为sp
     STM     r0!, {r2-r7}
 
-    POP     {r2, r3}
     SUBS    r1, r1, #8
     STM     r1!, {r2, r3}
 
     BX      lr
-    NOP
 }
 
 
-static void create_context(ucontext_t *oucp, void *stack, size_t stack_size, void *task) {
-    makecontext(oucp, (char *)stack + stack_size, task, NULL);
+static void create_context(ucontext_t *oucp, void *stack, size_t stack_size) {
+    oucp->regs[0] = (int)&s_task_context_entry;
+    oucp->regs[10] = (int)((char *)stack + stack_size);
 }
 

@@ -271,7 +271,7 @@ void s_task_create(void *stack, size_t stack_size, s_task_fn_t task_entry, void 
     
 
 #if defined   USE_SWAP_CONTEXT
-    create_context(&task->uc, real_stack, real_stack_size, task);
+    create_context(&task->uc, real_stack, real_stack_size);
 #elif defined USE_JUMP_FCONTEXT
     create_fcontext(&task->fc, real_stack, real_stack_size, s_task_fcontext_entry);
 #endif
@@ -319,10 +319,11 @@ size_t s_task_get_stack_free_size() {
     return s_task_get_stack_free_size_by_task(g_globals.current_task);
 }
 
-void s_task_context_entry(struct tag_s_task_t *task) {
+void s_task_context_entry() {
+    struct tag_s_task_t *task = g_globals.current_task;
     s_task_fn_t task_entry = task->task_entry;
     void *task_arg         = task->task_arg;
-    
+
     __async__ = 0;
     (*task_entry)(__await__, task_arg);
 
@@ -340,7 +341,7 @@ void s_task_fcontext_entry(transfer_t arg) {
     jump->from->fc = arg.fctx;
     //printf("%p %p %p\n", jump, jump->to, g_globals.current_task);
 
-    s_task_context_entry(jump->to);
+    s_task_context_entry();
 }
 #endif
 

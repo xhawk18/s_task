@@ -73,14 +73,13 @@ void my_on_idle(uint32_t max_idle_ms) {
 
 extern void swapcontext(ucontext_t *oucp, const ucontext_t *ucp);
 
-static void create_context(ucontext_t *oucp, void *stack, size_t stack_size, void *task) {
+static void create_context(ucontext_t *oucp, void *stack, size_t stack_size) {
 	//stm8 stack structure, 1. fill sp, 2, decrease sp
 	//	6 bytes:   (high address) CC,Y,X,A   
 	//  16 bytes:                 b0 ~ b15  (low address)
 
 	int top_sp = (int)((char *)stack + stack_size);
 	*(int *)(top_sp - 2) = (int)&s_task_context_entry;
-	*(int *)(top_sp - 7) = (int)task;	//X
 	oucp->sp = top_sp - 2 - 22 - 1;
 }
 

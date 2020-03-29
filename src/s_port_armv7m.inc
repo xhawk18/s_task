@@ -32,29 +32,9 @@ __asm static void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
     BX      lr
 }
 
-__asm void task_helper_entry_asm() {
-    PRESERVE8
-    import s_task_context_entry
-    POP     {r0, r1}
-    LDR     r2, =s_task_context_entry
-    BX      r2
-}
 
-//dummy_arg is not used now
-__asm static void makecontext(ucontext_t *oucp, void *stack, void *task, void *dummy_arg) {
-    STM     r0!, {r4-r12}
-    
-    STMDB   r1!, {r2, r3}
-    
-    LDR     r3, =task_helper_entry_asm
-    STR     r3, [r0],#0x04    //将恢复为lr
-    STR     r1, [r0],#0x04    //将恢复为sp
-
-    BX      lr
-}
-
-
-static void create_context(ucontext_t *oucp, void *stack, size_t stack_size, void *task) {
-    makecontext(oucp, (char *)stack + stack_size, task, NULL);
+static void create_context(ucontext_t *oucp, void *stack, size_t stack_size) {
+    oucp->regs[9] = (int)&s_task_context_entry;
+    oucp->regs[10] = (int)((char *)stack + stack_size);
 }
 
