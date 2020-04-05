@@ -10,7 +10,7 @@ bool       g_closed = false;
 void      *stack_main[256];
 void      *stack0[256];
 void      *stack1[256];
-#elif defined STM8S103
+#elif defined STM8S103 || defined __AVR__
 char       stack_main[192];
 char       stack0[192];
 char       stack1[192];

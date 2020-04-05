@@ -152,7 +152,7 @@ out0:;
 | ARMv6-M(M051)                  | :heavy_check_mark: | :x:                |
 | ARMv7-M(STM32F103,STM32F302)   | :heavy_check_mark: | :x:                |
 | STM8S103                       | :heavy_check_mark: | :x:                |
-| Arduino UNO(AVR MEGA328P)      | :date: TODO        | :x:                |
+| Arduino UNO(AVR MEGA328P)      | :heavy_check_mark: | :x:                |
 
    linux tested on 
    * i686 (ubuntu-16.04)
@@ -186,8 +186,10 @@ out0:;
 On linux/unix like system, after cmake build, you may get the libraries for your project
 
 * add libs_task.a to your project
-* #include "s_task.h"
+* #include "[s_task.h](include/s_task.h)"
 * build with predefined macro USE_LIBUV
+
+On arduino, copy all files in folder include and src into your arduino project's subfolder src/s_task/. Please take a look at the folder structure of "[build/arduino/](build/arduino/)".
 
 On windows or other system, please find the project in folder "build" as the project template.
 
