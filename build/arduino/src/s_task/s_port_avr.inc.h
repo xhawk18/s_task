@@ -2,7 +2,6 @@
 #ifdef ARDUINO
 #   include <Arduino.h>
 #else
-#   include <avr/interrupt.h>
 #   include <avr/io.h>
 #endif
 
@@ -14,6 +13,8 @@ void my_clock_init(){
 my_clock_t my_clock() {
 #ifdef ARDUINO
     return (my_clock_t)millis();
+#else
+	return 0;
 #endif
 }
 
