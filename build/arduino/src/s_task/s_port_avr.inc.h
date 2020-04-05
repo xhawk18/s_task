@@ -1,5 +1,10 @@
 /* Copyright xhawk, MIT license */
-#include <Arduino.h>
+#ifdef ARDUINO
+#   include <Arduino.h>
+#else
+#   include <avr/interrupt.h>
+#   include <avr/io.h>
+#endif
 
 /* Timer functions need to be implemented on a new porting. */
 
@@ -7,11 +12,15 @@ void my_clock_init(){
 }
 
 my_clock_t my_clock() {
+#ifdef ARDUINO
     return (my_clock_t)millis();
+#endif
 }
 
 void my_on_idle(uint64_t max_idle_ms) {
+#ifdef ARDUINO
     delay(max_idle_ms);
+#endif
 }
 
 static void create_context(ucontext_t *uc, void *stack, size_t stack_size) {
