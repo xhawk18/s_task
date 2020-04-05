@@ -149,10 +149,10 @@ out0:;
 | MacOS                          | :heavy_check_mark: | :heavy_check_mark: |
 | Android                        | :heavy_check_mark: | :heavy_check_mark: |
 | MingW (https://www.msys2.org/) | :heavy_check_mark: | :heavy_check_mark: |
-| ARMv6-M(M051)                  | :heavy_check_mark: | :x:                |
-| ARMv7-M(STM32F103,STM32F302)   | :heavy_check_mark: | :x:                |
+| ARMv6-M (M051)                 | :heavy_check_mark: | :x:                |
+| ARMv7-M (STM32F103,STM32F302)  | :heavy_check_mark: | :x:                |
 | STM8S103                       | :heavy_check_mark: | :x:                |
-| Arduino UNO(AVR MEGA328P)      | :heavy_check_mark: | :x:                |
+| Arduino UNO (AVR MEGA328P)     | :heavy_check_mark: | :x:                |
 
    linux tested on 
    * i686 (ubuntu-16.04)
