@@ -47,10 +47,12 @@ typedef struct {
     my_clock_t wakeup_ticks;
 } s_timer_t;
 
+#if defined USE_JUMP_FCONTEXT
 typedef struct {
-    s_task_t *from;
-    s_task_t *to;
+    fcontext_t *from;
+    fcontext_t *to;
 } s_jump_t;
+#endif
 
 typedef struct {
     s_task_t    main_task;
@@ -88,9 +90,7 @@ extern THREAD_LOCAL s_task_globals_t g_globals;
 
 struct tag_s_task_t;
 /* */
-#ifdef USE_SWAP_CONTEXT
 void s_task_context_entry(void);
-#endif
 #ifdef USE_JUMP_FCONTEXT
 void s_task_fcontext_entry(transfer_t arg);
 #endif
