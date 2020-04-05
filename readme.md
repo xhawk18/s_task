@@ -180,6 +180,7 @@ out0:;
 | STM32F103 | build\stm32f103\Project.uvproj    | Keil uVision5                                 |
 | STM32F302 | build\stm32f302\Project.uvporj    | Keil uVision5                                 |
 | M051      | build\m051\Project.uvporj         | Keil uVision5                                 |
+| Arduino   | build\arduino\arduino.ino         | Arduino IDE                                   |
 
 ## How to use in your project?
 
@@ -189,7 +190,7 @@ On linux/unix like system, after cmake build, you may get the libraries for your
 * #include "[s_task.h](include/s_task.h)"
 * build with predefined macro USE_LIBUV
 
-On arduino, copy all files in folder include and src into your arduino project's subfolder src/s_task/. Please take a look at the folder structure of "[build/arduino/](build/arduino/)".
+On arduino, copy all source files (*.h, *.c) in folder "[include](include)" and "[src](src)" into your arduino project's subfolder src/s_task/. Please take a look at the folder structure of "[build/arduino/](build/arduino/)".
 
 On windows or other system, please find the project in folder "build" as the project template.
 
