@@ -6,9 +6,9 @@
 
 s_event_t  g_event;
 bool       g_closed = false;
-void      *stack_main[512*1024];
-void      *stack0[512*1024];
-void      *stack1[512*1024];
+void      *g_stack_main[512*1024];
+void      *g_stack0[512*1024];
+void      *g_stack1[512*1024];
 
 
 void sub_task(__async__, void *arg) {
@@ -25,8 +25,8 @@ void main_task(__async__, void *arg) {
     int i;
     s_event_init(&g_event);
 
-    s_task_create(stack0, sizeof(stack0), sub_task, (void *)1);
-    s_task_create(stack1, sizeof(stack1), sub_task, (void *)2);
+    s_task_create(g_stack0, sizeof(g_stack0), sub_task, (void *)1);
+    s_task_create(g_stack1, sizeof(g_stack1), sub_task, (void *)2);
 
     for (i = 0; i < 5; ++i) {
         printf("task_main arg = %p, i = %d\n", arg, i);
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
     uv_loop_t *loop = uv_default_loop();
     s_task_init_system(loop);
 
-    s_task_create(stack_main, sizeof(stack_main), main_task, (void *)(size_t)argc);
+    s_task_create(g_stack_main, sizeof(g_stack_main), main_task, (void *)(size_t)argc);
     
     uv_run(loop, UV_RUN_DEFAULT);
     printf("all task is over\n");

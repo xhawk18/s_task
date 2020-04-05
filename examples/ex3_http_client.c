@@ -4,7 +4,7 @@
 #include <string.h>
 #include "s_task.h"
 
-static void *stack_main[512*1024];
+static void * g_stack_main[512*1024];
 
 
 void main_task(__async__, void *arg) {
@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
     uv_loop_t *loop = uv_default_loop();
     s_task_init_system(loop);
 
-    s_task_create(stack_main, sizeof(stack_main), main_task, (void *)loop);
+    s_task_create(g_stack_main, sizeof(g_stack_main), main_task, (void *)loop);
     
     uv_run(loop, UV_RUN_DEFAULT);
     printf("all task is over\n");

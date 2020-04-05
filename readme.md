@@ -1,9 +1,14 @@
 # s_task - awaitable coroutine library for C
 
+[中文版文档 (chinese version)](readme_cn.md)
+
+## Table of content
+
   - [Features](#features)
   - [Examples](#examples)
     - [Example 1 - simple task creation](#example-1---simple-task-creation)
     - [Example 2 - asynchronized http client without callback function.](#example-2---asynchronized-http-client-without-callback-function)
+    - [Example 3 - control LED with multitasking on ardinuo](#example-3---control-led-with-multitasking-on-ardinuo)
   - [Compatibility](#compatibility)
   - [Build](#build)
     - [Linux / MacOS / MingW(MSYS2)](#linux--macos--mingwmsys2)
@@ -35,9 +40,9 @@
 #include <stdio.h>
 #include "s_task.h"
 
-void* stack_main[64 * 1024];
-void* stack0[64 * 1024];
-void* stack1[64 * 1024];
+void* g_stack_main[64 * 1024];
+void* g_stack0[64 * 1024];
+void* g_stack1[64 * 1024];
 
 void sub_task(__async__, void* arg) {
     int i;
@@ -51,24 +56,24 @@ void sub_task(__async__, void* arg) {
 
 void main_task(__async__, void* arg) {
     int i;
-    s_task_create(stack0, sizeof(stack0), sub_task, (void*)1);
-    s_task_create(stack1, sizeof(stack1), sub_task, (void*)2);
+    s_task_create(g_stack0, sizeof(g_stack0), sub_task, (void*)1);
+    s_task_create(g_stack1, sizeof(g_stack1), sub_task, (void*)2);
 
     for (i = 0; i < 4; ++i) {
         printf("task_main arg = %p, i = %d\n", arg, i);
         s_task_yield(__await__);
     }
 
-    s_task_join(__await__, stack0);
-    s_task_join(__await__, stack1);
+    s_task_join(__await__, g_stack0);
+    s_task_join(__await__, g_stack1);
 }
 
 int main(int argc, char* argv) {
     __init_async__;
 
     s_task_init_system();
-    s_task_create(stack_main, sizeof(stack_main), main_task, (void*)(size_t)argc);
-    s_task_join(__await__, stack_main);
+    s_task_create(g_stack_main, sizeof(g_stack_main), main_task, (void*)(size_t)argc);
+    s_task_join(__await__, g_stack_main);
     printf("all task is over\n");
     return 0;
 }
@@ -137,6 +142,79 @@ out0:;
 }
 ```
 
+### [Example 3](build/arduino/arduino.ino) - control LED with multitasking on ardinuo
+
+```c
+#include <stdio.h>
+#include "src/s_task/s_task.h"
+
+//This program demonstrates three tasks:
+// 1) main_task - 
+//    Wait 10 seconds and set flag g_exit. 
+//    After all tasks finished, set LED on always.
+// 2) sub_task_fast_blinking -
+//    Set led blinking fast
+// 3) sub_task_set_low -
+//    Set led off for 1 second, and then blinking for 3 seconds.
+
+
+void setup() {
+    // put your setup code here, to run once:
+    pinMode(LED_BUILTIN, OUTPUT);
+}
+
+
+char g_stack0[384];
+char g_stack1[384];
+volatile bool g_is_low = false;
+volatile bool g_exit = false;
+
+void sub_task_fast_blinking(__async__, void* arg) {
+    while(!g_exit) {
+        if(!g_is_low)
+            digitalWrite(LED_BUILTIN, HIGH); // turn the LED on
+
+        s_task_msleep(__await__, 50);        // wait for 50 milliseconds
+        digitalWrite(LED_BUILTIN, LOW);      // turn the LED off
+        s_task_msleep(__await__, 50);        // wait for 50 milliseconds
+    }    
+}
+
+void sub_task_set_low(__async__, void* arg) {
+    while(!g_exit) {
+        g_is_low = true;                     // stop fast blinking
+        digitalWrite(LED_BUILTIN, LOW);      // turn the LED off
+        s_task_sleep(__await__, 1);          // wait for 1 second
+        g_is_low = false;                    // start fast blinking
+        s_task_sleep(__await__, 3);          // wait for 3 seconds
+    }    
+}
+
+void main_task(__async__, void* arg) {
+    // create two sub tasks
+    s_task_create(g_stack0, sizeof(g_stack0), sub_task_fast_blinking, NULL);
+    s_task_create(g_stack1, sizeof(g_stack1), sub_task_set_low, NULL);
+
+    // wait for 10 seconds
+    s_task_sleep(__await__, 10);
+    g_exit = true;
+
+    // wait two sub tasks return
+    s_task_join(__await__, g_stack0);
+    s_task_join(__await__, g_stack1);
+}
+
+void loop() {
+    __init_async__;
+    
+    s_task_init_system();
+    main_task(__await__, NULL);
+
+    // turn the LED on always
+    digitalWrite(LED_BUILTIN, HIGH);
+    while(1);
+}
+```
 
 ## Compatibility
 
@@ -259,7 +337,7 @@ int s_event_wait_msec(__async__, s_event_t *event, uint32_t msec);
 int s_event_wait_sec(__async__, s_event_t *event, uint32_t sec);
 ```
 
-#### Event for interrupt (for embeded only, STM8/STM32/M051)
+#### Event for interrupt (for embeded only, STM8/STM32/M051/Arduino)
 
 ```c
 /* Set event in interrupt */
@@ -280,8 +358,6 @@ int s_event_wait_irq_msec(__async__, s_event_t *event, uint32_t msec);
 /* Wait event from interrupt, need to disable interrupt before call this function! */
 int s_event_wait_irq_sec(__async__, s_event_t *event, uint32_t sec);
 ```
-
-
 
 ## How to make port?
 
