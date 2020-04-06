@@ -1,6 +1,6 @@
 /* Copyright xhawk, MIT license */
 #include <stdio.h>
-#include "src/s_task/s_task.h"
+#include "s_task.h"
 
 //This program demonstrates three tasks:
 // 1) main_task - 
@@ -12,11 +12,10 @@
 //    Set led off for 1 second, and then blinking for 3 seconds.
 
 
-void setup() {
-    // put your setup code here, to run once:
-    pinMode(LED_BUILTIN, OUTPUT);
-}
-
+#define LED_GPIO       (1<<PB5)
+#define LED_INIT()     do {DDRB |= LED_GPIO;} while(0)
+#define LED_SET_HIGH() do {PORTB |= LED_GPIO;} while(0)
+#define LED_SET_LOW()  do {PORTB &= ~LED_GPIO;} while(0)
 
 char g_stack0[384];
 char g_stack1[384];
@@ -26,10 +25,10 @@ volatile bool g_exit = false;
 void sub_task_fast_blinking(__async__, void* arg) {
     while(!g_exit) {
         if(!g_is_low)
-            digitalWrite(LED_BUILTIN, HIGH); // turn the LED on
+			LED_SET_HIGH();                  // turn the LED on
 
         s_task_msleep(__await__, 50);        // wait for 50 milliseconds
-        digitalWrite(LED_BUILTIN, LOW);      // turn the LED off
+        LED_SET_LOW();                       // turn the LED off
         s_task_msleep(__await__, 50);        // wait for 50 milliseconds
     }    
 }
@@ -37,7 +36,7 @@ void sub_task_fast_blinking(__async__, void* arg) {
 void sub_task_set_low(__async__, void* arg) {
     while(!g_exit) {
         g_is_low = true;                     // stop fast blinking
-        digitalWrite(LED_BUILTIN, LOW);      // turn the LED off
+        LED_SET_LOW();                       // turn the LED off
         s_task_sleep(__await__, 1);          // wait for 1 second
         g_is_low = false;                    // start fast blinking
         s_task_sleep(__await__, 3);          // wait for 3 seconds
@@ -45,6 +44,9 @@ void sub_task_set_low(__async__, void* arg) {
 }
 
 void main_task(__async__, void* arg) {
+	
+	LED_INIT();
+	
     // create two sub tasks
     s_task_create(g_stack0, sizeof(g_stack0), sub_task_fast_blinking, NULL);
     s_task_create(g_stack1, sizeof(g_stack1), sub_task_set_low, NULL);
@@ -59,13 +61,13 @@ void main_task(__async__, void* arg) {
     s_task_join(__await__, g_stack1);
 }
 
-void loop() {
+int main() {
     __init_async__;
     
     s_task_init_system();
     main_task(__await__, NULL);
 
     // turn the LED on always
-    digitalWrite(LED_BUILTIN, HIGH);
-    while(1);
+    LED_SET_HIGH();
+    return 0;
 }

@@ -9,7 +9,7 @@
     - [示例 2 - （无需回调函数的）异步HTTP客户端程序](#%e7%a4%ba%e4%be%8b-2---%e6%97%a0%e9%9c%80%e5%9b%9e%e8%b0%83%e5%87%bd%e6%95%b0%e7%9a%84%e5%bc%82%e6%ad%a5http%e5%ae%a2%e6%88%b7%e7%ab%af%e7%a8%8b%e5%ba%8f)
     - [示例 3 - ardinuo下同时跑多个任务控制led闪烁](#%e7%a4%ba%e4%be%8b-3---ardinuo%e4%b8%8b%e5%90%8c%e6%97%b6%e8%b7%91%e5%a4%9a%e4%b8%aa%e4%bb%bb%e5%8a%a1%e6%8e%a7%e5%88%b6led%e9%97%aa%e7%83%81)
   - [兼容性](#%e5%85%bc%e5%ae%b9%e6%80%a7)
-  - [Build](#build)
+  - [编译](#%e7%bc%96%e8%af%91)
     - [Linux / MacOS / MingW(MSYS2)](#linux--macos--mingwmsys2)
     - [Windows 或其他平台 other platforms](#windows-%e6%88%96%e5%85%b6%e4%bb%96%e5%b9%b3%e5%8f%b0-other-platforms)
   - [如何在您的项目中使用s_task？](#%e5%a6%82%e4%bd%95%e5%9c%a8%e6%82%a8%e7%9a%84%e9%a1%b9%e7%9b%ae%e4%b8%ad%e4%bd%bf%e7%94%a8stask)
@@ -263,7 +263,7 @@ void loop() {
    * mipsel (openwrt ucLinux 3.10.14 for MT7628)
    * mips64 (fedora for loongson 3A-4000 龙芯)
 
-## Build
+## 编译
 
 ### Linux / MacOS / MingW(MSYS2)
 
@@ -273,15 +273,16 @@ void loop() {
 
 ### Windows 或其他平台 other platforms
 
-| 平台      | 项目                              | 工具链                                      |
-|-----------|-----------------------------------|---------------------------------------------|
-| Windows   | build\windows\s_task.sln          | visual studio 2019                          |
-| Android   | build\android\cross_build_arm*.sh | android ndk 20, API level 21 (在termux测试) |
-| STM8S103  | build\stm8s103\Project.eww        | IAR workbench for STM8                      |
-| STM32F103 | build\stm32f103\Project.uvproj    | Keil uVision5                               |
-| STM32F302 | build\stm32f302\Project.uvporj    | Keil uVision5                               |
-| M051      | build\m051\Project.uvporj         | Keil uVision5                               |
-| Arduino   | build\arduino\arduino.ino         | Arduino IDE                                 |
+| 平台       | 项目                              | 工具链                                      |
+|------------|-----------------------------------|---------------------------------------------|
+| Windows    | build\windows\s_task.sln          | visual studio 2019                          |
+| Android    | build\android\cross_build_arm*.sh | android ndk 20, API level 21 (在termux测试) |
+| STM8S103   | build\stm8s103\Project.eww        | IAR workbench for STM8                      |
+| STM32F103  | build\stm32f103\Project.uvproj    | Keil uVision5                               |
+| STM32F302  | build\stm32f302\Project.uvporj    | Keil uVision5                               |
+| M051       | build\m051\Project.uvporj         | Keil uVision5                               |
+| ATmega328P | build\atmega328p\atmega328p.atsln | Atmel Studio 7.0                            |
+| Arduino    | build\arduino\arduino.ino         | Arduino IDE                                 |
 
 ## 如何在您的项目中使用s_task？
 

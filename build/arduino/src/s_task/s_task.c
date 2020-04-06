@@ -133,11 +133,11 @@ static void s_task_call_next(__async__) {
         swapcontext(&old_task->uc, &g_globals.current_task->uc);
 #elif defined USE_JUMP_FCONTEXT
         s_jump_t jump;
-        jump.from = old_task;
-        jump.to = g_globals.current_task;
+        jump.from = &old_task->fc;
+        jump.to = &g_globals.current_task->fc;
         transfer_t t = jump_fcontext(g_globals.current_task->fc, (void*)&jump);
         s_jump_t* ret = (s_jump_t*)t.data;
-        ret->from->fc = t.fctx;
+        *ret->from = t.fctx;
 #endif
     }
 }
@@ -340,7 +340,7 @@ void s_task_fcontext_entry(transfer_t arg) {
     //printf("=== s_task_helper_entry = %p\n", arg.fctx);
 
     s_jump_t* jump = (s_jump_t*)arg.data;
-    jump->from->fc = arg.fctx;
+    *jump->from = arg.fctx;
     //printf("%p %p %p\n", jump, jump->to, g_globals.current_task);
 
     s_task_context_entry();
