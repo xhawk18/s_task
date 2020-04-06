@@ -1651,7 +1651,7 @@
   <group>
     <name>User</name>
     <file>
-      <name>$PROJ_DIR$\..\..\examples\ex1_event.c</name>
+      <name>$PROJ_DIR$\..\..\examples\ex5_led_blinking.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\src\s_event.c</name>

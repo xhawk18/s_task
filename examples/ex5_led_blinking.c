@@ -11,14 +11,26 @@
 // 3) sub_task_set_low -
 //    Set led off for 1 second, and then blinking for 3 seconds.
 
+#if defined STM8S103 
+#	define LED_GPIO       GPIO_PIN_3
+#	define LED_INIT()     GPIO_Init(GPIOA, LED_GPIO, GPIO_MODE_OUT_PP_LOW_FAST)
+#	define LED_SET_HIGH() do {GPIOA->ODR |= LED_GPIO;} while(0)
+#	define LED_SET_LOW()  do {GPIOA->ODR &= ~LED_GPIO;} while(0)
+char g_stack0[192];
+char g_stack1[192];
 
-#define LED_GPIO       (1<<PB5)
-#define LED_INIT()     do {DDRB |= LED_GPIO;} while(0)
-#define LED_SET_HIGH() do {PORTB |= LED_GPIO;} while(0)
-#define LED_SET_LOW()  do {PORTB &= ~LED_GPIO;} while(0)
-
+#elif defined __AVR__
+#	define LED_GPIO       (1<<PB5)
+#	define LED_INIT()     do {DDRB |= LED_GPIO;} while(0)
+#	define LED_SET_HIGH() do {PORTB |= LED_GPIO;} while(0)
+#	define LED_SET_LOW()  do {PORTB &= ~LED_GPIO;} while(0)
 char g_stack0[384];
 char g_stack1[384];
+
+#else
+#	error "not supported"
+#endif
+
 volatile bool g_is_low = false;
 volatile bool g_exit = false;
 
