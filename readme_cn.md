@@ -11,7 +11,7 @@
   - [兼容性](#%e5%85%bc%e5%ae%b9%e6%80%a7)
   - [编译](#%e7%bc%96%e8%af%91)
     - [Linux / MacOS / MingW(MSYS2)](#linux--macos--mingwmsys2)
-    - [Windows 或其他平台 other platforms](#windows-%e6%88%96%e5%85%b6%e4%bb%96%e5%b9%b3%e5%8f%b0-other-platforms)
+    - [Windows 或其他平台 other platforms](#windows-%e6%88%96%e5%85%b6%e4%bb%96%e5%b9%b3%e5%8f%b0)
   - [如何在您的项目中使用s_task？](#%e5%a6%82%e4%bd%95%e5%9c%a8%e6%82%a8%e7%9a%84%e9%a1%b9%e7%9b%ae%e4%b8%ad%e4%bd%bf%e7%94%a8stask)
   - [API](#api)
     - [Task （任务）](#task-%e4%bb%bb%e5%8a%a1)
@@ -271,7 +271,7 @@ void loop() {
     cmake .
     make
 
-### Windows 或其他平台 other platforms
+### Windows 或其他平台
 
 | 平台       | 项目                              | 工具链                                      |
 |------------|-----------------------------------|---------------------------------------------|
