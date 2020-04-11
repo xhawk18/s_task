@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{6F731134-9181-4DC1-98EE-506E61C81F46}</ProjectGuid>
+    <ProjectGuid>{2461ce5f-74e3-434e-b113-d6c38bc6cf66}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ex0_task</RootNamespace>
+    <RootNamespace>ex6_chan</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -183,7 +183,7 @@
     <ClInclude Include="..\..\include\s_task.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\examples\ex0_task.c" />
+    <ClCompile Include="..\..\examples\ex6_chan.c" />
     <ClCompile Include="..\..\src\s_chan.c" />
     <ClCompile Include="..\..\src\s_event.c" />
     <ClCompile Include="..\..\src\s_list.c" />

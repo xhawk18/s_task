@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ex3_http_client", "ex3_http
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ex4_echo_server", "ex4_echo_server.vcxproj", "{7E44E115-D3F6-4216-AECF-0D88F57D830E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ex6_chan", "ex6_chan.vcxproj", "{2461CE5F-74E3-434E-B113-D6C38BC6CF66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -61,6 +63,14 @@ Global
 		{7E44E115-D3F6-4216-AECF-0D88F57D830E}.Release|x64.Build.0 = Release|x64
 		{7E44E115-D3F6-4216-AECF-0D88F57D830E}.Release|x86.ActiveCfg = Release|Win32
 		{7E44E115-D3F6-4216-AECF-0D88F57D830E}.Release|x86.Build.0 = Release|Win32
+		{2461CE5F-74E3-434E-B113-D6C38BC6CF66}.Debug|x64.ActiveCfg = Debug|x64
+		{2461CE5F-74E3-434E-B113-D6C38BC6CF66}.Debug|x64.Build.0 = Debug|x64
+		{2461CE5F-74E3-434E-B113-D6C38BC6CF66}.Debug|x86.ActiveCfg = Debug|Win32
+		{2461CE5F-74E3-434E-B113-D6C38BC6CF66}.Debug|x86.Build.0 = Debug|Win32
+		{2461CE5F-74E3-434E-B113-D6C38BC6CF66}.Release|x64.ActiveCfg = Release|x64
+		{2461CE5F-74E3-434E-B113-D6C38BC6CF66}.Release|x64.Build.0 = Release|x64
+		{2461CE5F-74E3-434E-B113-D6C38BC6CF66}.Release|x86.ActiveCfg = Release|Win32
+		{2461CE5F-74E3-434E-B113-D6C38BC6CF66}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

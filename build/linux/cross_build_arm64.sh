@@ -6,6 +6,7 @@ ST_SOURCE=(
     ../../src/s_task.c
     ../../src/s_mutex.c
     ../../src/s_event.c
+    ../../src/s_chan.c
     ../../src/s_timer_fast.c
     ../../src/s_timer_small.c
     ../../src/s_rbtree.c
@@ -51,7 +52,7 @@ UV_SOURCE=(
     ../../libuv/src/unix/sysinfo-loadavg.c
 )
 
-"$GCC" -O2 -s -I../../include -Wall "${ST_SOURCE[@]}" ../../examples/ex0_task.c -o ex0_task 
+"$GCC" -O2 -s -I../../include -Wall "${ST_SOURCE[@]}" ../../examples/ex0_task.c -o ex0_task
 
 "$GCC" -O2 -s -I../../include -Wall "${ST_SOURCE[@]}" ../../examples/ex1_event.c -o ex1_event
 
@@ -72,3 +73,5 @@ UV_SOURCE=(
     "${ST_SOURCE[@]}" "${UV_SOURCE[@]}" \
     -lpthread -ldl -lrt \
     ../../examples/ex4_echo_server.c -o ex4_echo_server
+
+"$GCC" -O2 -s -I../../include -Wall "${ST_SOURCE[@]}" ../../examples/ex6_chan.c -o ex6_chan

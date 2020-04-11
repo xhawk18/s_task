@@ -90,6 +90,14 @@ typedef struct {
     s_list_t wait_list;
 } s_event_t;
 
+typedef struct {
+    uint16_t max_count;
+    uint16_t begin;
+    uint16_t available_count;
+    uint16_t element_size;
+    s_event_t event;
+} s_chan_t;
+
 
 #include "s_task_internal.h"
 
@@ -180,6 +188,25 @@ int s_event_wait_irq_msec(__async__, s_event_t *event, uint32_t msec);
 int s_event_wait_irq_sec(__async__, s_event_t *event, uint32_t sec);
 
 #endif
+
+/* Declare the chan variable */
+#define s_declare_chan(name,TYPE,count)                                                         \
+    s_chan_t name[1 + ((count)*sizeof(TYPE) + sizeof(s_chan_t) - 1) / sizeof(sizeof(s_chan_t))]
+
+/* Make the chan */
+#define s_make_chan(name,TYPE,count)    do {                                                    \
+    (&name[0])->max_count       = (count);                                                      \
+    (&name[0])->begin           = 0;                                                            \
+    (&name[0])->available_count = 0;                                                            \
+    (&name[0])->element_size    = sizeof(TYPE);                                                 \
+    s_event_init(&(&name[0])->event);                                                           \
+} while(0)
+
+/* Put element into chan */
+void s_chan_put(__async__, s_chan_t *chan, const void *in_object);
+
+/* Get element from chan */
+void s_chan_get(__async__, s_chan_t *chan, void *out_object);
 
 /* milliseconds to ticks */
 my_clock_t msec_to_ticks(uint32_t msec);

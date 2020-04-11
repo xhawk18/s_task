@@ -23,6 +23,7 @@ set(st_sources
     ../src/s_mutex.c
     ../src/s_event.c
     ../src/s_event_embed.c
+    ../src/s_chan.c
     ../src/s_timer_fast.c
     ../src/s_timer_small.c
     ../src/s_list.c
@@ -256,5 +257,11 @@ target_compile_options(ex4_echo_server PRIVATE ${st_cflags})
 target_include_directories(ex4_echo_server PRIVATE ../include ../libuv/include ../libuv/src)
 target_link_libraries(ex4_echo_server ${st_libraries} s_task)
 
+add_executable(ex6_chan ../examples/ex6_chan.c ${st_sources})
+target_compile_definitions(ex6_chan PRIVATE ${st_defines})
+target_compile_options(ex6_chan PRIVATE ${st_cflags})
+#target_link_options(ex6_chan PRIVATE -s)
+target_include_directories(ex6_chan PRIVATE ../include ../libuv/include ../libuv/src)
+target_link_libraries(ex6_chan ${st_libraries})
 
 
