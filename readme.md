@@ -230,6 +230,7 @@ void loop() {
 | ARMv6-M (M051)                 | :heavy_check_mark: | :x:                |
 | ARMv7-M (STM32F103,STM32F302)  | :heavy_check_mark: | :x:                |
 | STM8S103                       | :heavy_check_mark: | :x:                |
+| STM8L051F3                     | :heavy_check_mark: | :x:                |
 | Arduino UNO (AVR MEGA328P)     | :heavy_check_mark: | :x:                |
 
    linux tested on 
