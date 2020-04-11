@@ -13,12 +13,13 @@ void s_timer_run() {
 
     s_list_t *node = s_list_get_next(&g_globals.timers);
     while (node != &g_globals.timers) {
+        s_list_t *node_next;
         s_timer_t *timer = GET_PARENT_ADDR(node, s_timer_t, node);
 
         my_clock_diff_t ticks_to_wakeup = (my_clock_diff_t)(timer->wakeup_ticks - current_ticks);
         if (ticks_to_wakeup > 0) break;
 
-        s_list_t *node_next = s_list_get_next(node);
+        node_next = s_list_get_next(node);
 
         s_list_detach(&timer->task->node);
         s_list_attach(&g_globals.active_tasks, &timer->task->node);
@@ -51,7 +52,8 @@ int s_task_sleep_ticks(__async__, my_clock_t ticks) {
     my_clock_t current_ticks;
     s_list_t *node;
     s_timer_t timer;
-    
+    int ret;
+
     current_ticks = my_clock();
 
     s_list_init(&timer.node);
@@ -77,7 +79,7 @@ int s_task_sleep_ticks(__async__, my_clock_t ticks) {
         s_list_detach(&timer.node);
     }
 
-    int ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
+    ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
     g_globals.current_task->waiting_cancelled = false;
     return ret;
 }

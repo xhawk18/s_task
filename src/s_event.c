@@ -14,11 +14,12 @@ void s_event_init(s_event_t *event) {
  *  return -1 on event waiting cancelled
  */
 int s_event_wait(__async__, s_event_t *event) {
+    int ret;
     //Put current task to the event's waiting list
     s_list_detach(&g_globals.current_task->node);   //no need, for safe
     s_list_attach(&event->wait_list, &g_globals.current_task->node);
     s_task_next(__await__);
-    int ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
+    ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
     g_globals.current_task->waiting_cancelled = false;
     return ret;
 }
@@ -34,6 +35,7 @@ void s_event_set(s_event_t *event) {
 static int s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
     my_clock_t current_ticks;
     s_timer_t timer;
+    int ret;
     
     current_ticks = my_clock();
     timer.task = g_globals.current_task;
@@ -56,7 +58,7 @@ static int s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
         rbt_delete(&g_globals.timers, &timer.rbt_node);
     }
 
-    int ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
+    ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
     g_globals.current_task->waiting_cancelled = false;
     return ret;
 }
@@ -65,6 +67,7 @@ static int s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
     my_clock_t current_ticks;
     s_list_t *node;
     s_timer_t timer;
+    int ret;
     
     current_ticks = my_clock();
     s_list_init(&timer.node);
@@ -92,7 +95,7 @@ static int s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
         s_list_detach(&timer.node);
     }
 
-    int ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
+    ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
     g_globals.current_task->waiting_cancelled = false;
     return ret;
 }

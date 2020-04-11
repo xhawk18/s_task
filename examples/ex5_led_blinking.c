@@ -16,16 +16,16 @@
 #	define LED_INIT()     GPIO_Init(GPIOA, LED_GPIO, GPIO_MODE_OUT_PP_LOW_FAST)
 #	define LED_SET_HIGH() do {GPIOA->ODR |= LED_GPIO;} while(0)
 #	define LED_SET_LOW()  do {GPIOA->ODR &= ~LED_GPIO;} while(0)
-char g_stack0[192];
-char g_stack1[192];
+char g_stack0[350];
+char g_stack1[350];
 
 #elif defined STM8L05X_LD_VL 
 #	define LED_GPIO       GPIO_Pin_0
 #	define LED_INIT()     GPIO_Init(GPIOD, LED_GPIO, GPIO_Mode_Out_PP_Low_Fast)
 #	define LED_SET_HIGH() do {GPIOD->ODR &= ~LED_GPIO;} while(0)
 #	define LED_SET_LOW()  do {GPIOD->ODR |= LED_GPIO;} while(0)
-char g_stack0[356];
-char g_stack1[356];
+char g_stack0[350];
+char g_stack1[350];
 
 #elif defined __AVR__
 #	define LED_GPIO       (1<<PB5)
