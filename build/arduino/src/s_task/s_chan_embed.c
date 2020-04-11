@@ -1,6 +1,8 @@
 #include "s_task.h"
 #include <string.h>
 
+#ifdef USE_IN_EMBEDDED
+
 /*******************************************************************/
 /* chan for communication between irq and task                     */
 /*******************************************************************/
@@ -86,3 +88,5 @@ int s_chan_get__in_irq(s_chan_t *chan, void *out_object) {
     s_event_set__in_irq(&chan->event);
     return 0;
 }
+
+#endif
