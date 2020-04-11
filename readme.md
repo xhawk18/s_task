@@ -19,8 +19,8 @@
     - [Chan](#chan)
     - [Mutex](#mutex)
     - [Event](#event)
+  - [Specials on embedded platform](#specials-on-embedded-platform)
   - [How to make port?](#how-to-make-port)
-  - [Low power mode](#low-power-mode)
   - [Contact](#contact)
   - [VS.](#vs)
   
@@ -367,41 +367,82 @@ int s_event_wait_msec(__async__, s_event_t *event, uint32_t msec);
 int s_event_wait_sec(__async__, s_event_t *event, uint32_t sec);
 ```
 
-#### Event for interrupt (for embeded only, STM8/STM32/M051/Arduino)
+## Specials on embedded platform
+<details>
+  <summary>API on embedded platform</summary>
+
+### Chan for interrupt (for embedded only, STM8/STM32/M051/Arduino)
+
+```c
+/* Put element into chan and wait interrupt to read the chan */
+void s_chan_put__to_irq(__async__, s_chan_t *chan, const void *in_object);
+
+/* Wait interrupt to write the chan and then get element from chan */
+void s_chan_get__from_irq(__async__, s_chan_t *chan, void *out_object);
+
+/*
+ * Interrupt writes element into the chan
+ *  return 0 on chan element was written
+ *  return -1 on chan is full
+ */
+int s_chan_put__in_irq(s_chan_t *chan, const void *in_object);
+
+/*
+ * Interrupt reads element from chan
+ *  return 0 on chan element was read
+ *  return -1 on chan is empty
+ */
+int s_chan_get__in_irq(s_chan_t *chan, void *out_object);
+```
+
+### Event for interrupt (for embedded only, STM8/STM32/M051/Arduino)
 
 ```c
 /* Set event in interrupt */
-void s_event_set_irq(s_event_t *event);
+void s_event_set__in_irq(s_event_t *event);
 
 /* 
- * Wait event from interrupt, need to disable interrupt before call this function!
+ * Wait event from irq, disable irq before call this function!
  *   S_IRQ_DISABLE()
  *   ...
- *   s_event_wait_irq(...)
+ *   s_event_wait__from_irq(...)
  *   ...
  *   S_IRQ_ENABLE()
  */
-int s_event_wait_irq(__async__, s_event_t *event);
+int s_event_wait__from_irq(__async__, s_event_t *event);
 
-/* Wait event from interrupt, need to disable interrupt before call this function! */
-int s_event_wait_irq_msec(__async__, s_event_t *event, uint32_t msec);
+/* 
+ * Wait event from irq, disable irq before call this function!
+ *   S_IRQ_DISABLE()
+ *   ...
+ *   s_event_wait_msec__from_irq(...)
+ *   ...
+ *   S_IRQ_ENABLE()
+ */
+int s_event_wait_msec__from_irq(__async__, s_event_t *event, uint32_t msec);
 
-/* Wait event from interrupt, need to disable interrupt before call this function! */
-int s_event_wait_irq_sec(__async__, s_event_t *event, uint32_t sec);
+/* 
+ * Wait event from irq, disable irq before call this function!
+ *   S_IRQ_DISABLE()
+ *   ...
+ *   s_event_wait_sec__from_irq(...)
+ *   ...
+ *   S_IRQ_ENABLE()
+ */
+int s_event_wait_sec__from_irq(__async__, s_event_t *event, uint32_t sec);
 ```
 
-## How to make port?
+</details>
 
-[Please find document here](porting.md)
-
-## Low power mode
+<details>
+  <summary>Low power mode</summary>
 
 If there's no code in function "my_on_idle", the program will run in busy wait mode, which may cause CPU 100% occupied.
 But we can avoid this and support low power mode by adding correct sleeping instructions in function my_on_idle.
 
 Now we have do that on Windows/Linux/MacOS and Android.
 
-On other platform without OS, we may not fully implement low power mode.
+On embedded platform without OS, we may not fully implement low power mode.
 Please check function "my_on_idle" for the corresponding platform if you want to optimize the power consumption.
 
 ```
@@ -410,6 +451,11 @@ void my_on_idle(uint64_t max_idle_ms) {
        the maximum sleeping time is "max_idle_ms" milliseconds. */
 }
 ```
+</details>
+
+## How to make port?
+
+[Please find document here](porting.md)
 
 ## Contact
 

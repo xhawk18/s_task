@@ -967,6 +967,11 @@
               <FileType>5</FileType>
               <FilePath>..\..\include\s_task.h</FilePath>
             </File>
+            <File>
+              <FileName>s_chan_embed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\s_chan_embed.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

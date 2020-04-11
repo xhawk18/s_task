@@ -169,23 +169,58 @@ int s_event_wait_sec(__async__, s_event_t *event, uint32_t msec);
 
 #ifdef USE_IN_EMBEDDED
 
-/* Set event in interrupt */
-void s_event_set_irq(s_event_t *event);
+/* Put element into chan and wait interrupt to read the chan */
+void s_chan_put__to_irq(__async__, s_chan_t *chan, const void *in_object);
 
-/* Wait event from interrupt, need to disable interrupt before call this function!
+/* Wait interrupt to write the chan and then get element from chan */
+void s_chan_get__from_irq(__async__, s_chan_t *chan, void *out_object);
+
+/*
+ * Interrupt writes element into the chan
+ *  return 0 on chan element was written
+ *  return -1 on chan is full
+ */
+int s_chan_put__in_irq(s_chan_t *chan, const void *in_object);
+
+/*
+ * Interrupt reads element from chan
+ *  return 0 on chan element was read
+ *  return -1 on chan is empty
+ */
+int s_chan_get__in_irq(s_chan_t *chan, void *out_object);
+
+/* Set event in interrupt */
+void s_event_set__in_irq(s_event_t *event);
+
+/* 
+ * Wait event from irq, disable irq before call this function!
  *   S_IRQ_DISABLE()
  *   ...
- *   s_event_wait_irq(...)
+ *   s_event_wait__from_irq(...)
  *   ...
  *   S_IRQ_ENABLE()
  */
-int s_event_wait_irq(__async__, s_event_t *event);
+int s_event_wait__from_irq(__async__, s_event_t *event);
 
-/* Wait event from interrupt, need to disable interrupt before call this function! */
-int s_event_wait_irq_msec(__async__, s_event_t *event, uint32_t msec);
+/* 
+ * Wait event from irq, disable irq before call this function!
+ *   S_IRQ_DISABLE()
+ *   ...
+ *   s_event_wait_msec__from_irq(...)
+ *   ...
+ *   S_IRQ_ENABLE()
+ */
+int s_event_wait_msec__from_irq(__async__, s_event_t *event, uint32_t msec);
 
-/* Wait event from interrupt, need to disable interrupt before call this function! */
-int s_event_wait_irq_sec(__async__, s_event_t *event, uint32_t sec);
+/* 
+ * Wait event from irq, disable irq before call this function!
+ *   S_IRQ_DISABLE()
+ *   ...
+ *   s_event_wait_sec__from_irq(...)
+ *   ...
+ *   S_IRQ_ENABLE()
+ */
+int s_event_wait_sec__from_irq(__async__, s_event_t *event, uint32_t sec);
 
 #endif
 

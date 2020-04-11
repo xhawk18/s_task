@@ -18,8 +18,8 @@
     - [Chan （数据通道）](#chan-%e6%95%b0%e6%8d%ae%e9%80%9a%e9%81%93)
     - [Mutex （互斥量）](#mutex-%e4%ba%92%e6%96%a5%e9%87%8f)
     - [Event （事件）](#event-%e4%ba%8b%e4%bb%b6)
+  - [嵌入式平台](#%e5%b5%8c%e5%85%a5%e5%bc%8f%e5%b9%b3%e5%8f%b0)
   - [希望移植到新的平台？](#%e5%b8%8c%e6%9c%9b%e7%a7%bb%e6%a4%8d%e5%88%b0%e6%96%b0%e7%9a%84%e5%b9%b3%e5%8f%b0)
-  - [低功耗运行模式](#%e4%bd%8e%e5%8a%9f%e8%80%97%e8%bf%90%e8%a1%8c%e6%a8%a1%e5%bc%8f)
   - [联系方式](#%e8%81%94%e7%b3%bb%e6%96%b9%e5%bc%8f)
   - [其他协程库对比](#%e5%85%b6%e4%bb%96%e5%8d%8f%e7%a8%8b%e5%ba%93%e5%af%b9%e6%af%94)
   
@@ -399,36 +399,75 @@ int s_event_wait_msec(__async__, s_event_t *event, uint32_t msec);
 int s_event_wait_sec(__async__, s_event_t *event, uint32_t sec);
 ```
 
-#### Event for interrupt (中断里的事件，仅嵌入式平台支持，STM8/STM32/M051/Arduino)
+## 嵌入式平台
+<details>
+  <summary>嵌入式平台特殊API</summary>
+
+### Chan for interrupt (中断和任务的数据通道，仅嵌入式平台支持，STM8/STM32/M051/Arduino)
+
+```c
+/* Put element into chan and wait interrupt to read the chan */
+void s_chan_put__to_irq(__async__, s_chan_t *chan, const void *in_object);
+
+/* Wait interrupt to write the chan and then get element from chan */
+void s_chan_get__from_irq(__async__, s_chan_t *chan, void *out_object);
+
+/*
+ * Interrupt writes element into the chan
+ *  return 0 on chan element was written
+ *  return -1 on chan is full
+ */
+int s_chan_put__in_irq(s_chan_t *chan, const void *in_object);
+
+/*
+ * Interrupt reads element from chan
+ *  return 0 on chan element was read
+ *  return -1 on chan is empty
+ */
+int s_chan_get__in_irq(s_chan_t *chan, void *out_object);
+```
+
+### Event for interrupt (中断里的事件，仅嵌入式平台支持，STM8/STM32/M051/Arduino)
 
 ```c
 /* Set event in interrupt */
-void s_event_set_irq(s_event_t *event);
+void s_event_set__in_irq(s_event_t *event);
 
-/*
- * Wait event from interrupt, need to disable interrupt before call this function!
+/* 
+ * Wait event from irq, disable irq before call this function!
  *   S_IRQ_DISABLE()
  *   ...
- *   s_event_wait_irq(...)
+ *   s_event_wait__from_irq(...)
  *   ...
  *   S_IRQ_ENABLE()
  */
-int s_event_wait_irq(__async__, s_event_t *event);
+int s_event_wait__from_irq(__async__, s_event_t *event);
 
-/* Wait event from interrupt, need to disable interrupt before call this function! */
-int s_event_wait_irq_msec(__async__, s_event_t *event, uint32_t msec);
+/* 
+ * Wait event from irq, disable irq before call this function!
+ *   S_IRQ_DISABLE()
+ *   ...
+ *   s_event_wait_msec__from_irq(...)
+ *   ...
+ *   S_IRQ_ENABLE()
+ */
+int s_event_wait_msec__from_irq(__async__, s_event_t *event, uint32_t msec);
 
-/* Wait event from interrupt, need to disable interrupt before call this function! */
-int s_event_wait_irq_sec(__async__, s_event_t *event, uint32_t sec);
+/* 
+ * Wait event from irq, disable irq before call this function!
+ *   S_IRQ_DISABLE()
+ *   ...
+ *   s_event_wait_sec__from_irq(...)
+ *   ...
+ *   S_IRQ_ENABLE()
+ */
+int s_event_wait_sec__from_irq(__async__, s_event_t *event, uint32_t sec);
 ```
 
+</details>
 
-
-## 希望移植到新的平台？
-
-[移植文档参考此处](porting.md)
-
-## 低功耗运行模式
+<details>
+  <summary>低功耗运行模式</summary>
 
 如果my_on_idle函数为空，当没有任务运行时，程序将进入忙等待模式，这样通常表现为CPU占据了100%的时间。
 为避免此问题，可实现适当的 my_on_idle 函数，以便程序可以低功耗运行。
@@ -443,7 +482,11 @@ void my_on_idle(uint64_t max_idle_ms) {
     /* 增加使CPU睡眠代码，最长不超过  max_idle_ms 毫秒 */
 }
 ```
+</details>
 
+## 希望移植到新的平台？
+
+[移植文档参考此处](porting.md)
 
 ## 联系方式
 

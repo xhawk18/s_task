@@ -196,6 +196,10 @@
       <SubType>compile</SubType>
       <Link>src\s_chan.c</Link>
     </Compile>
+    <Compile Include="..\..\..\src\s_chan_embed.c">
+      <SubType>compile</SubType>
+      <Link>src\s_chan_embed.c</Link>
+    </Compile>
     <Compile Include="..\..\..\src\s_event.c">
       <SubType>compile</SubType>
       <Link>src\s_event.c</Link>

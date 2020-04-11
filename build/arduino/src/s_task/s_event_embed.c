@@ -9,11 +9,11 @@
 /* Wait event from irq, disable irq before call this function!
  *   S_IRQ_DISABLE()
  *   ...
- *   s_event_wait_irq(...)
+ *   s_event_wait__from_irq(...)
  *   ...
  *   S_IRQ_ENABLE()
  */
-int s_event_wait_irq(__async__, s_event_t *event) {
+int s_event_wait__from_irq(__async__, s_event_t *event) {
     int ret;
     /* Put current task to the event's waiting list */
     s_list_detach(&g_globals.current_task->node);   /* no need, for safe */
@@ -27,7 +27,7 @@ int s_event_wait_irq(__async__, s_event_t *event) {
 }
 
 /* Set event in irq */
-void s_event_set_irq(s_event_t *event) {
+void s_event_set__in_irq(s_event_t *event) {
     s_list_attach(&g_globals.irq_active_tasks, &event->wait_list);
     s_list_detach(&event->wait_list);
     g_globals.irq_actived = 1;
@@ -35,7 +35,7 @@ void s_event_set_irq(s_event_t *event) {
 
 /* Wait event */
 #ifndef USE_LIST_TIMER_CONTAINER
-static int s_event_wait_irq_ticks(__async__, s_event_t *event, my_clock_t ticks) {
+static int s_event_wait_ticks__from_irq(__async__, s_event_t *event, my_clock_t ticks) {
     my_clock_t current_ticks;
     s_timer_t timer;
     
@@ -67,7 +67,7 @@ static int s_event_wait_irq_ticks(__async__, s_event_t *event, my_clock_t ticks)
     return ret;
 }
 #else
-static int s_event_wait_irq_ticks(__async__, s_event_t *event, my_clock_t ticks) {
+static int s_event_wait_ticks__from_irq(__async__, s_event_t *event, my_clock_t ticks) {
     my_clock_t current_ticks;
     s_list_t *node;
     s_timer_t timer;
@@ -110,25 +110,26 @@ static int s_event_wait_irq_ticks(__async__, s_event_t *event, my_clock_t ticks)
 /* Wait event from irq, disable irq before call this function!
  *   S_IRQ_DISABLE()
  *   ...
- *   s_event_wait_irq(...)
+ *   s_event_wait_msec__from_irq(...)
  *   ...
  *   S_IRQ_ENABLE()
  */
-int s_event_wait_irq_msec(__async__, s_event_t *event, uint32_t msec) {
+int s_event_wait_msec__from_irq(__async__, s_event_t *event, uint32_t msec) {
     my_clock_t ticks = msec_to_ticks(msec);
-    return s_event_wait_irq_ticks(__await__, event, ticks);
+    return s_event_wait_ticks__from_irq(__await__, event, ticks);
 }
 
 /* Wait event from irq, disable irq before call this function!
  *   S_IRQ_DISABLE()
  *   ...
- *   s_event_wait_irq_sec(...)
+ *   s_event_wait_sec__from_irq(...)
  *   ...
  *   S_IRQ_ENABLE()
  */
-int s_event_wait_irq_sec(__async__, s_event_t *event, uint32_t sec) {
+
+int s_event_wait_sec__from_irq(__async__, s_event_t *event, uint32_t sec) {
     my_clock_t ticks = sec_to_ticks(sec);
-    return s_event_wait_irq_ticks(__await__, event, ticks);
+    return s_event_wait_ticks__from_irq(__await__, event, ticks);
 }
 
 #endif
