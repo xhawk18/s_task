@@ -24,6 +24,7 @@ set(st_sources
     ../src/s_event.c
     ../src/s_event_embed.c
     ../src/s_chan.c
+    ../src/s_chan_embed.c
     ../src/s_timer_fast.c
     ../src/s_timer_small.c
     ../src/s_list.c
