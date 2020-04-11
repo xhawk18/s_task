@@ -80,6 +80,7 @@ static void create_context(ucontext_t *oucp, void *stack, size_t stack_size) {
 
 	int top_sp = (int)((char *)stack + stack_size);
 	*(int *)(top_sp - 2) = (int)&s_task_context_entry;
+	*(char *)(top_sp - 3) = 0x20;	//default CC
 	oucp->sp = top_sp - 2 - 22 - 1;
 }
 

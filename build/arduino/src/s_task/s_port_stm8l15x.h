@@ -1,7 +1,7 @@
 #ifndef INC_S_PORT_H_
 #define INC_S_PORT_H_
 
-#include "stm8s.h"
+#include "stm8l15x.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -21,15 +21,19 @@ typedef unsigned long long uint64_t;
 #include <time.h>
 
 //1. define a type for clock and ucontext_t
-typedef uint16_t my_clock_t;
-typedef int16_t my_clock_diff_t;
+typedef uint32_t my_clock_t;
+typedef int32_t my_clock_diff_t;
 
 typedef struct {
     int sp;
 } ucontext_t;
 
 //2. define the clock ticks count for one second
-#define MY_CLOCKS_PER_SEC ((uint32_t)16*1000*1000/16384)
+#define MY_CLOCKS__SYSCLK ((uint32_t)16*1000*1000)
+#define MY_CLOCKS__SYSCLK_CKDIVR 1
+#define MY_CLOCKS__TIM2_Prescaler 1
+#define MY_CLOCKS__TIM2_CLK (MY_CLOCKS__SYSCLK/MY_CLOCKS__SYSCLK_CKDIVR/MY_CLOCKS__TIM2_Prescaler)
+#define MY_CLOCKS_PER_SEC ((uint32_t)(MY_CLOCKS__TIM2_CLK / 65536))
 
 //3. Implement the initilization function for clock. Leave it blank if not required.
 void my_clock_init(void);

@@ -29,7 +29,11 @@ THREAD_LOCAL s_task_globals_t g_globals;
 #       error "no arch detected"
 #   endif
 #elif defined __ICCSTM8__
-#   include "s_port_stm8s.inc"
+#   if defined STM8S103
+#       include "s_port_stm8s.inc"
+#   elif defined STM8L05X_LD_VL 
+#       include "s_port_stm8l15x.inc"
+#   endif
 #elif defined USE_LIBUV
 #   include "s_port_libuv.inc"
 #elif defined _WIN32

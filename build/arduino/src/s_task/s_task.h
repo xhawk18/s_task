@@ -2,7 +2,6 @@
 #define INC_S_TASK_H_
 
 /* Copyright xhawk, MIT license */
-
 #include <stdio.h>
 #include <stdint.h>
 #include <stddef.h>
@@ -49,7 +48,11 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 #   define USE_IN_EMBEDDED
 #   define USE_SWAP_CONTEXT
 #   define USE_LIST_TIMER_CONTAINER
-#   include "s_port_stm8s.h"
+#   if defined STM8S103
+#       include "s_port_stm8s.h"
+#   elif defined STM8L05X_LD_VL 
+#       include "s_port_stm8l15x.h"
+#   endif
 #elif defined USE_LIBUV
 #   ifdef __CYGWIN__
 #       define USE_SWAP_CONTEXT
