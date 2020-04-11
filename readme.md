@@ -19,6 +19,7 @@
     - [Mutex](#mutex)
     - [Event](#event)
   - [How to make port?](#how-to-make-port)
+  - [Low power mode](#low-power-mode)
   - [Contact](#contact)
   - [VS.](#vs)
   
@@ -364,6 +365,23 @@ int s_event_wait_irq_sec(__async__, s_event_t *event, uint32_t sec);
 ## How to make port?
 
 [Please find document here](porting.md)
+
+## Low power mode
+
+If there's no code in function "my_on_idle", the program will run in busy wait mode, which may cause CPU 100% occupied.
+But we can avoid this and support low power mode by adding correct sleeping instructions in function my_on_idle.
+
+Now we have do that on Windows/Linux/MacOS and Android.
+
+On other platform without OS, we may not fully implement low power mode.
+Please check function "my_on_idle" for the corresponding platform if you want to optimize the power consumption.
+
+```
+void my_on_idle(uint64_t max_idle_ms) {
+    /* Add code here to make CPU run into sleep mode,
+       the maximum sleeping time is "max_idle_ms" milliseconds. */
+}
+```
 
 ## Contact
 

@@ -11,13 +11,14 @@
   - [兼容性](#%e5%85%bc%e5%ae%b9%e6%80%a7)
   - [编译](#%e7%bc%96%e8%af%91)
     - [Linux / MacOS / MingW(MSYS2)](#linux--macos--mingwmsys2)
-    - [Windows 或其他平台 other platforms](#windows-%e6%88%96%e5%85%b6%e4%bb%96%e5%b9%b3%e5%8f%b0)
+    - [Windows 或其他平台](#windows-%e6%88%96%e5%85%b6%e4%bb%96%e5%b9%b3%e5%8f%b0)
   - [如何在您的项目中使用s_task？](#%e5%a6%82%e4%bd%95%e5%9c%a8%e6%82%a8%e7%9a%84%e9%a1%b9%e7%9b%ae%e4%b8%ad%e4%bd%bf%e7%94%a8stask)
   - [API](#api)
     - [Task （任务）](#task-%e4%bb%bb%e5%8a%a1)
     - [Mutex （互斥量）](#mutex-%e4%ba%92%e6%96%a5%e9%87%8f)
     - [Event （事件）](#event-%e4%ba%8b%e4%bb%b6)
   - [希望移植到新的平台？](#%e5%b8%8c%e6%9c%9b%e7%a7%bb%e6%a4%8d%e5%88%b0%e6%96%b0%e7%9a%84%e5%b9%b3%e5%8f%b0)
+  - [低功耗运行模式](#%e4%bd%8e%e5%8a%9f%e8%80%97%e8%bf%90%e8%a1%8c%e6%a8%a1%e5%bc%8f)
   - [联系方式](#%e8%81%94%e7%b3%bb%e6%96%b9%e5%bc%8f)
   - [其他协程库对比](#%e5%85%b6%e4%bb%96%e5%8d%8f%e7%a8%8b%e5%ba%93%e5%af%b9%e6%af%94)
   
@@ -389,6 +390,23 @@ int s_event_wait_irq_sec(__async__, s_event_t *event, uint32_t sec);
 ## 希望移植到新的平台？
 
 [移植文档参考此处](porting.md)
+
+## 低功耗运行模式
+
+如果my_on_idle函数为空，当没有任务运行时，程序将进入忙等待模式，这样通常表现为CPU占据了100%的时间。
+为避免此问题，可实现适当的 my_on_idle 函数，以便程序可以低功耗运行。
+
+目前在Windows/Linux/MacOS/Android等平台上，已经实现低功耗运行模式。
+
+在无操作系统的嵌入式环境下，可能并未做低功耗支持（请检查对应平台的my_on_idle函数）。
+如果您希望自己优化芯片运行功耗，可在 my_on_idle 函数加入使芯片睡眠一段时间的代码，睡眠时间最长为 max_idle_ms 毫秒。
+
+```
+void my_on_idle(uint64_t max_idle_ms) {
+    /* 增加使CPU睡眠代码，最长不超过  max_idle_ms 毫秒 */
+}
+```
+
 
 ## 联系方式
 
