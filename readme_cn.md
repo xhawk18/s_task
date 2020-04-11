@@ -352,13 +352,13 @@ void s_task_cancel_wait(void* stack);
  *    TYPE: type of element in the chan
  *    count: max count of element buffer in the chan
  */
-s_chan_declare(name,TYPE,count)
+s_chan_declare(name,TYPE,count);
 
 /*
  * macro: Initialize the chan (parameters same as what's in s_declare_chan).
  * To make a chan, we need to use "s_chan_declare" and then call "s_chan_init".
  */
-s_chan_init(name,TYPE,count)
+s_chan_init(name,TYPE,count);
 
 /* Put element into chan */
 void s_chan_put(__async__, s_chan_t *chan, const void *in_object);
