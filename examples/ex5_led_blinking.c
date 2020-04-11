@@ -19,6 +19,14 @@
 char g_stack0[192];
 char g_stack1[192];
 
+#elif defined STM8L05X_LD_VL 
+#	define LED_GPIO       GPIO_Pin_0
+#	define LED_INIT()     GPIO_Init(GPIOD, LED_GPIO, GPIO_Mode_Out_PP_Low_Fast)
+#	define LED_SET_HIGH() do {GPIOD->ODR &= ~LED_GPIO;} while(0)
+#	define LED_SET_LOW()  do {GPIOD->ODR |= LED_GPIO;} while(0)
+char g_stack0[356];
+char g_stack1[356];
+
 #elif defined __AVR__
 #	define LED_GPIO       (1<<PB5)
 #	define LED_INIT()     do {DDRB |= LED_GPIO;} while(0)
@@ -58,7 +66,7 @@ void sub_task_set_low(__async__, void* arg) {
 void main_task(__async__, void* arg) {
 	
 	LED_INIT();
-	
+
     // create two sub tasks
     s_task_create(g_stack0, sizeof(g_stack0), sub_task_fast_blinking, NULL);
     s_task_create(g_stack1, sizeof(g_stack1), sub_task_set_low, NULL);

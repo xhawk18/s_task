@@ -38,7 +38,7 @@
 协程和多线程编程模式对比，协程的优势极其明显 --
 
 + 协程不会陷入死锁的窘境，多线程编程时，您可在死锁的坑里摸爬滚打过？
-+ 一般协程比多线程更少的代码量就能实现，这在资源捉襟见肘的嵌入式单片机中尤其重要。有时跑个多线程 RTOS 库，应用自己都没空间了。s_task协程只增加了不到1.5K左右的代码量，这对单片机极其友好。
++ 一般协程比多线程更少的代码量就能实现，这在资源捉襟见肘的嵌入式单片机中尤其重要。有时跑个多线程 RTOS 库，应用自己都没空间了。s_task协程只增加了不到2K的代码量，这对单片机极其友好。
 + 协程主动让出CPU，没有 “抢占式多任务” 一说。您没看错，人们已经开始反思，“抢占式多任务” 根本不是啥优势，而是**多线程最大的缺点**，更是**bug之源**。主动让出CPU的协程，减少bug的同时，更能带来更好的CPU利用率，更多的并发任务数。这也是近年来，不管C++, C#, nodejs, java, php各式语言，都开始引入协程的原因。
 + 协程比任何的所谓 “实时操作系统RTOS” 更实时。
 + 协程通常用 __await__ 标注某个函数在运行的时候，CPU可能会被切换到其他任务。如此多任务间共享变量变得无比安全，这点是线程不能比的。
@@ -258,8 +258,8 @@ void loop() {
    linux在以下硬件环境测试通过
    * i686 (ubuntu-16.04)
    * x86_64 (centos-8.1)
-   * arm (树莓派 32bit)
-   * aarch64 (树莓派 64bit)
+   * arm (树莓派32位)
+   * aarch64 (① 树莓派64位, ② ubuntu 14.04 运行于华为鲲鹏920)
    * mipsel (openwrt ucLinux 3.10.14 for MT7628)
    * mips64 (fedora for loongson 3A-4000 龙芯)
 
@@ -278,6 +278,7 @@ void loop() {
 | Windows    | build\windows\s_task.sln          | visual studio 2019                          |
 | Android    | build\android\cross_build_arm*.sh | android ndk 20, API level 21 (在termux测试) |
 | STM8S103   | build\stm8s103\Project.eww        | IAR workbench for STM8                      |
+| STM8L051F3 | build\stm8l05x\Project.eww        | IAR workbench for STM8                      |
 | STM32F103  | build\stm32f103\Project.uvproj    | Keil uVision5                               |
 | STM32F302  | build\stm32f302\Project.uvporj    | Keil uVision5                               |
 | M051       | build\m051\Project.uvporj         | Keil uVision5                               |

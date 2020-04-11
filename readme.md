@@ -236,7 +236,7 @@ void loop() {
    * i686 (ubuntu-16.04)
    * x86_64 (centos-8.1)
    * arm (raspiberry 32bit)
-   * aarch64 (raspiberry 64bit)
+   * aarch64 (① raspiberry 64bit, ② ubuntu 14.04 on huawei Kunpeng920)
    * mipsel (openwrt ucLinux 3.10.14 for MT7628)
    * mips64 (fedora for loongson 3A-4000)
 
@@ -255,6 +255,7 @@ void loop() {
 | Windows     | build\windows\s_task.sln          | visual studio 2019                            |
 | Android     | build\android\cross_build_arm*.sh | android ndk 20, API level 21 (test in termux) |
 | STM8S103    | build\stm8s103\Project.eww        | IAR workbench for STM8                        |
+| STM8L051F3  | build\stm8l05x\Project.eww        | IAR workbench for STM8                        |
 | STM32F103   | build\stm32f103\Project.uvproj    | Keil uVision5                                 |
 | STM32F302   | build\stm32f302\Project.uvporj    | Keil uVision5                                 |
 | M051        | build\m051\Project.uvporj         | Keil uVision5                                 |
