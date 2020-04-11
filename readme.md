@@ -16,6 +16,7 @@
   - [How to use in your project?](#how-to-use-in-your-project)
   - [API](#api)
     - [Task](#task)
+    - [Chan](#chan)
     - [Mutex](#mutex)
     - [Event](#event)
   - [How to make port?](#how-to-make-port)
@@ -29,6 +30,7 @@
  + supports various platforms, such as windows, linux, android, macos, stm32, stm8, arduino, etc.
  + supports keywords **\_\_await\_\_** and **\_\_async\_\_** . :triangular_flag_on_post: For functions that may switch to other tasks, call it with 1st parameter \_\_await\_\_, for the caller function of which, define the 1st parameter as \_\_async\_\_, which make it is clear to know about context switching.
  + works with libuv for network programming.
+ + "chan", "mutex" and "event" for communication between tasks.
  + Special features on embedded platfrom (stm32/stm8/m051)
    - no dynamical memory allocation
    - very small memory footprint ( increased by ROM<1.5K, RAM<128 bytes + task stack size)
@@ -280,7 +282,8 @@ On windows or other system, please find the project in folder "build" as the pro
 ### Task
 
 ```c
-/* Return values -- 
+/*
+ * Return values -- 
  * For all functions marked by __async__ and hava an int return value, will
  *     return 0 on waiting successfully,
  *     return -1 on waiting cancalled by s_task_cancel_wait() called by other task.
@@ -306,6 +309,30 @@ void s_task_yield(__async__);
 
 /* Cancel task waiting and make it running */
 void s_task_cancel_wait(void* stack);
+```
+
+### Chan
+
+```c
+/* 
+ * macro: Declare the chan variable
+ *    name: name of the chan
+ *    TYPE: type of element in the chan
+ *    count: max count of element buffer in the chan
+ */
+s_chan_declare(name,TYPE,count)
+
+/* 
+ * macro: Initialize the chan (parameters same as what's in s_declare_chan).
+ * To make a chan, we need to use "s_chan_declare" and then call "s_chan_init".
+ */
+s_chan_init(name,TYPE,count)
+
+/* Put element into chan */
+void s_chan_put(__async__, s_chan_t *chan, const void *in_object);
+
+/* Get element from chan */
+void s_chan_get(__async__, s_chan_t *chan, void *out_object);
 ```
 
 ### Mutex
@@ -346,7 +373,8 @@ int s_event_wait_sec(__async__, s_event_t *event, uint32_t sec);
 /* Set event in interrupt */
 void s_event_set_irq(s_event_t *event);
 
-/* Wait event from interrupt, need to disable interrupt before call this function!
+/* 
+ * Wait event from interrupt, need to disable interrupt before call this function!
  *   S_IRQ_DISABLE()
  *   ...
  *   s_event_wait_irq(...)

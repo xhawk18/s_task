@@ -15,6 +15,7 @@
   - [如何在您的项目中使用s_task？](#%e5%a6%82%e4%bd%95%e5%9c%a8%e6%82%a8%e7%9a%84%e9%a1%b9%e7%9b%ae%e4%b8%ad%e4%bd%bf%e7%94%a8stask)
   - [API](#api)
     - [Task （任务）](#task-%e4%bb%bb%e5%8a%a1)
+    - [Chan （数据通道）](#chan-%e6%95%b0%e6%8d%ae%e9%80%9a%e9%81%93)
     - [Mutex （互斥量）](#mutex-%e4%ba%92%e6%96%a5%e9%87%8f)
     - [Event （事件）](#event-%e4%ba%8b%e4%bb%b6)
   - [希望移植到新的平台？](#%e5%b8%8c%e6%9c%9b%e7%a7%bb%e6%a4%8d%e5%88%b0%e6%96%b0%e7%9a%84%e5%b9%b3%e5%8f%b0)
@@ -30,7 +31,7 @@
  + 支持 __await__ , __async__ 关键词，含义和用法都其他语言的await/async相同 --
     没有调用 await 函数的地方，协程肯定不会被切换出去，可确保共享数据不会被其他协程改变。
     具备传染性，能调用 await 的函数，一定在一个 async 函数里。这个async 函数需要用 await 调用。
- + 支持协程间的event变量和mutex锁，方便不同协程间同步数据和状态。这个方式比其他协程resume函数更好用和可控。
+ + 支持协程间的event变量、mutex锁、chan数据通道等，方便不同协程间同步数据和状态。这个方式比其他协程resume函数更好用和可控。
  + 除支持windows, linux, macos这些常规环境外，更能为stm32等嵌入式小芯片环境提供多任务支持（注：小芯片环境下不支持libuv)。
  + 嵌入式小芯片版本没有动态内存分配，增加程序大小不到 1.5k, 不增加程序空间负担。
 
@@ -313,7 +314,8 @@ void loop() {
 ### Task （任务）
 
 ```c
-/* Return values -- 
+/* 
+ * Return values -- 
  * For all functions marked by __async__ and hava an int return value, will
  *     return 0 on waiting successfully,
  *     return -1 on waiting cancalled by s_task_cancel_wait() called by other task.
@@ -339,6 +341,30 @@ void s_task_yield(__async__);
 
 /* Cancel task waiting and make it running */
 void s_task_cancel_wait(void* stack);
+```
+
+### Chan （数据通道）
+
+```c
+/*
+ * macro: Declare the chan variable
+ *    name: name of the chan
+ *    TYPE: type of element in the chan
+ *    count: max count of element buffer in the chan
+ */
+s_chan_declare(name,TYPE,count)
+
+/*
+ * macro: Initialize the chan (parameters same as what's in s_declare_chan).
+ * To make a chan, we need to use "s_chan_declare" and then call "s_chan_init".
+ */
+s_chan_init(name,TYPE,count)
+
+/* Put element into chan */
+void s_chan_put(__async__, s_chan_t *chan, const void *in_object);
+
+/* Get element from chan */
+void s_chan_get(__async__, s_chan_t *chan, void *out_object);
 ```
 
 ### Mutex （互斥量）
@@ -379,7 +405,8 @@ int s_event_wait_sec(__async__, s_event_t *event, uint32_t sec);
 /* Set event in interrupt */
 void s_event_set_irq(s_event_t *event);
 
-/* Wait event from interrupt, need to disable interrupt before call this function!
+/*
+ * Wait event from interrupt, need to disable interrupt before call this function!
  *   S_IRQ_DISABLE()
  *   ...
  *   s_event_wait_irq(...)

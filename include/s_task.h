@@ -189,12 +189,18 @@ int s_event_wait_irq_sec(__async__, s_event_t *event, uint32_t sec);
 
 #endif
 
-/* Declare the chan variable */
-#define s_declare_chan(name,TYPE,count)                                                         \
+/* macro: Declare the chan variable
+ *    name: name of the chan
+ *    TYPE: type of element in the chan
+ *    count: max count of element buffer in the chan
+ */
+#define s_chan_declare(name,TYPE,count)                                                         \
     s_chan_t name[1 + ((count)*sizeof(TYPE) + sizeof(s_chan_t) - 1) / sizeof(sizeof(s_chan_t))]
 
-/* Make the chan */
-#define s_make_chan(name,TYPE,count)    do {                                                    \
+/* macro: Initialize the chan (parameters same as what's in s_declare_chan).
+ * To make a chan, we need to use "s_chan_declare" and then call "s_chan_init".
+ */
+#define s_chan_init(name,TYPE,count)    do {                                                    \
     (&name[0])->max_count       = (count);                                                      \
     (&name[0])->begin           = 0;                                                            \
     (&name[0])->available_count = 0;                                                            \
