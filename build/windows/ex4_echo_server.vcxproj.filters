@@ -206,6 +206,9 @@
     <ClCompile Include="..\..\examples\ex4_echo_server.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\s_chan.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="..\..\asm\jump_x86_64_ms_pe_masm.asm">

@@ -235,6 +235,7 @@
     <ClCompile Include="..\..\libuv\src\win\util.c" />
     <ClCompile Include="..\..\libuv\src\win\winapi.c" />
     <ClCompile Include="..\..\libuv\src\win\winsock.c" />
+    <ClCompile Include="..\..\src\s_chan.c" />
     <ClCompile Include="..\..\src\s_event.c" />
     <ClCompile Include="..\..\src\s_list.c" />
     <ClCompile Include="..\..\src\s_mutex.c" />

@@ -672,6 +672,14 @@
               <FileType>1</FileType>
               <FilePath>..\..\examples\ex1_event.c</FilePath>
             </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Include</GroupName>
+        </Group>
+        <Group>
+          <GroupName>s_task</GroupName>
+          <Files>
             <File>
               <FileName>s_list.c</FileName>
               <FileType>1</FileType>
@@ -712,11 +720,6 @@
               <FileType>1</FileType>
               <FilePath>..\..\src\s_event_embed.c</FilePath>
             </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Include</GroupName>
-          <Files>
             <File>
               <FileName>s_list.h</FileName>
               <FileType>5</FileType>
@@ -736,6 +739,11 @@
               <FileName>s_task.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\include\s_task.h</FilePath>
+            </File>
+            <File>
+              <FileName>s_chan.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\s_chan.c</FilePath>
             </File>
           </Files>
         </Group>

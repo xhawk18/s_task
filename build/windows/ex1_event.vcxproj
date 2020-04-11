@@ -184,6 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\examples\ex1_event.c" />
+    <ClCompile Include="..\..\src\s_chan.c" />
     <ClCompile Include="..\..\src\s_event.c" />
     <ClCompile Include="..\..\src\s_list.c" />
     <ClCompile Include="..\..\src\s_mutex.c" />

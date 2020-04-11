@@ -192,6 +192,10 @@
       <SubType>compile</SubType>
       <Link>include\s_uv.h</Link>
     </Compile>
+    <Compile Include="..\..\..\src\s_chan.c">
+      <SubType>compile</SubType>
+      <Link>src\s_chan.c</Link>
+    </Compile>
     <Compile Include="..\..\..\src\s_event.c">
       <SubType>compile</SubType>
       <Link>src\s_event.c</Link>

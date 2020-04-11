@@ -465,6 +465,12 @@
         </Group>
         <Group>
           <GroupName>Src</GroupName>
+        </Group>
+        <Group>
+          <GroupName>Include</GroupName>
+        </Group>
+        <Group>
+          <GroupName>s_task</GroupName>
           <Files>
             <File>
               <FileName>s_list.c</FileName>
@@ -497,34 +503,19 @@
               <FilePath>..\..\src\s_mutex.c</FilePath>
             </File>
             <File>
-              <FileName>s_timer_fast.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\src\s_timer_fast.c</FilePath>
-            </File>
-            <File>
               <FileName>s_timer_small.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\src\s_timer_small.c</FilePath>
             </File>
             <File>
+              <FileName>s_timer_fast.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\s_timer_fast.c</FilePath>
+            </File>
+            <File>
               <FileName>s_event_embed.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\src\s_event_embed.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Include</GroupName>
-          <Files>
-            <File>
-              <FileName>s_list.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\include\s_list.h</FilePath>
-            </File>
-            <File>
-              <FileName>s_port_m051.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\include\s_port_m051.h</FilePath>
             </File>
             <File>
               <FileName>s_rbtree.h</FileName>
@@ -532,9 +523,24 @@
               <FilePath>..\..\include\s_rbtree.h</FilePath>
             </File>
             <File>
+              <FileName>s_port_m051.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\include\s_port_m051.h</FilePath>
+            </File>
+            <File>
               <FileName>s_task.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\include\s_task.h</FilePath>
+            </File>
+            <File>
+              <FileName>s_list.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\include\s_list.h</FilePath>
+            </File>
+            <File>
+              <FileName>s_chan.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\s_chan.c</FilePath>
             </File>
           </Files>
         </Group>

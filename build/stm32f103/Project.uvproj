@@ -882,6 +882,26 @@
               <FileType>1</FileType>
               <FilePath>..\..\examples\ex1_event.c</FilePath>
             </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Include</GroupName>
+          <Files>
+            <File>
+              <FileName>stm32f10x_conf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\stm32f10x_conf.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_it.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\stm32f10x_it.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>s_task</GroupName>
+          <Files>
             <File>
               <FileName>s_list.c</FileName>
               <FileType>1</FileType>
@@ -922,30 +942,15 @@
               <FileType>1</FileType>
               <FilePath>..\..\src\s_event_embed.c</FilePath>
             </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Include</GroupName>
-          <Files>
             <File>
-              <FileName>stm32f10x_conf.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\stm32f10x_conf.h</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_it.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\stm32f10x_it.h</FilePath>
+              <FileName>s_chan.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\s_chan.c</FilePath>
             </File>
             <File>
               <FileName>s_list.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\include\s_list.h</FilePath>
-            </File>
-            <File>
-              <FileName>s_port_cortex_m3.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\include\s_port_cortex_m3.h</FilePath>
             </File>
             <File>
               <FileName>s_port_stm32f10x.h</FileName>
