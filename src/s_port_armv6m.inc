@@ -4,17 +4,17 @@ void SysTick_Handler(){
     ++g_ticks;
 }
 
-//3. Implement the initilization function for clock. Leave it blank if not required.
+/* 3. Implement the initilization function for clock. Leave it blank if not required. */
 void my_clock_init(){
     SysTick_Config(SystemCoreClock / MY_CLOCKS_PER_SEC);
 }
 
-//4. Implement the function of getting current clock ticks.
+/* 4. Implement the function of getting current clock ticks. */
 my_clock_t my_clock() {
     return g_ticks;
 }
 
-//5. Implement the idle delay function.
+/* 5. Implement the idle delay function. */
 void my_on_idle(uint64_t max_idle_ms) {
     __WFE();
 }
@@ -51,7 +51,7 @@ __asm static void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
 __asm static void makecontext(ucontext_t *oucp, void *stack) {
     PRESERVE8
     import s_task_context_entry
-    LDR     r3, =s_task_context_entry  //将恢复为lr
+    LDR     r3, =s_task_context_entry  /* 将恢复为lr */
     STM     r0!, {r3-r7}
     MOV     r2, r8
     MOV     r3, r9
@@ -59,7 +59,7 @@ __asm static void makecontext(ucontext_t *oucp, void *stack) {
     MOV     r5, r11
     MOV     r6, r12
     MOV     r7, r1
-    SUBS    r7, r7, #8                  //将恢复为sp
+    SUBS    r7, r7, #8                  /* 将恢复为sp */
     STM     r0!, {r2-r7}
 
     SUBS    r1, r1, #8

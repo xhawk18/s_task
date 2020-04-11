@@ -91,7 +91,7 @@ uint64_t s_timer_wait_recent(void) {
         s_timer_t* timer = GET_PARENT_ADDR(node, s_timer_t, rbt_node);
 
         my_clock_diff_t ticks_to_wakeup = (my_clock_diff_t)(timer->wakeup_ticks - current_ticks);
-        //printf("ticks_to_wakeup = %d %d %d \n", ticks_to_wakeup, (int)current_ticks, (int)timer->wakeup_ticks);
+        /* printf("ticks_to_wakeup = %d %d %d \n", ticks_to_wakeup, (int)current_ticks, (int)timer->wakeup_ticks); */
         if (ticks_to_wakeup > 0) {
             uint64_t wait = ((uint64_t)ticks_to_wakeup * 1000 / MY_CLOCKS_PER_SEC);
             return wait;
@@ -99,7 +99,7 @@ uint64_t s_timer_wait_recent(void) {
         else
             return 0;
     }
-    return (uint64_t)-1;    //max
+    return (uint64_t)-1;    /* max value */
 }
 
 int s_task_sleep_ticks(__async__, my_clock_t ticks) {
@@ -122,7 +122,7 @@ int s_task_sleep_ticks(__async__, my_clock_t ticks) {
 
     dump_timers(__LINE__);
 
-    s_list_detach(&timer.task->node);   //no need, for safe
+    s_list_detach(&timer.task->node);   /* no need, for safe */
     s_task_next(__await__);
 
     dump_timers(__LINE__);

@@ -15,8 +15,8 @@ void s_event_init(s_event_t *event) {
  */
 int s_event_wait(__async__, s_event_t *event) {
     int ret;
-    //Put current task to the event's waiting list
-    s_list_detach(&g_globals.current_task->node);   //no need, for safe
+    /* Put current task to the event's waiting list */
+    s_list_detach(&g_globals.current_task->node);   /* no need, for safe */
     s_list_attach(&event->wait_list, &g_globals.current_task->node);
     s_task_next(__await__);
     ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
@@ -48,8 +48,8 @@ static int s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
         return -1;
     }
 
-    s_list_detach(&g_globals.current_task->node);   //no need, for safe
-    //Put current task to the event's waiting list
+    s_list_detach(&g_globals.current_task->node);   /* no need, for safe */
+    /* Put current task to the event's waiting list */
     s_list_attach(&event->wait_list, &g_globals.current_task->node);
     s_task_next(__await__);
 
@@ -85,8 +85,8 @@ static int s_event_wait_ticks(__async__, s_event_t *event, my_clock_t ticks) {
     }
     s_list_attach(node, &timer.node);
 
-    s_list_detach(&timer.task->node);   //no need, for safe
-    //Put current task to the event's waiting list
+    s_list_detach(&timer.task->node);   /* no need, for safe */
+    /* Put current task to the event's waiting list */
     s_list_attach(&event->wait_list, &g_globals.current_task->node);
     s_task_next(__await__);
 

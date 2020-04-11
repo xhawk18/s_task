@@ -13,7 +13,7 @@ void sub_task(__async__, void* arg) {
     for (i = 0; i < 5; ++i) {
         printf("task %d, delay seconds = %d, i = %d\n", n, n, i);
         s_task_msleep(__await__, n * 1000);
-        //s_task_yield(__await__);
+        /* s_task_yield(__await__); */
     }
 }
 

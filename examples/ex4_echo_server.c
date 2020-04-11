@@ -56,7 +56,7 @@ static void run_client(__async__, void* arg) {
     /* add client the server's maintaining list */
     s_list_init(&client->list_node);
     s_list_attach(&client->server->running_clients, &client->list_node);
-    //increase client accounts
+    /* increase client accounts */
     ++client->server->client_counts;
 
     /* run echo service */
@@ -72,14 +72,14 @@ static void run_client(__async__, void* arg) {
             break;
     }
 
-    //decrease client accounts
+    /* decrease client accounts */
     --client->server->client_counts;
 
 out1:;
     s_uv_close(__await__, (uv_handle_t*)&client->stream);
 out0:;
 
-    //set to be joined a release the memory
+    /* set to be joined a release the memory */
     s_list_detach(&client->list_node);
     s_list_attach(&client->server->stopped_clients, &client->list_node);
     s_event_set(&client->server->event);
@@ -103,7 +103,7 @@ static void on_connection(uv_stream_t* stream, int status) {
     }
 
     client->server = server;
-    //s_event_init(&client->event);
+    /* s_event_init(&client->event); */
     s_list_init(&client->list_node);
     s_list_attach(&server->running_clients, &client->list_node);
     s_task_create(client->stack, sizeof(client->stack), run_client, (void*)client);
@@ -177,11 +177,11 @@ void run_server(__async__, void *arg) {
     printf("Listening on port %s:%d\n", HOST, (int)PORT);
     while (!server->closed) {
         s_event_wait(__await__, &server->event);
-        //join the client tasks if there're any
+        /* join the client tasks if there're any */
         join_clients(__await__, server);
     }
 
-    //stop and wait all clients exit
+    /* stop and wait all clients exit */
     for (node = s_list_get_next(&server->running_clients);
         node == &server->running_clients;
         node = s_list_get_next(node)) {
@@ -192,7 +192,7 @@ void run_server(__async__, void *arg) {
         s_event_wait(__await__, &server->event);
     }
 
-    //join the client tasks
+    /* join the client tasks */
     join_clients(__await__, server);
     printf("Listen closed\n");
 

@@ -1,10 +1,5 @@
 /* Copyright xhawk, MIT license */
 
-//#define USE_SWAP_CONTEXT
-//#define USE_JUMP_FCONTEXT
-//#define USE_LIST_TIMER_CONTAINER	//for very small memory footprint
-
-
 #include <setjmp.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -84,7 +79,7 @@ my_clock_t sec_to_ticks(uint32_t sec) {
 #define TICKS_PER_SEC_1 (uint32_t)(TICKS_DEVIDER / MY_CLOCKS_PER_SEC)
 
 uint32_t ticks_to_msec(my_clock_t ticks) {
-#if INT_MAX < 65536	//it seems that stm8 uint64 is uint32
+#if INT_MAX < 65536	/* it seems that stm8 uint64 is uint32 */
     uint32_t msec = 1000 * (uint32_t)ticks / MY_CLOCKS_PER_SEC;
     return msec;
 #else
@@ -96,7 +91,7 @@ uint32_t ticks_to_msec(my_clock_t ticks) {
 }
 
 uint32_t ticks_to_sec(my_clock_t ticks) {
-#if INT_MAX < 65536	//it seems that stm8 uint64 is uint32
+#if INT_MAX < 65536	/* it seems that stm8 uint64 is uint32 */
     uint32_t sec = (uint32_t)ticks / MY_CLOCKS_PER_SEC;
     return sec;
 #else
@@ -112,11 +107,11 @@ uint32_t ticks_to_sec(my_clock_t ticks) {
     return, true on task run
  */
 static void s_task_call_next(__async__) {
-    //get next task and run it
+    /* get next task and run it */
     s_list_t* next;
     s_task_t* old_task;
 
-    //Check active tasks
+    /* Check active tasks */
     if (s_list_is_empty(&g_globals.active_tasks)) {
 #ifndef NDEBUG
         fprintf(stderr, "error: must has one task to run\n");
@@ -127,7 +122,7 @@ static void s_task_call_next(__async__) {
     old_task = g_globals.current_task;
     next = s_list_get_next(&g_globals.active_tasks);
     
-    //printf("next = %p %p\n", g_globals.current_task, next);
+    /* printf("next = %p %p\n", g_globals.current_task, next); */
 
     g_globals.current_task = GET_PARENT_ADDR(next, s_task_t, node);
     s_list_detach(next);
@@ -156,15 +151,15 @@ void s_task_next(__async__) {
 void s_task_main_loop_once(__async__) {
     s_timer_run();
     while (!s_list_is_empty(&g_globals.active_tasks)) {
-        //Put current task to the waiting list
+        /* Put current task to the waiting list */
         s_list_attach(&g_globals.active_tasks, &g_globals.current_task->node);
         s_task_call_next(__await__);
         s_timer_run();
     }
 
-    //Check timers
+    /* Check timers */
     if (!rbt_is_empty(&g_globals.timers)) {
-        //Wait for the recent timer
+        /* Wait for the recent timer */
         uint64_t timeout = s_timer_wait_recent();
         my_on_idle(timeout);
     }
@@ -191,13 +186,13 @@ void s_task_next(__async__) {
             return;
         }
 
-        //Check timers
+        /* Check timers */
 #ifndef USE_LIST_TIMER_CONTAINER
         if (!rbt_is_empty(&g_globals.timers)) {
 #else
         if (!s_list_is_empty(&g_globals.timers)) {
 #endif
-            //Wait for the recent timer
+            /* Wait for the recent timer */
             uint64_t timeout = s_timer_wait_recent();
             my_on_idle(timeout);
         }
@@ -213,7 +208,7 @@ void s_task_next(__async__) {
 #endif
 
 void s_task_yield(__async__) {
-    //Put current task to the waiting list
+    /* Put current task to the waiting list */
     s_list_attach(&g_globals.active_tasks, &g_globals.current_task->node);
     s_task_next(__await__);
     g_globals.current_task->waiting_cancelled = false;
@@ -269,11 +264,11 @@ void s_task_create(void *stack, size_t stack_size, s_task_fn_t task_entry, void 
     task->waiting_cancelled = false;
     s_list_attach(&g_globals.active_tasks, &task->node);
 
-    //填全1检查stack大小
+    /* Fill all 1 so as to check stack size */
     real_stack = (void *)&task[1];
     real_stack_size = stack_size - sizeof(task[0]);
     memset(real_stack, '\xff', real_stack_size);
-    ((char *)real_stack)[real_stack_size - 1] = 0;    //最后填0防止stack检查越过界
+    ((char *)real_stack)[real_stack_size - 1] = 0;    /* fill 0 to check stack size */
     
 
 #if defined   USE_SWAP_CONTEXT
@@ -293,8 +288,8 @@ int s_task_join(__async__, void *stack) {
     return 0;
 }
 
-//timer conflict with this function!!!
-//Do NOT call s_task_kill, and let the task exit by itself!
+/* timer conflict with this function!!!
+   Do NOT call s_task_kill, and let the task exit by itself! */
 void s_task_kill__remove(void *stack) {
     s_task_t *task = (s_task_t *)stack;
     s_list_detach(&task->node);
@@ -341,11 +336,11 @@ void s_task_context_entry() {
 
 #ifdef USE_JUMP_FCONTEXT
 void s_task_fcontext_entry(transfer_t arg) {
-    //printf("=== s_task_helper_entry = %p\n", arg.fctx);
+    /* printf("=== s_task_helper_entry = %p\n", arg.fctx); */
 
     s_jump_t* jump = (s_jump_t*)arg.data;
     *jump->from = arg.fctx;
-    //printf("%p %p %p\n", jump, jump->to, g_globals.current_task);
+    /* printf("%p %p %p\n", jump, jump->to, g_globals.current_task); */
 
     s_task_context_entry();
 }

@@ -42,7 +42,7 @@ void main_task(__async__, void *arg) {
         printf("task_main arg = %p, i = %d\n", arg, i);
 
         s_task_yield(__await__);
-        //s_task_msleep(__await__, 500);
+        /* s_task_msleep(__await__, 500); */
 
         if (i % 3 == 0) {
             printf("task main set event\n");

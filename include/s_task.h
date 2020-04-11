@@ -25,10 +25,10 @@ typedef struct{
 typedef void(*s_task_fn_t)(__async__, void *arg);
 
 
-//#define USE_SWAP_CONTEXT
-//#define USE_JUMP_FCONTEXT
-//#define USE_LIST_TIMER_CONTAINER	//for very small memory footprint
-//#define USE_IN_EMBEDDED
+/* #define USE_SWAP_CONTEXT                                            */
+/* #define USE_JUMP_FCONTEXT                                           */
+/* #define USE_LIST_TIMER_CONTAINER	//for very small memory footprint  */
+/* #define USE_IN_EMBEDDED                                             */
 
 
 #if defined __ARMCC_VERSION
@@ -130,7 +130,7 @@ void s_task_cancel_wait(void* stack);
 size_t s_task_get_stack_free_size(void);
 
 /* Dump task information */
-//void dump_tasks(__async__);
+/* void dump_tasks(__async__); */
 
 /* Initialize a mutex */
 void s_mutex_init(s_mutex_t *mutex);

@@ -16,7 +16,7 @@ my_clock_t my_clock() {
 }
 
 static void uv_on_timer(uv_timer_t* handle) {
-    //uv_close((uv_handle_t*)handle, NULL);
+    /* uv_close((uv_handle_t*)handle, NULL); */
 }
 
 void my_on_idle(uint64_t max_idle_ms) {
