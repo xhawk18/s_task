@@ -1607,6 +1607,9 @@
   <group>
     <name>s_task</name>
     <file>
+      <name>$PROJ_DIR$\..\..\src\s_chan.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\src\s_event.c</name>
     </file>
     <file>
