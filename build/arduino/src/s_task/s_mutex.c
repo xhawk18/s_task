@@ -16,12 +16,13 @@ void s_mutex_init(s_mutex_t *mutex) {
 /* Lock the mutex */
 int s_mutex_lock(__async__, s_mutex_t *mutex) {
     if(mutex->locked) {
-        //Put current task to the event's waiting list
-        s_list_detach(&g_globals.current_task->node);   //no need, for safe
+        int ret;
+        /* Put current task to the event's waiting list */
+        s_list_detach(&g_globals.current_task->node);   /* no need, for safe */
         s_list_attach(&mutex->wait_list, &g_globals.current_task->node);
         s_task_next(__await__);
 
-        int ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
+        ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
         g_globals.current_task->waiting_cancelled = false;
         return ret;
     }

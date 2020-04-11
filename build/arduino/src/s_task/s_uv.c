@@ -95,7 +95,7 @@ typedef struct {
 
 static void s_uv_write_cb(uv_write_t* req, int status) {
     s_uv_write_arg_t* arg_ = GET_PARENT_ADDR(req, s_uv_write_arg_t, req);
-    //printf("status = %d\n", status);
+    /* printf("status = %d\n", status); */
 
     arg_->status = status;
     arg_->trigged = true;
@@ -214,7 +214,7 @@ typedef struct {
 
 static void s_uv_udp_send_cb(uv_udp_send_t* req, int status) {
     s_uv_udp_send_t* arg_ = GET_PARENT_ADDR(req, s_uv_udp_send_t, req);
-    //printf("status = %d\n", status);
+    /* printf("status = %d\n", status); */
 
     arg_->status = status;
     arg_->trigged = true;
@@ -283,7 +283,7 @@ struct addrinfo *s_uv_getaddrinfo(__async__,
     s_uv_getaddrinfo_t arg;
     arg.trigged = false;
     arg.req.addrinfo = NULL;
-    //arg.req.addrinfow = NULL;
+    /* arg.req.addrinfow = NULL; */
     s_event_init(&arg.event);
 
     ret = uv_getaddrinfo(loop, &arg.req, s_uv_getaddrinfo_cb, node, service, hints);
@@ -305,7 +305,7 @@ out:;
         return NULL;
     }
     else {
-        //use uv_freeaddrinfo(arg.req.addrinfo) to free the return value;
+        /* use uv_freeaddrinfo(arg.req.addrinfo) to free the return value; */
         return arg.req.addrinfo;
     }
 }

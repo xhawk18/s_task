@@ -1,26 +1,25 @@
-//#include <vregs.inc>
 
 static void TIM2_Config(void){
-	//Ê±ÖÓÆµÂÊ16M
-	/* Time base configuration */      
-	TIM2_TimeBaseInit(TIM2_PRESCALER_1, 0xFFFF);
+    /* clock rate from 16M */
+    /* Time base configuration */      
+    TIM2_TimeBaseInit(TIM2_PRESCALER_1, 0xFFFF);
 
-	/* Prescaler configuration */
-	TIM2_PrescalerConfig(TIM2_PRESCALER_16384, TIM2_PSCRELOADMODE_IMMEDIATE);
+    /* Prescaler configuration */
+    TIM2_PrescalerConfig(TIM2_PRESCALER_16384, TIM2_PSCRELOADMODE_IMMEDIATE);
 
-	TIM2_ARRPreloadConfig(ENABLE);
+    TIM2_ARRPreloadConfig(ENABLE);
   
-	TIM2_ClearFlag(TIM2_FLAG_UPDATE);     
-	//TIM2_ITConfig(TIM2_IT_UPDATE,ENABLE); 
+    TIM2_ClearFlag(TIM2_FLAG_UPDATE);     
+    /* TIM2_ITConfig(TIM2_IT_UPDATE,ENABLE); */
 
-	//TIM2_UpdateDisableConfig(ENABLE);
+    /* TIM2_UpdateDisableConfig(ENABLE); */
 
-	/* TIM2 enable counter */
-	TIM2_Cmd(ENABLE);
+    /* TIM2 enable counter */
+    TIM2_Cmd(ENABLE);
 }
 
 static void CLK_Config(void){
-	CLK_DeInit();
+    CLK_DeInit();
     /* Configure the Fcpu to DIV1*/
     CLK_SYSCLKConfig(CLK_PRESCALER_CPUDIV1);
     /* Configure the HSI prescaler to the optimal value */
@@ -50,22 +49,22 @@ void assert_failed(uint8_t* file, uint32_t line)
 }
 #endif
 
-//3. Implement the initilization function for clock. Leave it blank if not required.
+/* 3. Implement the initilization function for clock. Leave it blank if not required. */
 void my_clock_init(){
-	CLK_Config();
-	TIM2_Config();
-	//enableInterrupts();
+    CLK_Config();
+    TIM2_Config();
+    /* enableInterrupts(); */
 }
 
-//4. Implement the function of getting current clock ticks.
+/* 4. Implement the function of getting current clock ticks. */
 my_clock_t my_clock() {
-	uint16_t count;// = TIM2_GetCounter();	
-	count =  ((uint16_t)TIM2->CNTRH << 8);
-	count = (uint16_t)( count| (uint16_t)(TIM2->CNTRL));
-	return count;
+    uint16_t count;
+    count =  ((uint16_t)TIM2->CNTRH << 8);
+    count = (uint16_t)( count| (uint16_t)(TIM2->CNTRL));
+    return count;
 }
 
-//5. Implement the idle delay function.
+/* 5. Implement the idle delay function. */
 void my_on_idle(uint32_t max_idle_ms) {
     
 }
@@ -74,13 +73,14 @@ void my_on_idle(uint32_t max_idle_ms) {
 extern void swapcontext(ucontext_t *oucp, const ucontext_t *ucp);
 
 static void create_context(ucontext_t *oucp, void *stack, size_t stack_size) {
-	//stm8 stack structure, 1. fill sp, 2, decrease sp
-	//	6 bytes:   (high address) CC,Y,X,A   
-	//  16 bytes:                 b0 ~ b15  (low address)
+    /* stm8 stack structure, 1. fill sp, 2, decrease sp
+        6 bytes:   (high address) CC,Y,X,A   
+      16 bytes:                 b0 ~ b15  (low address)
+    */
 
-	int top_sp = (int)((char *)stack + stack_size);
-	*(int *)(top_sp - 2) = (int)&s_task_context_entry;
-	*(char *)(top_sp - 3) = 0x20;	//default CC
-	oucp->sp = top_sp - 2 - 22 - 1;
+    int top_sp = (int)((char *)stack + stack_size);
+    *(int *)(top_sp - 2) = (int)&s_task_context_entry;
+    *(char *)(top_sp - 3) = 0x20;    /* default CC */
+    oucp->sp = top_sp - 2 - 22 - 1;
 }
 

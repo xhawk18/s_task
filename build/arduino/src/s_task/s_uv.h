@@ -34,7 +34,7 @@ int s_uv_udp_send(__async__,
     size_t buf_len,
     const struct sockaddr* addr);
 
-//use uv_freeaddrinfo() to free the return value;
+/* use uv_freeaddrinfo() to free the return value; */
 struct addrinfo* s_uv_getaddrinfo(__async__,
     uv_loop_t* loop,
     const char* node,

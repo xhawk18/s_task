@@ -27,7 +27,7 @@ typedef struct tag_s_task_t {
 #if defined   USE_SWAP_CONTEXT
     ucontext_t   uc;
 #   ifdef __APPLE__
-    char dummy[512]; //it seems darwin ucontext has no enough memory ?
+    char dummy[512]; /* it seems darwin ucontext has no enough memory ? */
 #   endif
 #elif defined USE_JUMP_FCONTEXT
     fcontext_t   fc;

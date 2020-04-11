@@ -14,13 +14,14 @@
  *   S_IRQ_ENABLE()
  */
 int s_event_wait_irq(__async__, s_event_t *event) {
-    //Put current task to the event's waiting list
-    s_list_detach(&g_globals.current_task->node);   //no need, for safe
+    int ret;
+    /* Put current task to the event's waiting list */
+    s_list_detach(&g_globals.current_task->node);   /* no need, for safe */
     s_list_attach(&event->wait_list, &g_globals.current_task->node);
     S_IRQ_ENABLE();
     s_task_next(__await__);
     S_IRQ_DISABLE();
-    int ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
+    ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
     g_globals.current_task->waiting_cancelled = false;
     return ret;
 }
@@ -49,8 +50,8 @@ static int s_event_wait_irq_ticks(__async__, s_event_t *event, my_clock_t ticks)
         return -1;
     }
 
-    s_list_detach(&g_globals.current_task->node);   //no need, for safe
-    //Put current task to the event's waiting list
+    s_list_detach(&g_globals.current_task->node);   /* no need, for safe */
+    /* Put current task to the event's waiting list */
     s_list_attach(&event->wait_list, &g_globals.current_task->node);
     S_IRQ_ENABLE();
     s_task_next(__await__);
@@ -70,7 +71,8 @@ static int s_event_wait_irq_ticks(__async__, s_event_t *event, my_clock_t ticks)
     my_clock_t current_ticks;
     s_list_t *node;
     s_timer_t timer;
-    
+    int ret;
+
     current_ticks = my_clock();
     s_list_init(&timer.node);
     timer.task = g_globals.current_task;
@@ -87,8 +89,8 @@ static int s_event_wait_irq_ticks(__async__, s_event_t *event, my_clock_t ticks)
     }
     s_list_attach(node, &timer.node);
 
-    s_list_detach(&timer.task->node);   //no need, for safe 
-    //Put current task to the event's waiting list
+    s_list_detach(&timer.task->node);   /* no need, for safe */
+    /* Put current task to the event's waiting list */
     s_list_attach(&event->wait_list, &g_globals.current_task->node);
     S_IRQ_ENABLE();
     s_task_next(__await__);
@@ -99,7 +101,7 @@ static int s_event_wait_irq_ticks(__async__, s_event_t *event, my_clock_t ticks)
         s_list_detach(&timer.node);
     }
 
-    int ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
+    ret = (g_globals.current_task->waiting_cancelled ? -1 : 0);
     g_globals.current_task->waiting_cancelled = false;
     return ret;
 }

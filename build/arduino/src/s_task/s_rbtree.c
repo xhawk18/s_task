@@ -42,7 +42,7 @@
  * all leafs are sentinels, use customized NIL name to prevent
  * collision with system-wide constant NIL which is actually NULL
  */
-//#define RBTNIL (&g_sentinel)
+/* #define RBTNIL (&g_sentinel) */
 
 RBTNode g_sentinel =
 {
@@ -87,16 +87,16 @@ rbt_create(RBTree* tree,
            rbt_comparator comparator,
            void *comparator_arg)
 {
-	//RBTree	   *tree = (RBTree *) malloc(sizeof(RBTree));
+	/* RBTree	   *tree = (RBTree *) malloc(sizeof(RBTree)); */
 
-	//assert(node_size > sizeof(RBTNode));
+	/* assert(node_size > sizeof(RBTNode)); */
 
 	tree->root = RBTNIL;
-	//tree->node_size = node_size;
+	/* tree->node_size = node_size; */
 	tree->comparator = comparator;
-	//tree->combiner = combiner;
-	//tree->allocfunc = allocfunc;
-	//tree->freefunc = freefunc;
+	/* tree->combiner = combiner; */
+	/* tree->allocfunc = allocfunc; */
+	/* tree->freefunc = freefunc; */
 
 	tree->comparator_arg = comparator_arg;
 
@@ -104,15 +104,17 @@ rbt_create(RBTree* tree,
 }
 
 /* Copy the additional data fields from one RBTNode to another */
-//static inline void
-//rbt_copy_data(RBTree *rbt, RBTNode *dest, const RBTNode *src)
-//{
-//	memcpy(dest + 1, src + 1, rbt->node_size - sizeof(RBTNode));
-//}
+/*
+static inline void
+rbt_copy_data(RBTree *rbt, RBTNode *dest, const RBTNode *src)
+{
+	memcpy(dest + 1, src + 1, rbt->node_size - sizeof(RBTNode));
+}
+*/
 
 static void
 rbt_swap_node(RBTree *rbt, RBTNode *x, RBTNode *y) {
-    //交换y,z的数据结构
+    /* 交换y,z的数据结构 */
     char color = x->color;
     x->color = y->color;
     y->color = color;
@@ -564,9 +566,11 @@ rbt_insert(RBTree *rbt, RBTNode *data)
 			/*
 			 * Found node with given key.  Apply combiner.
 			 */
-			//rbt->combiner(current, data, rbt->arg);
-			//*isNew = false;
-			//return current;
+			/*
+            rbt->combiner(current, data, rbt->arg);
+			*isNew = false;
+			return current;
+            */
             return false;
 		}
 		parent = current;
@@ -576,16 +580,16 @@ rbt_insert(RBTree *rbt, RBTNode *data)
 	/*
 	 * Value is not present, so create a new node containing data.
 	 */
-	//*isNew = true;
+	/* *isNew = true; */
 
-	//x = rbt->allocfunc(rbt->arg);
+	/* x = rbt->allocfunc(rbt->arg); */
 
     data->color = RBTRED;
 
     data->left = RBTNIL;
     data->right = RBTNIL;
     data->parent = parent;
-	//rbt_copy_data(rbt, x, data);
+	/* rbt_copy_data(rbt, x, data); */
 
 	/* insert node in tree */
 	if (parent)
@@ -752,7 +756,7 @@ rbt_delete_node(RBTree *rbt, RBTNode *z)
         rbt_swap_node(rbt, z, y);
         if (rbt->root == z)
             rbt->root = y; 
-        //rbt_copy_data(rbt, z, y);
+        /* rbt_copy_data(rbt, z, y); */
     }
 
 	/* Remove z from the tree. */
@@ -778,8 +782,8 @@ rbt_delete_node(RBTree *rbt, RBTNode *z)
 		rbt_delete_fixup(rbt, x);
 
 	/* Now we can recycle the z node */
-	//if (rbt->freefunc)
-	//	rbt->freefunc(z, rbt->arg);
+	/* if (rbt->freefunc)
+		rbt->freefunc(z, rbt->arg); */
 }
 
 /*
@@ -949,7 +953,7 @@ bool rbt_is_empty(const RBTree* rbt) {
 #ifndef NDEBUG
         fprintf(stderr, "is_empty\n");
 #endif
-        //exit(0);
+        /* exit(0); */
     }
     return ret1;
 #endif

@@ -49,9 +49,11 @@ extern RBTNode g_sentinel;
 /* Support functions to be provided by caller */
 typedef int (*rbt_comparator) (const RBTNode *a, const RBTNode *b, void *arg);
 typedef int (*rbt_find_comparator) (const void *a, const RBTNode *b);
-//typedef void (*rbt_combiner) (RBTNode *existing, const RBTNode *newdata, void *arg);
-//typedef RBTNode *(*rbt_allocfunc) (void *arg);
-//typedef void (*rbt_freefunc) (RBTNode *x, void *arg);
+/* 
+typedef void (*rbt_combiner) (RBTNode *existing, const RBTNode *newdata, void *arg);
+typedef RBTNode *(*rbt_allocfunc) (void *arg);
+typedef void (*rbt_freefunc) (RBTNode *x, void *arg);
+*/
 
 /*
  * RBTree control structure
