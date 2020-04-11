@@ -79,7 +79,7 @@ my_clock_t sec_to_ticks(uint32_t sec) {
 #define TICKS_PER_SEC_1 (uint32_t)(TICKS_DEVIDER / MY_CLOCKS_PER_SEC)
 
 uint32_t ticks_to_msec(my_clock_t ticks) {
-#if INT_MAX < 65536	/* it seems that stm8 uint64 is uint32 */
+#if INT_MAX < 65536 /* it seems that stm8 uint64 is uint32 */
     uint32_t msec = 1000 * (uint32_t)ticks / MY_CLOCKS_PER_SEC;
     return msec;
 #else
@@ -91,7 +91,7 @@ uint32_t ticks_to_msec(my_clock_t ticks) {
 }
 
 uint32_t ticks_to_sec(my_clock_t ticks) {
-#if INT_MAX < 65536	/* it seems that stm8 uint64 is uint32 */
+#if INT_MAX < 65536 /* it seems that stm8 uint64 is uint32 */
     uint32_t sec = (uint32_t)ticks / MY_CLOCKS_PER_SEC;
     return sec;
 #else

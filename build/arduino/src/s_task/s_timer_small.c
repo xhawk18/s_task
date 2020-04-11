@@ -40,8 +40,8 @@ uint64_t s_timer_wait_recent() {
         /* printf("ticks_to_wakeup = %d %d %d \n", ticks_to_wakeup, (int)current_ticks, (int)timer->wakeup_ticks); */
         if (ticks_to_wakeup > 0) {
             uint64_t wait = ((uint64_t)ticks_to_wakeup * 1000 / MY_CLOCKS_PER_SEC);
-			return wait;
-		}
+            return wait;
+        }
         else
             return 0;
     }

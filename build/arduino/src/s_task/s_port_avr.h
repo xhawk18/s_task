@@ -37,11 +37,11 @@ void my_on_idle(uint64_t max_idle_ms);
 
 /* 6. Define irq enable/disable functions */
 static inline void S_IRQ_DISABLE(){
-	cli();
+    cli();
 }
 
 static inline void S_IRQ_ENABLE(){
-	sei();
+    sei();
 }
 
 

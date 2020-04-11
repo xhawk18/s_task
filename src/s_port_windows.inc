@@ -32,7 +32,7 @@ fcontext_t BOOST_CONTEXT_CALLDECL make_fcontext( void * sp, size_t size, void (*
 
 
 void create_fcontext(fcontext_t *fc, void * sp, size_t size, void (* fn)( transfer_t)) {
-	sp = (void *)((char *)sp + size);
-	*fc = make_fcontext(sp, size, fn);
+    sp = (void *)((char *)sp + size);
+    *fc = make_fcontext(sp, size, fn);
 }
 

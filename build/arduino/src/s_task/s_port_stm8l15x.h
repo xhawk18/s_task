@@ -49,14 +49,14 @@ void my_on_idle(uint32_t max_idle_ms);
 inline
 #endif
 static void S_IRQ_DISABLE(){
-	disableInterrupts();
+    disableInterrupts();
 }
 
 #if __STDC_VERSION__ >= 199901L
 inline
 #endif
 static void S_IRQ_ENABLE(){
-	enableInterrupts();
+    enableInterrupts();
 }
 
 

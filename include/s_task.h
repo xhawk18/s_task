@@ -27,7 +27,7 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 
 /* #define USE_SWAP_CONTEXT                                            */
 /* #define USE_JUMP_FCONTEXT                                           */
-/* #define USE_LIST_TIMER_CONTAINER	//for very small memory footprint  */
+/* #define USE_LIST_TIMER_CONTAINER //for very small memory footprint  */
 /* #define USE_IN_EMBEDDED                                             */
 
 
@@ -64,7 +64,7 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 #   define USE_JUMP_FCONTEXT
 #   include "s_port_windows.h"
 #elif defined __AVR__
-#	define USE_IN_EMBEDDED
+#   define USE_IN_EMBEDDED
 #   define USE_SWAP_CONTEXT
 #   define USE_LIST_TIMER_CONTAINER
 #   include "s_port_avr.h"

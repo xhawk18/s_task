@@ -12,11 +12,11 @@ void my_clock_init() {
 }
 
 my_clock_t my_clock() {
-	return (my_clock_t)millis();
+    return (my_clock_t)millis();
 }
 
 void my_on_idle(uint64_t max_idle_ms) {
-	delay(max_idle_ms);
+    delay(max_idle_ms);
 }
 
 #else
@@ -26,23 +26,23 @@ static volatile my_clock_t g_sys_ticks;
 void my_clock_init(){
 #ifndef F_CPU
 /* Atmega328p CPU frequency is 16MHZ */
-#	define F_CPU 16000000UL
+#   define F_CPU 16000000UL
 #endif
-	/* Set prescaler 256 */
-	TCCR1B = _BV(CS12) | _BV(WGM12);
-	/* For Arduino Uno CPU 16000000 HZ, so the OCR1A should count from 0 to 624
-	 x * 1/16M * 256 = 10 ms = 0.01 s
-	 x = 16 M / 100 / 256 = 625
+    /* Set prescaler 256 */
+    TCCR1B = _BV(CS12) | _BV(WGM12);
+    /* For Arduino Uno CPU 16000000 HZ, so the OCR1A should count from 0 to 624
+     x * 1/16M * 256 = 10 ms = 0.01 s
+     x = 16 M / 100 / 256 = 625
     */
-	OCR1A = (F_CPU / 256 / MY_CLOCKS_PER_SEC) - 1;
-	/* enable compare match 1A interrupt */
-	TIMSK1 = _BV(OCIE1A);
-	
-	sei();
+    OCR1A = (F_CPU / 256 / MY_CLOCKS_PER_SEC) - 1;
+    /* enable compare match 1A interrupt */
+    TIMSK1 = _BV(OCIE1A);
+    
+    sei();
 }
 
 my_clock_t my_clock() {
-	return g_sys_ticks;
+    return g_sys_ticks;
 }
 
 void my_on_idle(uint64_t max_idle_ms) {
@@ -50,7 +50,7 @@ void my_on_idle(uint64_t max_idle_ms) {
 
 /* interrupt every SYS_TICK to re-schedule tasks */
 ISR(TIMER1_COMPA_vect) {
-	++g_sys_ticks;
+    ++g_sys_ticks;
 }
 
 #endif

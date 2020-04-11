@@ -14,31 +14,31 @@ This program demonstrates three tasks:
 */
 
 #if defined STM8S103 
-#	define LED_GPIO       GPIO_PIN_3
-#	define LED_INIT()     GPIO_Init(GPIOA, LED_GPIO, GPIO_MODE_OUT_PP_LOW_FAST)
-#	define LED_SET_HIGH() do {GPIOA->ODR |= LED_GPIO;} while(0)
-#	define LED_SET_LOW()  do {GPIOA->ODR &= ~LED_GPIO;} while(0)
+#   define LED_GPIO       GPIO_PIN_3
+#   define LED_INIT()     GPIO_Init(GPIOA, LED_GPIO, GPIO_MODE_OUT_PP_LOW_FAST)
+#   define LED_SET_HIGH() do {GPIOA->ODR |= LED_GPIO;} while(0)
+#   define LED_SET_LOW()  do {GPIOA->ODR &= ~LED_GPIO;} while(0)
 char g_stack0[350];
 char g_stack1[350];
 
 #elif defined STM8L05X_LD_VL 
-#	define LED_GPIO       GPIO_Pin_0
-#	define LED_INIT()     GPIO_Init(GPIOD, LED_GPIO, GPIO_Mode_Out_PP_Low_Fast)
-#	define LED_SET_HIGH() do {GPIOD->ODR &= ~LED_GPIO;} while(0)
-#	define LED_SET_LOW()  do {GPIOD->ODR |= LED_GPIO;} while(0)
+#   define LED_GPIO       GPIO_Pin_0
+#   define LED_INIT()     GPIO_Init(GPIOD, LED_GPIO, GPIO_Mode_Out_PP_Low_Fast)
+#   define LED_SET_HIGH() do {GPIOD->ODR &= ~LED_GPIO;} while(0)
+#   define LED_SET_LOW()  do {GPIOD->ODR |= LED_GPIO;} while(0)
 char g_stack0[350];
 char g_stack1[350];
 
 #elif defined __AVR__
-#	define LED_GPIO       (1<<PB5)
-#	define LED_INIT()     do {DDRB |= LED_GPIO;} while(0)
-#	define LED_SET_HIGH() do {PORTB |= LED_GPIO;} while(0)
-#	define LED_SET_LOW()  do {PORTB &= ~LED_GPIO;} while(0)
+#   define LED_GPIO       (1<<PB5)
+#   define LED_INIT()     do {DDRB |= LED_GPIO;} while(0)
+#   define LED_SET_HIGH() do {PORTB |= LED_GPIO;} while(0)
+#   define LED_SET_LOW()  do {PORTB &= ~LED_GPIO;} while(0)
 char g_stack0[384];
 char g_stack1[384];
 
 #else
-#	error "not supported"
+#   error "not supported"
 #endif
 
 volatile bool g_is_low = false;
@@ -47,7 +47,7 @@ volatile bool g_exit = false;
 void sub_task_fast_blinking(__async__, void* arg) {
     while(!g_exit) {
         if(!g_is_low)
-			LED_SET_HIGH();                  /* turn the LED on */
+            LED_SET_HIGH();                  /* turn the LED on */
 
         s_task_msleep(__await__, 50);        /* wait for 50 milliseconds */
         LED_SET_LOW();                       /* turn the LED off */
@@ -66,8 +66,8 @@ void sub_task_set_low(__async__, void* arg) {
 }
 
 void main_task(__async__, void* arg) {
-	
-	LED_INIT();
+    
+    LED_INIT();
 
     /* create two sub tasks */
     s_task_create(g_stack0, sizeof(g_stack0), sub_task_fast_blinking, NULL);

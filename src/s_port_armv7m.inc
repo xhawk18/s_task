@@ -27,7 +27,7 @@ __asm static void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
     LDR     r2, [r1]
     MOV     sp, r2
     /* LDR     sp, [r1],#04 */
-	/* LDR     sp, [r1]     */
+    /* LDR     sp, [r1]     */
 
     BX      lr
 }

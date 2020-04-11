@@ -55,7 +55,7 @@ void s_timer_run(void) {
     RBTreeIterator itr;
     RBTNode* node;
     RBTNode* node_next;
-	
+    
     dump_timers(__LINE__);
 
     rbt_begin_iterate(&g_globals.timers, LeftRightWalk, &itr);
