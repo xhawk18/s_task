@@ -25,7 +25,6 @@ void sub_task(__async__, void* arg) {
         element.i = i;
         element.n = n;
         printf("s_chan_put = %d %d\n", element.i, element.n);
-        fflush(stdout);
 
         /* put element into chain */
         s_chan_put(__await__, g_my_chan, &element);
@@ -49,7 +48,6 @@ void main_task(__async__, void* arg) {
         /* get element from chan */
         s_chan_get(__await__, g_my_chan, &element);
         printf("s_chan_get = %d %d\n", element.i, element.n);
-        fflush(stdout);
 
         sum += element.i;
         sum += element.n;
