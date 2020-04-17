@@ -15,8 +15,21 @@ This program demonstrates three tasks:
 
 #if defined __ARMCC_VERSION
 #   if defined STM32F10X_MD
+#       define LED_GPIO       1
+#       define LED_INIT()     do {                                \
+            GPIO_InitTypeDef GPIO_InitStructure;                  \
+            RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE); \
+            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;             \
+            GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;     \
+            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;      \
+            GPIO_Init(GPIOB, &GPIO_InitStructure);                \
+        } while(0)
+#       define LED_SET_HIGH() do {GPIOB->BSRR |= (1 << LED_GPIO);} while(0)
+#       define LED_SET_LOW()  do {GPIOB->BRR  |= (1 << LED_GPIO);} while(0)
 #   elif defined STM32F302x8
+#       error "not supported"
 #   elif defined STM32L1XX_MD
+#       error "not supported"
 #   else    //M051
 #       define LED_GPIO       6
 #       define LED_INIT()     _GPIO_SET_PIN_MODE(P3, LED_GPIO, GPIO_PMD_OUTPUT)

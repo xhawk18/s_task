@@ -878,9 +878,9 @@
               <FilePath>.\stm32f10x_it.c</FilePath>
             </File>
             <File>
-              <FileName>ex1_event.c</FileName>
+              <FileName>ex5_led_blinking.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\examples\ex1_event.c</FilePath>
+              <FilePath>..\..\examples\ex5_led_blinking.c</FilePath>
             </File>
           </Files>
         </Group>
