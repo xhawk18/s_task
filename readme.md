@@ -31,7 +31,7 @@
  + supports keywords **\_\_await\_\_** and **\_\_async\_\_** . :triangular_flag_on_post: For functions that may switch to other tasks, call it with 1st parameter \_\_await\_\_, for the caller function of which, define the 1st parameter as \_\_async\_\_, which make it is clear to know about context switching.
  + works with libuv for network programming.
  + "chan", "mutex" and "event" for communication between tasks.
- + Special features on embedded platfrom (stm32/stm8/m051)
+ + Special features on embedded platfrom (stm32/stm8/m051/arduino)
    - no dynamical memory allocation
    - very small memory footprint ( increased by ROM<1.5K, RAM<128 bytes + task stack size)
 
@@ -331,8 +331,14 @@ s_chan_init(name,TYPE,count);
 /* Put element into chan */
 void s_chan_put(__async__, s_chan_t *chan, const void *in_object);
 
+/* Put number of elements into chan */
+void s_chan_put_n(__async__, s_chan_t *chan, const void *in_object, uint16_t number);
+
 /* Get element from chan */
 void s_chan_get(__async__, s_chan_t *chan, void *out_object);
+
+/* Get number of elements from chan */
+void s_chan_get_n(__async__, s_chan_t *chan, void *out_object, uint16_t number);
 ```
 
 ### Mutex
@@ -373,34 +379,56 @@ int s_event_wait_sec(__async__, s_event_t *event, uint32_t sec);
 
 ### Chan for interrupt (for embedded only, STM8/STM32/M051/Arduino)
 
+#### chan api called in tasks
+
 ```c
-/* Put element into chan and wait interrupt to read the chan */
+/* Task puts element into chan and waits interrupt to read the chan */
 void s_chan_put__to_irq(__async__, s_chan_t *chan, const void *in_object);
 
-/* Wait interrupt to write the chan and then get element from chan */
+/* Task puts number of elements into chan and waits interrupt to read the chan */
+void s_chan_put_n__to_irq(__async__, s_chan_t *chan, const void *in_object, uint16_t number);
+
+/* Task waits interrupt to write the chan and then gets element from chan */
 void s_chan_get__from_irq(__async__, s_chan_t *chan, void *out_object);
 
+/* Task waits interrupt to write the chan and then gets number of elements from chan */
+void s_chan_get_n__from_irq(__async__, s_chan_t *chan, void *out_object, uint16_t number);
+```
+
+#### chan api called in interrupt
+
+```c
 /*
- * Interrupt writes element into the chan
- *  return 0 on chan element was written
- *  return -1 on chan is full
+ * Interrupt writes element into the chan,
+ * return number of element was written into chan
  */
-int s_chan_put__in_irq(s_chan_t *chan, const void *in_object);
+uint16_t s_chan_put__in_irq(s_chan_t *chan, const void *in_object);
 
 /*
- * Interrupt reads element from chan
- *  return 0 on chan element was read
- *  return -1 on chan is empty
+ * Interrupt writes number of elements into the chan,
+ * return number of element was written into chan
  */
-int s_chan_get__in_irq(s_chan_t *chan, void *out_object);
+uint16_t s_chan_put_n__in_irq(s_chan_t *chan, const void *in_object, uint16_t number);
+
+/*
+ * Interrupt reads element from chan,
+ * return number of element was read from chan
+ */
+uint16_t s_chan_get__in_irq(s_chan_t *chan, void *out_object);
+
+/*
+ * Interrupt reads number of elements from chan,
+ * return number of element was read from chan
+ */
+uint16_t s_chan_get_n__in_irq(s_chan_t *chan, void *out_object, uint16_t number);
+
 ```
 
 ### Event for interrupt (for embedded only, STM8/STM32/M051/Arduino)
 
-```c
-/* Set event in interrupt */
-void s_event_set__in_irq(s_event_t *event);
+#### event api called in tasks
 
+```c
 /* 
  * Wait event from irq, disable irq before call this function!
  *   S_IRQ_DISABLE()
@@ -430,6 +458,13 @@ int s_event_wait_msec__from_irq(__async__, s_event_t *event, uint32_t msec);
  *   S_IRQ_ENABLE()
  */
 int s_event_wait_sec__from_irq(__async__, s_event_t *event, uint32_t sec);
+```
+
+#### event api called in interrupt
+
+```c
+/* Set event in interrupt */
+void s_event_set__in_irq(s_event_t *event);
 ```
 
 </details>

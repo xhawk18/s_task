@@ -1,69 +1,126 @@
 /* Copyright xhawk, MIT license */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "s_task.h"
 
-void* g_stack_main[64 * 1024];
-void* g_stack0[64 * 1024];
-void* g_stack1[64 * 1024];
-bool  g_closed = false;
-
+/* Declares for chan1 */
 typedef struct {
     int i;
     int n;
 } my_element_t;
+s_chan_declare(g_my_chan1, my_element_t, 3);
+void* g_stack_chan1_get[64 * 1024];
+void* g_stack_chan1_put_a[64 * 1024];
+void* g_stack_chan1_put_b[64 * 1024];
+bool  g_chan1_closed = false;
 
-s_chan_declare(g_my_chan, my_element_t, 3);
+/* Declares for chan2 */
+s_chan_declare(g_my_chan2, char, 4096);
+void* g_stack_chan2_get[64 * 1024];
+void* g_stack_chan2_put[64 * 1024];
+bool  g_chan2_closed = false;
 
 
-void sub_task(__async__, void* arg) {
+
+void task_chan1_put(__async__, void* arg) {
     int n = (int)(size_t)arg;
     int i;
 
-    for (i = 0; !g_closed; ++i) {
+    for (i = 0; !g_chan1_closed; ++i) {
         my_element_t element;
         element.i = i;
         element.n = n;
         printf("s_chan_put = %d %d\n", element.i, element.n);
 
         /* put element into chain */
-        s_chan_put(__await__, g_my_chan, &element);
+        s_chan_put(__await__, g_my_chan1, &element);
 
         s_task_sleep(__await__, 1);
     }
 }
 
-void main_task(__async__, void* arg) {
+void task_chan1_get(__async__, void* arg) {
     my_element_t element;
     int sum;
 
-    s_chan_init(g_my_chan, my_element_t, 3);
+    s_chan_init(g_my_chan1, my_element_t, 3);
 
-    s_task_create(g_stack0, sizeof(g_stack0), sub_task, (void*)1);
-    s_task_create(g_stack1, sizeof(g_stack1), sub_task, (void*)2);
+    s_task_create(g_stack_chan1_put_a, sizeof(g_stack_chan1_put_a), task_chan1_put, (void*)1);
+    s_task_create(g_stack_chan1_put_b, sizeof(g_stack_chan1_put_b), task_chan1_put, (void*)2);
 
     sum = 0;
     while (sum < 100) {
 
         /* get element from chan */
-        s_chan_get(__await__, g_my_chan, &element);
+        s_chan_get(__await__, g_my_chan1, &element);
         printf("s_chan_get = %d %d\n", element.i, element.n);
 
         sum += element.i;
         sum += element.n;
     }
-    g_closed = true;
+    g_chan1_closed = true;
 
-    s_task_join(__await__, g_stack0);
-    s_task_join(__await__, g_stack1);
+    s_task_join(__await__, g_stack_chan1_put_a);
+    s_task_join(__await__, g_stack_chan1_put_b);
 }
+
+
+void task_chan2_put(__async__, void* arg) {
+    
+    char x = 0;
+    while(true) {
+        char buf[10];
+        uint16_t number = (uint16_t)(rand() % 10);
+        uint16_t i;
+        for (i = 0; i < number; ++i)
+            buf[i] = x++;
+
+        s_chan_put_n(__await__, g_my_chan2, buf, number);
+    }
+}
+
+void task_chan2_get(__async__, void* arg) {
+    s_chan_init(g_my_chan2, char, 512);
+    s_task_create(g_stack_chan2_put, sizeof(g_stack_chan2_put), task_chan2_put, NULL);
+
+    char x = 0;
+    while (true) {
+        char buf[10];
+        uint16_t i;
+        uint16_t number = (uint16_t)(sizeof(buf) / sizeof(buf[0]));
+
+        s_chan_get_n(__await__, g_my_chan2, buf, number);
+
+        for (i = 0; i < number; ++i) {
+            if (buf[i] != x++) {
+                fprintf(stderr, "buf check error\n");
+                goto end;
+            }
+        }
+        printf("get %d at line %d\n", (int)x, __LINE__);
+    }
+
+end:
+    s_task_join(__await__, g_stack_chan2_put);
+}
+
+
+
 
 int main(int argc, char* argv[]) {
     __init_async__;
 
+    srand((unsigned int)time(NULL));
+
     s_task_init_system();
-    s_task_create(g_stack_main, sizeof(g_stack_main), main_task, (void*)(size_t)argc);
-    s_task_join(__await__, g_stack_main);
-    printf("all task is over\n");
+    
+    s_task_create(g_stack_chan1_get, sizeof(g_stack_chan1_get), task_chan1_get, NULL);
+    s_task_create(g_stack_chan2_get, sizeof(g_stack_chan2_get), task_chan2_get, NULL);
+
+    s_task_join(__await__, g_stack_chan1_get);
+    printf("task for chan 1 is finished\n");
+    s_task_join(__await__, g_stack_chan2_get);
+    printf("task for chan 2 is finished\n");
     return 0;
 }

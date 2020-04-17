@@ -7,8 +7,11 @@
 /* chan for communication between irq and task                     */
 /*******************************************************************/
 
-/* Put element into chan and wait interrupt to read the chan */
+/* Task puts element into chan and waits interrupt to read the chan */
 void s_chan_put__to_irq(__async__, s_chan_t *chan, const void *in_object) {
+#if 1
+    s_chan_put_n__to_irq(__await__, chan, in_object, 1);
+#else
     uint16_t end;
     
     S_IRQ_DISABLE();
@@ -21,21 +24,25 @@ void s_chan_put__to_irq(__async__, s_chan_t *chan, const void *in_object) {
     while (end > chan->max_count)
         end -= chan->max_count;
 
-    memcpy((char*)&chan[1] + end * chan->element_size, in_object, chan->element_size);
+    memcpy((char*)&chan[1] + end * (size_t)chan->element_size, in_object, chan->element_size);
     ++chan->available_count;
     
     S_IRQ_ENABLE();
+#endif
 }
 
-/* Wait interrupt to write the chan and then get element from chan */
+/* Task waits interrupt to write the chan and then gets element from chan */
 void s_chan_get__from_irq(__async__, s_chan_t *chan, void *out_object) {
+#if 1
+    s_chan_get_n__from_irq(__await__, chan, out_object, 1);
+#else
     S_IRQ_DISABLE();
 
     while (chan->available_count <= 0) {
         s_event_wait__from_irq(__await__, &chan->event);
     }
 
-    memcpy(out_object, (char*)&chan[1] + chan->begin * chan->element_size, chan->element_size);
+    memcpy(out_object, (char*)&chan[1] + chan->begin * (size_t)chan->element_size, chan->element_size);
 
     ++chan->begin;
     while (chan->begin > chan->max_count)
@@ -43,18 +50,21 @@ void s_chan_get__from_irq(__async__, s_chan_t *chan, void *out_object) {
     --chan->available_count;
 
     S_IRQ_ENABLE();
+#endif
 }
 
 
 /*
- * Interrupt writes element into the chan
- *  return 0 on chan element was written
- *  return -1 on chan is full
+ * Interrupt writes element into the chan,
+ * return number of element was written into chan
  */
-int s_chan_put__in_irq(s_chan_t *chan, const void *in_object) {
+uint16_t s_chan_put__in_irq(s_chan_t *chan, const void *in_object) {
+#if 1
+    return s_chan_put_n__in_irq(chan, in_object, 1);
+#else
     uint16_t end;
     if (chan->available_count >= chan->max_count) {
-        return -1;  /* chan buffer overflow */
+        return 0;  /* chan buffer overflow */
     }
 
     end = chan->begin + chan->available_count;
@@ -65,17 +75,21 @@ int s_chan_put__in_irq(s_chan_t *chan, const void *in_object) {
     ++chan->available_count;
 
     s_event_set__in_irq(&chan->event);
-    return 0;
+    return 1;
+#endif
 }
 
+
 /*
- * Interrupt reads element from chan
- *  return 0 on chan element was read
- *  return -1 on chan is empty
+ * Interrupt reads element from chan,
+ * return number of element was read from chan
  */
-int s_chan_get__in_irq(s_chan_t *chan, void *out_object) {
+uint16_t s_chan_get__in_irq(s_chan_t *chan, void *out_object) {
+#if 1
+    return s_chan_get_n__in_irq(chan, out_object, 1);
+#else
     if (chan->available_count <= 0) {
-        return -1;  /* chan buffer is empty */
+        return 0;  /* chan buffer is empty */
     }
 
     memcpy(out_object, (char*)&chan[1] + chan->begin * chan->element_size, chan->element_size);
@@ -86,7 +100,177 @@ int s_chan_get__in_irq(s_chan_t *chan, void *out_object) {
     --chan->available_count;
 
     s_event_set__in_irq(&chan->event);
-    return 0;
+    return 1;
+#endif
+}
+
+
+
+/* Task puts number of elements into chan and waits interrupt to read the chan */
+void s_chan_put_n__to_irq(__async__, s_chan_t *chan, const void *in_object, uint16_t number) {
+    while(number > 0) {
+        uint16_t begin;
+        uint16_t end;
+        uint16_t count;
+        
+        S_IRQ_DISABLE();
+        while (chan->available_count >= chan->max_count) {
+            s_event_wait__from_irq(__await__, &chan->event);
+        }
+        
+        count = chan->max_count - chan->available_count;
+        if(count > number)
+            count = number;
+
+        begin = chan->begin + chan->available_count;
+        while (begin > chan->max_count)
+            begin -= chan->max_count;
+        
+        end = begin + count;
+        if(end >= chan->max_count) {
+            uint16_t count0 = chan->max_count - begin;
+            memcpy((char *)&chan[1] + begin * (size_t)chan->element_size, in_object, count0 * (size_t)chan->element_size);
+            in_object = (const void *)((const char *)in_object + count0 * (size_t)chan->element_size);
+            
+            count0 = count - count0;
+            memcpy((char *)&chan[1], in_object, count0 * (size_t)chan->element_size);
+            in_object = (const void *)((const char *)in_object + count0 * (size_t)chan->element_size);
+        }
+        else {
+            memcpy((char *)&chan[1] + begin * (size_t)chan->element_size, in_object, count * (size_t)chan->element_size);
+            in_object = (const void *)((const char *)in_object + count * (size_t)chan->element_size);
+        }
+        
+        chan->available_count += count;
+        number -= count;
+
+        S_IRQ_ENABLE();
+    }
+}
+
+/* Task waits interrupt to write the chan and then gets number of elements from chan */
+void s_chan_get_n__from_irq(__async__, s_chan_t *chan, void *out_object, uint16_t number) {
+    while(number > 0) {
+        uint16_t end;
+        uint16_t count;
+        
+        S_IRQ_DISABLE();
+        while (chan->available_count <= 0) {
+            s_event_wait__from_irq(__await__, &chan->event);
+        }
+        
+        count = chan->available_count;
+        if(count > number)
+            count = number;
+        
+        end = chan->begin + count;
+        if(end >= chan->max_count) {
+            uint16_t count0 = chan->max_count - chan->begin;
+            memcpy(out_object, (char *)&chan[1] + chan->begin * (size_t)chan->element_size, count0 * (size_t)chan->element_size);
+            out_object = (void *)((char *)out_object + count0 * (size_t)chan->element_size);
+
+            count0 = count - count0;
+            memcpy(out_object, (char *)&chan[1], count0 * (size_t)chan->element_size);
+            out_object = (void*)((char*)out_object + count0 * (size_t)chan->element_size);
+
+            chan->begin = count0;
+        }
+        else {
+            memcpy(out_object, (char *)&chan[1] + chan->begin * (size_t)chan->element_size, count * (size_t)chan->element_size);
+            out_object = (void*)((char*)out_object + count * (size_t)chan->element_size);
+
+            chan->begin = end;
+        }
+
+        chan->available_count -= count;
+        number -= count;
+
+        S_IRQ_ENABLE();
+    }
+}
+
+
+/*
+ * Interrupt writes number of elements into the chan,
+ * return number of element was written into chan
+ */
+uint16_t s_chan_put_n__in_irq(s_chan_t *chan, const void *in_object, uint16_t number) {
+    uint16_t begin;
+    uint16_t end;
+    uint16_t count;
+    if (chan->available_count >= chan->max_count)
+        return 0;
+        
+    count = chan->max_count - chan->available_count;
+    if(count > number)
+        count = number;
+
+    begin = chan->begin + chan->available_count;
+    while (begin > chan->max_count)
+        begin -= chan->max_count;
+        
+    end = begin + count;
+    if(end >= chan->max_count) {
+        uint16_t count0 = chan->max_count - begin;
+        memcpy((char *)&chan[1] + begin * (size_t)chan->element_size, in_object, count0 * (size_t)chan->element_size);
+        in_object = (const void *)((const char *)in_object + count0 * (size_t)chan->element_size);
+            
+        count0 = count - count0;
+        memcpy((char *)&chan[1], in_object, count0 * (size_t)chan->element_size);
+        in_object = (const void *)((const char *)in_object + count0 * (size_t)chan->element_size);
+    }
+    else {
+        memcpy((char *)&chan[1] + begin * (size_t)chan->element_size, in_object, count * (size_t)chan->element_size);
+        in_object = (const void *)((const char *)in_object + count * (size_t)chan->element_size);
+    }
+        
+    chan->available_count += count;
+    number -= count;
+
+    s_event_set__in_irq(&chan->event);
+
+    return count;
+}
+
+/*
+ * Interrupt reads number of elements from chan,
+ * return number of element was read from chan
+ */
+uint16_t s_chan_get_n__in_irq(s_chan_t *chan, void *out_object, uint16_t number) {
+    uint16_t end;
+    uint16_t count;
+    while (chan->available_count <= 0) 
+        return 0;
+        
+    count = chan->available_count;
+    if(count > number)
+        count = number;
+        
+    end = chan->begin + count;
+    if(end >= chan->max_count) {
+        uint16_t count0 = chan->max_count - chan->begin;
+        memcpy(out_object, (char *)&chan[1] + chan->begin * (size_t)chan->element_size, count0 * (size_t)chan->element_size);
+        out_object = (void *)((char *)out_object + count0 * (size_t)chan->element_size);
+
+        count0 = count - count0;
+        memcpy(out_object, (char *)&chan[1], count0 * (size_t)chan->element_size);
+        out_object = (void*)((char*)out_object + count0 * (size_t)chan->element_size);
+
+        chan->begin = count0;
+    }
+    else {
+        memcpy(out_object, (char *)&chan[1] + chan->begin * (size_t)chan->element_size, count * (size_t)chan->element_size);
+        out_object = (void*)((char*)out_object + count * (size_t)chan->element_size);
+
+        chan->begin = end;
+    }
+
+    chan->available_count -= count;
+    number -= count;
+
+    s_event_set__in_irq(&chan->event);
+    
+	return count;
 }
 
 #endif

@@ -405,34 +405,55 @@ int s_event_wait_sec(__async__, s_event_t *event, uint32_t sec);
 
 ### Chan for interrupt (中断和任务的数据通道，仅嵌入式平台支持，STM8/STM32/M051/Arduino)
 
+#### 任务里调用的 chan api
+
 ```c
-/* Put element into chan and wait interrupt to read the chan */
+/* Task puts element into chan and waits interrupt to read the chan */
 void s_chan_put__to_irq(__async__, s_chan_t *chan, const void *in_object);
 
-/* Wait interrupt to write the chan and then get element from chan */
+/* Task puts number of elements into chan and waits interrupt to read the chan */
+void s_chan_put_n__to_irq(__async__, s_chan_t *chan, const void *in_object, uint16_t number);
+
+/* Task waits interrupt to write the chan and then gets element from chan */
 void s_chan_get__from_irq(__async__, s_chan_t *chan, void *out_object);
 
+/* Task waits interrupt to write the chan and then gets number of elements from chan */
+void s_chan_get_n__from_irq(__async__, s_chan_t *chan, void *out_object, uint16_t number);
+```
+
+#### 中断里调用 chan api
+
+```c
 /*
- * Interrupt writes element into the chan
- *  return 0 on chan element was written
- *  return -1 on chan is full
+ * Interrupt writes element into the chan,
+ * return number of element was written into chan
  */
-int s_chan_put__in_irq(s_chan_t *chan, const void *in_object);
+uint16_t s_chan_put__in_irq(s_chan_t *chan, const void *in_object);
 
 /*
- * Interrupt reads element from chan
- *  return 0 on chan element was read
- *  return -1 on chan is empty
+ * Interrupt writes number of elements into the chan,
+ * return number of element was written into chan
  */
-int s_chan_get__in_irq(s_chan_t *chan, void *out_object);
+uint16_t s_chan_put_n__in_irq(s_chan_t *chan, const void *in_object, uint16_t number);
+
+/*
+ * Interrupt reads element from chan,
+ * return number of element was read from chan
+ */
+uint16_t s_chan_get__in_irq(s_chan_t *chan, void *out_object);
+
+/*
+ * Interrupt reads number of elements from chan,
+ * return number of element was read from chan
+ */
+uint16_t s_chan_get_n__in_irq(s_chan_t *chan, void *out_object, uint16_t number);
 ```
 
 ### Event for interrupt (中断里的事件，仅嵌入式平台支持，STM8/STM32/M051/Arduino)
 
-```c
-/* Set event in interrupt */
-void s_event_set__in_irq(s_event_t *event);
+#### 任务里调用的 event api
 
+```c
 /* 
  * Wait event from irq, disable irq before call this function!
  *   S_IRQ_DISABLE()
@@ -462,6 +483,13 @@ int s_event_wait_msec__from_irq(__async__, s_event_t *event, uint32_t msec);
  *   S_IRQ_ENABLE()
  */
 int s_event_wait_sec__from_irq(__async__, s_event_t *event, uint32_t sec);
+```
+
+#### 中断里调用的 event api
+
+```c
+/* Set event in interrupt */
+void s_event_set__in_irq(s_event_t *event);
 ```
 
 </details>
