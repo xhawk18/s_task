@@ -7,7 +7,7 @@ extern "C" {
 
 /* 1+. define a type ucontext_t */
 typedef struct {
-    int regs[11];   /* r4-r12,lr,sp */
+    int sp; //stack register
 } ucontext_t;
 
 /* 3. Implement the initilization function for clock. Leave it blank if not required. */
@@ -30,7 +30,7 @@ static void S_IRQ_DISABLE(){
 #if __STDC_VERSION__ >= 199901L
 inline
 #endif
-static __inline void S_IRQ_ENABLE(){
+static void S_IRQ_ENABLE(){
     __set_PRIMASK(0);
 }
 

@@ -20,21 +20,27 @@ void my_on_idle(uint64_t max_idle_ms) {
 }
 
 __asm static void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
-    STM     r0!, {r4-r12,lr}
+    PUSH    {r4-r12,lr}
     STR     sp, [r0]
     
-    LDM     r1!, {r4-r12,lr}
-    LDR     r2, [r1]
-    MOV     sp, r2
-    /* LDR     sp, [r1],#04 */
-    /* LDR     sp, [r1]     */
+    //LDR     r2, [r1]
+    //MOV     sp, r2
+    LDR     sp, [r1]
+    POP     {r4-r12,lr}
 
     BX      lr
 }
 
 
 static void create_context(ucontext_t *oucp, void *stack, size_t stack_size) {
-    oucp->regs[9] = (int)&s_task_context_entry;
-    oucp->regs[10] = (int)((char *)stack + stack_size);
+    uint32_t *top_sp;
+    uint32_t int_sp;
+
+    int_sp = (int )((char *)stack + stack_size);
+    int_sp = int_sp / 4 * 4;  //alignment
+    top_sp = (uint32_t *)int_sp;
+    
+    top_sp[-1] = (int)&s_task_context_entry;
+    oucp->sp = (int)&top_sp[-10];
 }
 
