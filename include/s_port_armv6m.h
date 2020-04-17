@@ -7,7 +7,7 @@ extern "C" {
 
 /* 1+. define a type ucontext_t */
 typedef struct {
-    int regs[11];   /* r4-r12,lr,sp */
+    int sp; //stack register
 } ucontext_t;
 
 /* 3. Implement the initilization function for clock. Leave it blank if not required. */

@@ -488,16 +488,6 @@
               <FilePath>..\..\src\s_task.c</FilePath>
             </File>
             <File>
-              <FileName>ex1_event.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\examples\ex1_event.c</FilePath>
-            </File>
-            <File>
-              <FileName>s_event.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\src\s_event.c</FilePath>
-            </File>
-            <File>
               <FileName>s_mutex.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\src\s_mutex.c</FilePath>
@@ -546,6 +536,16 @@
               <FileName>s_chan_embed.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\src\s_chan_embed.c</FilePath>
+            </File>
+            <File>
+              <FileName>ex5_led_blinking.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\examples\ex5_led_blinking.c</FilePath>
+            </File>
+            <File>
+              <FileName>s_event.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\s_event.c</FilePath>
             </File>
           </Files>
         </Group>
