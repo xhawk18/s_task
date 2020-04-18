@@ -363,8 +363,14 @@ s_chan_init(name,TYPE,count);
 /* Put element into chan */
 void s_chan_put(__async__, s_chan_t *chan, const void *in_object);
 
+/* Put number of elements into chan */
+void s_chan_put_n(__async__, s_chan_t *chan, const void *in_object, uint16_t number);
+
 /* Get element from chan */
 void s_chan_get(__async__, s_chan_t *chan, void *out_object);
+
+/* Get number of elements from chan */
+void s_chan_get_n(__async__, s_chan_t *chan, void *out_object, uint16_t number);
 ```
 
 ### Mutex （互斥量）
