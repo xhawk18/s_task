@@ -21,56 +21,43 @@ void my_on_idle(uint64_t max_idle_ms) {
 
 
 __asm static void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
-    MOV     r3, lr
-    STM     r0!, {r3-r7}
+    PUSH    {r4-r7}
     MOV     r2, r8
     MOV     r3, r9
     MOV     r4, r10
     MOV     r5, r11
     MOV     r6, r12
-    MOV     r7, sp
-    STM     r0!, {r2-r7}
+    MOV     r7, lr
+    PUSH    {r2-r7}
+    MOV     r2, sp
+    STM     r0,{r2}
 
-    ADDS    r1, r1, #20
-    LDM     r1!, {r2-r7}
+    LDM     r1, {r2}
+    MOV     sp, r2
+    POP     {r2-r7}
     MOV     r8, r2
     MOV     r9, r3
     MOV     r10, r4
     MOV     r11, r5
     MOV     r12, r6
-    MOV     sp, r7
-
-    SUBS    r1, r1, #44
-    LDM     r1!, {r3-r7}
-    MOV     lr, r3
+    MOV     lr, r7
+    POP     {r4-r7}
 
     BX      lr
 }
 
 
-__asm static void makecontext(ucontext_t *oucp, void *stack) {
-    PRESERVE8
-    import s_task_context_entry
-    LDR     r3, =s_task_context_entry  /* 将恢复为lr */
-    STM     r0!, {r3-r7}
-    MOV     r2, r8
-    MOV     r3, r9
-    MOV     r4, r10
-    MOV     r5, r11
-    MOV     r6, r12
-    MOV     r7, r1
-    SUBS    r7, r7, #8                  /* 将恢复为sp */
-    STM     r0!, {r2-r7}
-
-    SUBS    r1, r1, #8
-    STM     r1!, {r2, r3}
-
-    BX      lr
-}
 
 
 static void create_context(ucontext_t *oucp, void *stack, size_t stack_size) {
-    oucp->regs[0] = (int)&s_task_context_entry;
-    oucp->regs[10] = (int)((char *)stack + stack_size);
+    uint32_t *top_sp;
+    uint32_t int_sp;
+
+    int_sp = (int)((char *)stack + stack_size);
+    int_sp = int_sp / 4 * 4;  //alignment
+    top_sp = (uint32_t *)int_sp;
+    
+    top_sp[-5] = (int)&s_task_context_entry;
+    oucp->sp = (int)&top_sp[-10];
 }
 

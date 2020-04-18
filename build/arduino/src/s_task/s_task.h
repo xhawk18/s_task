@@ -167,62 +167,6 @@ int s_event_wait_msec(__async__, s_event_t *event, uint32_t msec);
 /* Wait event with timeout */
 int s_event_wait_sec(__async__, s_event_t *event, uint32_t msec);
 
-#ifdef USE_IN_EMBEDDED
-
-/* Put element into chan and wait interrupt to read the chan */
-void s_chan_put__to_irq(__async__, s_chan_t *chan, const void *in_object);
-
-/* Wait interrupt to write the chan and then get element from chan */
-void s_chan_get__from_irq(__async__, s_chan_t *chan, void *out_object);
-
-/*
- * Interrupt writes element into the chan
- *  return 0 on chan element was written
- *  return -1 on chan is full
- */
-int s_chan_put__in_irq(s_chan_t *chan, const void *in_object);
-
-/*
- * Interrupt reads element from chan
- *  return 0 on chan element was read
- *  return -1 on chan is empty
- */
-int s_chan_get__in_irq(s_chan_t *chan, void *out_object);
-
-/* Set event in interrupt */
-void s_event_set__in_irq(s_event_t *event);
-
-/* 
- * Wait event from irq, disable irq before call this function!
- *   S_IRQ_DISABLE()
- *   ...
- *   s_event_wait__from_irq(...)
- *   ...
- *   S_IRQ_ENABLE()
- */
-int s_event_wait__from_irq(__async__, s_event_t *event);
-
-/* 
- * Wait event from irq, disable irq before call this function!
- *   S_IRQ_DISABLE()
- *   ...
- *   s_event_wait_msec__from_irq(...)
- *   ...
- *   S_IRQ_ENABLE()
- */
-int s_event_wait_msec__from_irq(__async__, s_event_t *event, uint32_t msec);
-
-/* 
- * Wait event from irq, disable irq before call this function!
- *   S_IRQ_DISABLE()
- *   ...
- *   s_event_wait_sec__from_irq(...)
- *   ...
- *   S_IRQ_ENABLE()
- */
-int s_event_wait_sec__from_irq(__async__, s_event_t *event, uint32_t sec);
-
-#endif
 
 /* macro: Declare the chan variable
  *    name: name of the chan
@@ -246,8 +190,14 @@ int s_event_wait_sec__from_irq(__async__, s_event_t *event, uint32_t sec);
 /* Put element into chan */
 void s_chan_put(__async__, s_chan_t *chan, const void *in_object);
 
+/* Put number of elements into chan */
+void s_chan_put_n(__async__, s_chan_t *chan, const void *in_object, uint16_t number);
+
 /* Get element from chan */
 void s_chan_get(__async__, s_chan_t *chan, void *out_object);
+
+/* Get number of elements from chan */
+void s_chan_get_n(__async__, s_chan_t *chan, void *out_object, uint16_t number);
 
 /* milliseconds to ticks */
 my_clock_t msec_to_ticks(uint32_t msec);
@@ -257,6 +207,83 @@ my_clock_t sec_to_ticks(uint32_t sec);
 uint32_t ticks_to_msec(my_clock_t ticks);
 /* ticks to seconds */
 uint32_t ticks_to_sec(my_clock_t ticks);
+
+
+#ifdef USE_IN_EMBEDDED
+
+/* Set event in interrupt */
+void s_event_set__in_irq(s_event_t * event);
+
+/*
+ * Task waits event from irq. Disable irq before call this function!
+ *   S_IRQ_DISABLE()
+ *   ...
+ *   s_event_wait__from_irq(...)
+ *   ...
+ *   S_IRQ_ENABLE()
+ */
+int s_event_wait__from_irq(__async__, s_event_t * event);
+
+/*
+ * Task waits event from irq. Disable irq before call this function!
+ *   S_IRQ_DISABLE()
+ *   ...
+ *   s_event_wait_msec__from_irq(...)
+ *   ...
+ *   S_IRQ_ENABLE()
+ */
+int s_event_wait_msec__from_irq(__async__, s_event_t * event, uint32_t msec);
+
+/*
+ * Task waits event from irq. Disable irq before call this function!
+ *   S_IRQ_DISABLE()
+ *   ...
+ *   s_event_wait_sec__from_irq(...)
+ *   ...
+ *   S_IRQ_ENABLE()
+ */
+int s_event_wait_sec__from_irq(__async__, s_event_t * event, uint32_t sec);
+
+
+/* Task puts element into chan and waits interrupt to read the chan */
+void s_chan_put__to_irq(__async__, s_chan_t *chan, const void *in_object);
+
+/* Task puts number of elements into chan and waits interrupt to read the chan */
+void s_chan_put_n__to_irq(__async__, s_chan_t *chan, const void *in_object, uint16_t number);
+
+/* Task waits interrupt to write the chan and then gets element from chan */
+void s_chan_get__from_irq(__async__, s_chan_t *chan, void *out_object);
+
+/* Task waits interrupt to write the chan and then gets number of elements from chan */
+void s_chan_get_n__from_irq(__async__, s_chan_t *chan, void *out_object, uint16_t number);
+
+
+/*
+ * Interrupt writes element into the chan,
+ * return number of element was written into chan
+ */
+uint16_t s_chan_put__in_irq(s_chan_t *chan, const void *in_object);
+
+/*
+ * Interrupt writes number of elements into the chan,
+ * return number of element was written into chan
+ */
+uint16_t s_chan_put_n__in_irq(s_chan_t *chan, const void *in_object, uint16_t number);
+
+/*
+ * Interrupt reads element from chan,
+ * return number of element was read from chan
+ */
+uint16_t s_chan_get__in_irq(s_chan_t *chan, void *out_object);
+
+/*
+ * Interrupt reads number of elements from chan,
+ * return number of element was read from chan
+ */
+uint16_t s_chan_get_n__in_irq(s_chan_t *chan, void *out_object, uint16_t number);
+
+
+#endif
 
 #ifdef __cplusplus
 }
