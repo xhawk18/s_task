@@ -53,7 +53,7 @@ static void create_context(ucontext_t *oucp, void *stack, size_t stack_size) {
     uint32_t *top_sp;
     uint32_t int_sp;
 
-    int_sp = (int )((char *)stack + stack_size);
+    int_sp = (int)((char *)stack + stack_size);
     int_sp = int_sp / 4 * 4;  //alignment
     top_sp = (uint32_t *)int_sp;
     

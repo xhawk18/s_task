@@ -366,15 +366,15 @@
             <uC99>1</uC99>
             <uGnu>0</uGnu>
             <useXO>0</useXO>
-            <v6Lang>0</v6Lang>
-            <v6LangP>0</v6LangP>
+            <v6Lang>3</v6Lang>
+            <v6LangP>3</v6LangP>
             <vShortEn>0</vShortEn>
             <vShortWch>0</vShortWch>
             <v6Lto>0</v6Lto>
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls>--diag_error=warning</MiscControls>
+              <MiscControls></MiscControls>
               <Define>DEBUG_ENABLE_SEMIHOST,NDEBUG</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\include;.\M051SeriesBSP\LibM051Series\CMSIS\CM0\CoreSupport;.\M051SeriesBSP\LibM051Series\CMSIS\CM0\DeviceSupport\Nuvoton\M051Series;.\M051SeriesBSP\LibM051Series\StdDriver\inc</IncludePath>
@@ -465,6 +465,13 @@
         </Group>
         <Group>
           <GroupName>Src</GroupName>
+          <Files>
+            <File>
+              <FileName>ex5_led_blinking.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\examples\ex5_led_blinking.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>Include</GroupName>
@@ -536,11 +543,6 @@
               <FileName>s_chan_embed.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\src\s_chan_embed.c</FilePath>
-            </File>
-            <File>
-              <FileName>ex5_led_blinking.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\examples\ex5_led_blinking.c</FilePath>
             </File>
             <File>
               <FileName>s_event.c</FileName>
