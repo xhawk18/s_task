@@ -228,6 +228,7 @@ void loop() {
 | Windows                        | :heavy_check_mark: | :heavy_check_mark: |
 | Linux                          | :heavy_check_mark: | :heavy_check_mark: |
 | MacOS                          | :heavy_check_mark: | :heavy_check_mark: |
+| FreeBSD (12.1, x64)            | :heavy_check_mark: | :heavy_check_mark: |
 | Android                        | :heavy_check_mark: | :heavy_check_mark: |
 | MingW (https://www.msys2.org/) | :heavy_check_mark: | :heavy_check_mark: |
 | ARMv6-M (M051)                 | :heavy_check_mark: | :x:                |
