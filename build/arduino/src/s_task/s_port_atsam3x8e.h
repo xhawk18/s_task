@@ -3,7 +3,6 @@
 
 /* Copyright xhawk, MIT license */
 
-#include "stm32f10x.h"
 #include "s_port_armv7m.h"
 
 #endif

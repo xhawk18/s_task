@@ -19,8 +19,8 @@ void setup() {
 }
 
 
-char g_stack0[384];
-char g_stack1[384];
+int g_stack0[384 / sizeof(int)];
+int g_stack1[384 / sizeof(int)];
 volatile bool g_is_low = false;
 volatile bool g_exit = false;
 

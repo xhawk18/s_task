@@ -5,10 +5,18 @@
 extern "C" {
 #endif
 
-/* 1+. define a type ucontext_t */
+/* 1. define a type for clock */
+typedef uint32_t my_clock_t;
+typedef int32_t my_clock_diff_t;
+
 typedef struct {
     int sp; //stack register
 } ucontext_t;
+
+/* 2. define the clock ticks count for one second */
+#ifndef MY_CLOCKS_PER_SEC
+#   define MY_CLOCKS_PER_SEC 1000
+#endif
 
 /* 3. Implement the initilization function for clock. Leave it blank if not required. */
 void my_clock_init(void);
@@ -20,18 +28,35 @@ my_clock_t my_clock(void);
 void my_on_idle(uint64_t max_idle_ms);
 
 /* 6. Define irq enable/disable functions */
+#ifdef __GNUC__
+#if __STDC_VERSION__ >= 199901L
+inline
+#endif
+__attribute__((naked)) static void __set_PRIMASK_gcc(uint32_t primask) {
+  __asm volatile ("MSR primask, %0" : : "r" (primask) : "memory");
+}
+#endif
+
 #if __STDC_VERSION__ >= 199901L
 inline
 #endif
 static void S_IRQ_DISABLE(){
+#ifdef __GNUC__
+    __set_PRIMASK_gcc(1);
+#else
     __set_PRIMASK(1);
+#endif
 }
 
 #if __STDC_VERSION__ >= 199901L
 inline
 #endif
 static void S_IRQ_ENABLE(){
+#ifdef __GNUC__
+    __set_PRIMASK_gcc(0);
+#else
     __set_PRIMASK(0);
+#endif
 }
 
 

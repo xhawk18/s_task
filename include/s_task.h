@@ -35,7 +35,9 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 #   define USE_IN_EMBEDDED
 #   define USE_SWAP_CONTEXT
 #   define USE_LIST_TIMER_CONTAINER
-#   if defined STM32F10X_MD
+#   if defined ARDUINO
+#       include "s_port_atsam3x8e.h"
+#   elif defined STM32F10X_MD
 #       include "s_port_stm32f10x.h"
 #   elif defined STM32F302x8
 #       include "s_port_stm32f30x.h"

@@ -76,9 +76,7 @@ typedef struct {
 #endif
 } s_task_globals_t;
 
-#if defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L
-#   define THREAD_LOCAL _Thread_local
-#elif defined _MSC_VER
+#if defined _MSC_VER
 #   define THREAD_LOCAL __declspec(thread)
 #elif defined __clang__
 #   if __clang_major__ >= 2
@@ -93,6 +91,8 @@ typedef struct {
 #   else
 #       define THREAD_LOCAL
 #   endif
+#elif defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L
+#   define THREAD_LOCAL _Thread_local
 #else
 #   define THREAD_LOCAL
 #endif
