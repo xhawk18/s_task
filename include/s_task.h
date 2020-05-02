@@ -31,7 +31,7 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 /* #define USE_IN_EMBEDDED                                             */
 
 
-#if defined __ARMCC_VERSION
+#if defined __ARMCC_VERSION || (defined __GNUC__ && __USES_INITFINI__ && defined __ARM_ARCH)
 #   define USE_IN_EMBEDDED
 #   define USE_SWAP_CONTEXT
 #   define USE_LIST_TIMER_CONTAINER

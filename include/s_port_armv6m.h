@@ -5,10 +5,19 @@
 extern "C" {
 #endif
 
-/* 1+. define a type ucontext_t */
+/* 1. define a type for clock */
+typedef uint32_t my_clock_t;
+typedef int32_t my_clock_diff_t;
+#define THREAD_LOCAL
+
 typedef struct {
     int sp; //stack register
 } ucontext_t;
+
+/* 2. define the clock ticks count for one second */
+#ifndef MY_CLOCKS_PER_SEC
+#   define MY_CLOCKS_PER_SEC 1000
+#endif
 
 /* 3. Implement the initilization function for clock. Leave it blank if not required. */
 void my_clock_init(void);

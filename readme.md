@@ -253,17 +253,18 @@ void loop() {
 
 ### Windows and other platforms
 
-| Platform    | Project                           | Tool chain                                    |
-|-------------|-----------------------------------|-----------------------------------------------|
-| Windows     | build\windows\s_task.sln          | visual studio 2019                            |
-| Android     | build\android\cross_build_arm*.sh | android ndk 20, API level 21 (test in termux) |
-| STM8S103    | build\stm8s103\Project.eww        | IAR workbench for STM8                        |
-| STM8L051F3  | build\stm8l05x\Project.eww        | IAR workbench for STM8                        |
-| STM32F103   | build\stm32f103\Project.uvproj    | Keil uVision5                                 |
-| STM32F302   | build\stm32f302\Project.uvporj    | Keil uVision5                                 |
-| M051        | build\m051\Project.uvporj         | Keil uVision5                                 |
-| ATmega328P  | build\atmega328p\atmega328p.atsln | Atmel Studio 7.0                              |
-| Arduino UNO | build\arduino\arduino.ino         | Arduino IDE                                   |
+| Platform    | Project                             | Tool chain                                    |
+|-------------|-------------------------------------|-----------------------------------------------|
+| Windows     | build\windows\s_task.sln            | visual studio 2019                            |
+| Android     | build\android\cross_build_arm*.sh   | android ndk 20, API level 21 (test in termux) |
+| STM8S103    | build\stm8s103\Project.eww          | IAR workbench for STM8                        |
+| STM8L051F3  | build\stm8l05x\Project.eww          | IAR workbench for STM8                        |
+| STM32F103   | build\stm32f103\arcc\Project.uvproj | Keil uVision5                                 |
+| STM32F103   | build\stm32f103\gcc\Project.uvproj  | arm-none-eabi-gcc                             |
+| STM32F302   | build\stm32f302\Project.uvporj      | Keil uVision5                                 |
+| M051        | build\m051\Project.uvporj           | Keil uVision5                                 |
+| ATmega328P  | build\atmega328p\atmega328p.atsln   | Atmel Studio 7.0                              |
+| Arduino UNO | build\arduino\arduino.ino           | Arduino IDE                                   |
 
 ## How to use in your project?
 

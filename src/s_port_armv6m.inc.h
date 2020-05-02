@@ -20,6 +20,9 @@ void my_on_idle(uint64_t max_idle_ms) {
 }
 
 
+
+
+#if defined __ARMCC_VERSION
 __asm static void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
     PUSH    {r4-r7}
     MOV     r2, r8
@@ -46,7 +49,36 @@ __asm static void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
     BX      lr
 }
 
+#elif defined __GNUC__
 
+__attribute__((naked))
+static void swapcontext(ucontext_t *old_tcb, const ucontext_t *new_tcb) {
+    __asm__ __volatile__(
+        "PUSH    {r4-r7}\n"
+        "MOV     r2, r8\n"
+        "MOV     r3, r9\n"
+        "MOV     r4, r10\n"
+        "MOV     r5, r11\n"
+        "MOV     r6, r12\n"
+        "MOV     r7, lr\n"
+        "PUSH    {r2-r7}\n"
+        "MOV     r2, sp\n"
+        "STM     r0,{r2}\n"
+
+        "LDM     r1, {r2}\n"
+        "MOV     sp, r2\n"
+        "POP     {r2-r7}\n"
+        "MOV     r8, r2\n"
+        "MOV     r9, r3\n"
+        "MOV     r10, r4\n"
+        "MOV     r11, r5\n"
+        "MOV     r12, r6\n"
+        "MOV     lr, r7\n"
+        "POP     {r4-r7}\n"
+   );
+}
+
+#endif
 
 
 static void create_context(ucontext_t *oucp, void *stack, size_t stack_size) {

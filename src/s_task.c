@@ -11,32 +11,38 @@
 
 THREAD_LOCAL s_task_globals_t g_globals;
 
-#if defined __ARMCC_VERSION
+#if defined __GNUC__ && __USES_INITFINI__ && defined __ARM_ARCH
+#   if __ARM_ARCH == 7
+#       include "s_port_armv7m.inc.h"
+#   else
+#       error "no arch detected"
+#   endif
+#elif defined __ARMCC_VERSION
 #   if defined __TARGET_CPU_CORTEX_M0
-#       include "s_port_armv6m.inc"
+#       include "s_port_armv6m.inc.h"
 #   elif defined __TARGET_CPU_CORTEX_M3
-#       include "s_port_armv7m.inc"
+#       include "s_port_armv7m.inc.h"
 #   elif defined __TARGET_CPU_CORTEX_M4
-#       include "s_port_armv7m.inc"
+#       include "s_port_armv7m.inc.h"
 #   elif defined __TARGET_CPU_CORTEX_M4_FP
-#       include "s_port_armv7m.inc"
+#       include "s_port_armv7m.inc.h"
 #   else
 #       error "no arch detected"
 #   endif
 #elif defined __ICCSTM8__
 #   if defined STM8S103
-#       include "s_port_stm8s.inc"
+#       include "s_port_stm8s.inc.h"
 #   elif defined STM8L05X_LD_VL 
-#       include "s_port_stm8l15x.inc"
+#       include "s_port_stm8l15x.inc.h"
 #   endif
 #elif defined USE_LIBUV
-#   include "s_port_libuv.inc"
+#   include "s_port_libuv.inc.h"
 #elif defined _WIN32
-#   include "s_port_windows.inc"
+#   include "s_port_windows.inc.h"
 #elif defined __AVR__
 #   include "s_port_avr.inc.h"
 #else
-#   include "s_port_posix.inc"
+#   include "s_port_posix.inc.h"
 #endif
 
 
