@@ -31,7 +31,7 @@
  + supports keywords **\_\_await\_\_** and **\_\_async\_\_** . :triangular_flag_on_post: For functions that may switch to other tasks, call it with 1st parameter \_\_await\_\_, for the caller function of which, define the 1st parameter as \_\_async\_\_, which make it is clear to know about context switching.
  + works with libuv for network programming.
  + "chan", "mutex" and "event" for communication between tasks.
- + Special features on embedded platfrom (stm32/stm8/m051/arduino)
+ + on embedded platfrom (stm32/stm8/m051/arduino,etc), "s_task" is a special RTOS --
    - no dynamical memory allocation
    - very small memory footprint ( increased by ROM<1.5K, RAM<128 bytes + task stack size)
 
