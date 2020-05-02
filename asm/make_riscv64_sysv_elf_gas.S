@@ -1,96 +1,91 @@
 /*
-            Copyright Jiaxun Yang 2018.
    Distributed under the Boost Software License, Version 1.0.
       (See accompanying file LICENSE_1_0.txt or copy at
           http://www.boost.org/LICENSE_1_0.txt)
 */
-
 /*******************************************************
  *                                                     *
  *  -------------------------------------------------  *
  *  |  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  *
  *  -------------------------------------------------  *
- *  |     0     |     8     |    16     |     24    |  *
+ *  | 0x0 | 0x4 | 0x8 | 0xc | 0x10| 0x14| 0x18| 0x1c|  *
  *  -------------------------------------------------  *
- *  |    F24    |    F25    |    F26    |    F27    |  *
+ *  |    fs0    |    fs1    |    fs2    |    fs3    |  *
  *  -------------------------------------------------  *
  *  -------------------------------------------------  *
  *  |  8  |  9  |  10 |  11 |  12 |  13 |  14 |  15 |  *
  *  -------------------------------------------------  *
- *  |     32    |    40     |     48    |     56    |  *
+ *  | 0x20| 0x24| 0x28| 0x2c| 0x30| 0x34| 0x38| 0x3c|  *
  *  -------------------------------------------------  *
- *  |    F28    |    F29    |    F30    |    F31    |  *
+ *  |    fs4    |    fs5    |    fs6    |    fs7    |  *
  *  -------------------------------------------------  *
  *  -------------------------------------------------  *
  *  |  16 |  17 |  18 |  19 |  20 |  21 |  22 |  23 |  *
  *  -------------------------------------------------  *
- *  |     64    |    72     |     80    |     88    |  *
+ *  | 0x40| 0x44| 0x48| 0x4c| 0x50| 0x54| 0x58| 0x5c|  *
  *  -------------------------------------------------  *
- *  |    S0     |    S1     |     S2    |     S3    |  *
+ *  |    fs8    |    fs9    |    fs10   |    fs11   |  *
  *  -------------------------------------------------  *
  *  -------------------------------------------------  *
  *  |  24 |  25 |  26 |  27 |  28 |  29 |  30 |  31 |  *
  *  -------------------------------------------------  *
- *  |  96 | 100 | 104 | 108 | 112 | 116 | 120 | 124 |  *
+ *  | 0x60| 0x64| 0x68| 0x6c| 0x70| 0x74| 0x78| 0x7c|  *
  *  -------------------------------------------------  *
- *  |    S4     |    S5     |     S6    |     S7    |  *
+ *  |    s0     |    s1     |    s2     |    s3     |  *
  *  -------------------------------------------------  *
  *  -------------------------------------------------  *
  *  |  32 |  33 |  34 |  35 |  36 |  37 |  38 |  39 |  *
  *  -------------------------------------------------  *
- *  | 128 | 132 | 136 | 140 | 144 | 148 | 152 | 156 |  *
+ *  | 0x80| 0x84| 0x88| 0x8c| 0x90| 0x94| 0x98| 0x9c|  *
  *  -------------------------------------------------  *
- *  |    FP     |    GP     |     RA    |     PC    |  *
+ *  |    s4     |    s5     |    s6     |     s7    |  *
+ *  -------------------------------------------------  *
+ *  -------------------------------------------------  *
+ *  |  40 |  41 |  42 | 43  |  44 | 45  |  46 | 47  |  *
+ *  -------------------------------------------------  *
+ *  | 0xa0| 0xa4| 0xa8| 0xac| 0xb0| 0xb4| 0xb8| 0xbc|  *
+ *  -------------------------------------------------  *
+ *  |     s8    |     s9    |    s10    |    s11    |  *
+ *  -------------------------------------------------  *
+ *  -------------------------------------------------  *
+ *  |  48 |  49 |  50 | 51  |     |     |     |     |  *
+ *  -------------------------------------------------  *
+ *  | 0xc0| 0xc4| 0xc8| 0xcc|     |     |     |     |  *
+ *  -------------------------------------------------  *
+ *  |     ra    |     pc    |           |           |  *
  *  -------------------------------------------------  *
  *                                                     *
- * *****************************************************/
+ *******************************************************/
 
-.file "make_mips64_n64_elf_gas.S"
+.file "make_riscv64_sysv_elf_gas.S"
 .text
-.globl make_fcontext
-.align 3
-.type make_fcontext,@function
-.ent make_fcontext
+.align  1
+.global make_fcontext
+.type   make_fcontext, %function
 make_fcontext:
-#ifdef __PIC__
-.set    noreorder
-.cpload $t9
-.set    reorder
-#endif
-    # shift address in A0 to lower 16 byte boundary
-    li $v1, 0xfffffffffffffff0
-    and $v0, $v1, $a0
+    # shift address in a0 (allocated stack) to lower 16 byte boundary
+    andi a0, a0, ~0xF
 
     # reserve space for context-data on context-stack
-    daddiu $v0, $v0, -160
+    addi  a0, a0, -0xd0
 
     # third arg of make_fcontext() == address of context-function
-    sd  $a2, 152($v0)
-    # save global pointer in context-data
-    sd  $gp, 136($v0)
-
-    # psudo instruction compute abs address of label finish based on GP
-    dla  $t9, finish
+    # store address as a PC to jump in
+    sd  a2, 0xc8(a0)
 
     # save address of finish as return-address for context-function
-    # will be entered after context-function returns
-    sd  $t9, 144($v0)
+    # will be entered after context-function returns (RA register)
+    lla  a4, finish
+    sd  a4, 0xc0(a0)
 
-    jr  $ra # return pointer to context-data
+    ret // return pointer to context-data (a0)
 
 finish:
-    # reload our gp register (needed for la)
-    daddiu $t0, $sp, -160
-    ld $gp, 136($t0)
+    # exit code is zero
+    li  a0, 0
+    # exit application
+    tail  _exit@plt
 
-    # call _exit(0)
-    #  the previous function should have left the 16 bytes incoming argument
-    #  area on the stack which we reuse for calling _exit
-    dla $t9, _exit
-    move $a0, $zero
-    jr $t9
-.end make_fcontext
-.size make_fcontext, .-make_fcontext
-
-/* Mark that we don't need executable stack.  */
+.size   make_fcontext,.-make_fcontext
+# Mark that we don't need executable stack.
 .section .note.GNU-stack,"",%progbits

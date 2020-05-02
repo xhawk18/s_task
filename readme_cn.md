@@ -273,9 +273,10 @@ void loop() {
    * i686 (ubuntu-16.04)
    * x86_64 (centos-8.1)
    * arm (树莓派32位)
-   * aarch64 (① 树莓派64位, ② ubuntu 14.04 运行于华为鲲鹏920)
+   * aarch64 (① 树莓派64位, ② ubuntu 14.04 / centos7.6 运行于华为鲲鹏920)
    * mipsel (openwrt ucLinux 3.10.14 for MT7628)
    * mips64 (fedora for loongson 3A-4000 龙芯)
+   * riscv64 ([jslinux](https://bellard.org/jslinux/vm.html?cpu=riscv64&url=buildroot-riscv64.cfg&mem=256))
 
 ## 编译
 

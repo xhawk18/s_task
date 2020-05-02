@@ -48,7 +48,7 @@
 .file "ontop_mips64_n64_elf_gas.S"
 .text
 .globl ontop_fcontext
-.align 2
+.align 3
 .type ontop_fcontext,@function
 .ent ontop_fcontext
 ontop_fcontext:
