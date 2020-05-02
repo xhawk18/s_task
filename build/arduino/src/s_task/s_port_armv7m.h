@@ -8,7 +8,6 @@ extern "C" {
 /* 1. define a type for clock */
 typedef uint32_t my_clock_t;
 typedef int32_t my_clock_diff_t;
-//#define THREAD_LOCAL
 
 typedef struct {
     int sp; //stack register
@@ -30,14 +29,16 @@ void my_on_idle(uint64_t max_idle_ms);
 
 /* 6. Define irq enable/disable functions */
 #ifdef __GNUC__
+__attribute__((always_inline))
 #if __STDC_VERSION__ >= 199901L
 inline
 #endif
-__attribute__((naked)) static void __set_PRIMASK_gcc(uint32_t primask) {
+static void __set_PRIMASK_gcc(uint32_t primask) {
   __asm volatile ("MSR primask, %0" : : "r" (primask) : "memory");
 }
 #endif
 
+__attribute__((always_inline))
 #if __STDC_VERSION__ >= 199901L
 inline
 #endif
@@ -49,6 +50,7 @@ static void S_IRQ_DISABLE(){
 #endif
 }
 
+__attribute__((always_inline))
 #if __STDC_VERSION__ >= 199901L
 inline
 #endif
