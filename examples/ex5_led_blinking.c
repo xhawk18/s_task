@@ -88,7 +88,7 @@ void sub_task_set_low(__async__, void* arg) {
         s_task_sleep(__await__, 1);          /* wait for 1 second */
         g_is_low = false;                    /* start fast blinking */
         s_task_sleep(__await__, 3);          /* wait for 3 seconds */
-    }    
+    }
 }
 
 void main_task(__async__, void* arg) {
