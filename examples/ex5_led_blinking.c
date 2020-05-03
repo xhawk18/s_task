@@ -110,8 +110,7 @@ void main_task(__async__, void* arg) {
 }
 
 int main() {
-    __init_async__;
-    
+
     s_task_init_system();
     main_task(__await__, NULL);
 

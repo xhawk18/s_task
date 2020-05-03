@@ -19,7 +19,6 @@ typedef struct{
 
 #   define __await__      __awaiter_dummy__
 #   define __async__      s_awaiter_t *__awaiter_dummy__
-#   define __init_async__ s_awaiter_t *__awaiter_dummy__ = 0
 
 /* Function type for task entrance */
 typedef void(*s_task_fn_t)(__async__, void *arg);
@@ -107,10 +106,14 @@ typedef struct {
 
 /* Initialize the task system. */
 #if defined USE_LIBUV
-void s_task_init_system(uv_loop_t* uv_loop);
+void s_task_init_system_(uv_loop_t* uv_loop);
+#define s_task_init_system(uv_loop) __async__ = 0; (void)__awaiter_dummy__; s_task_init_system_(uv_loop)
 #else
-void s_task_init_system(void);
+void s_task_init_system_(void);
+#define s_task_init_system() __async__ = 0; (void)__awaiter_dummy__; s_task_init_system_()
 #endif
+
+
 
 /* Create a new task */
 void s_task_create(void *stack, size_t stack_size, s_task_fn_t entry, void *arg);

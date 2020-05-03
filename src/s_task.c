@@ -229,9 +229,9 @@ void s_task_yield(__async__) {
 }
 
 #if defined USE_LIBUV
-void s_task_init_system(uv_loop_t* uv_loop)
+void s_task_init_system_(uv_loop_t* uv_loop)
 #else
-void s_task_init_system()
+void s_task_init_system_()
 #endif
 {
 #if defined USE_LIBUV

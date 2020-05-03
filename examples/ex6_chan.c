@@ -109,11 +109,10 @@ end:
 
 
 int main(int argc, char* argv[]) {
-    __init_async__;
-
-    srand((unsigned int)time(NULL));
 
     s_task_init_system();
+
+    srand((unsigned int)time(NULL));
     
     s_task_create(g_stack_chan1_get, sizeof(g_stack_chan1_get), task_chan1_get, NULL);
     s_task_create(g_stack_chan2_get, sizeof(g_stack_chan2_get), task_chan2_get, NULL);
