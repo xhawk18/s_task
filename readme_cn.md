@@ -10,7 +10,7 @@
     - [示例 3 - ardinuo下同时跑多个任务控制led闪烁](#%e7%a4%ba%e4%be%8b-3---ardinuo%e4%b8%8b%e5%90%8c%e6%97%b6%e8%b7%91%e5%a4%9a%e4%b8%aa%e4%bb%bb%e5%8a%a1%e6%8e%a7%e5%88%b6led%e9%97%aa%e7%83%81)
   - [兼容性](#%e5%85%bc%e5%ae%b9%e6%80%a7)
   - [编译](#%e7%bc%96%e8%af%91)
-    - [Linux / MacOS / MingW(MSYS2)](#linux--macos--mingwmsys2)
+    - [Linux / FreeBSD / MacOS / MingW(MSYS2)](#linux--freebsd--macos--mingwmsys2)
     - [Windows 或其他平台](#windows-%e6%88%96%e5%85%b6%e4%bb%96%e5%b9%b3%e5%8f%b0)
   - [如何在您的项目中使用s_task？](#%e5%a6%82%e4%bd%95%e5%9c%a8%e6%82%a8%e7%9a%84%e9%a1%b9%e7%9b%ae%e4%b8%ad%e4%bd%bf%e7%94%a8stask)
   - [API](#api)

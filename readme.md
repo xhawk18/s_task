@@ -11,7 +11,7 @@
     - [Example 3 - control LED with multitasking on ardinuo](#example-3---control-led-with-multitasking-on-ardinuo)
   - [Compatibility](#compatibility)
   - [Build](#build)
-    - [Linux / MacOS / MingW(MSYS2)](#linux--macos--mingwmsys2)
+    - [Linux / FreeBSD / MacOS / MingW(MSYS2)](#linux--freebsd--macos--mingwmsys2)
     - [Windows and other platforms](#windows-and-other-platforms)
   - [How to use in your project?](#how-to-use-in-your-project)
   - [API](#api)
@@ -23,7 +23,7 @@
   - [How to make port?](#how-to-make-port)
   - [Contact](#contact)
   - [VS.](#vs)
-  
+
 ## Features
 
  + "s_task" is a coroutine library written in pure C and asm (from boost library), **without** **C++** required.
@@ -248,7 +248,7 @@ void loop() {
 
 ## Build
 
-### Linux / MacOS / MingW(MSYS2)
+### Linux / FreeBSD / MacOS / MingW(MSYS2)
 
     cd build
     cmake .
