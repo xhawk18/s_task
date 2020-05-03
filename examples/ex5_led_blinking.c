@@ -13,7 +13,7 @@ This program demonstrates three tasks:
     Set led off for 1 second, and then blinking for 3 seconds.
 */
 
-#if defined __ARMCC_VERSION
+#if defined __ARMCC_VERSION || (defined __GNUC__ && __USES_INITFINI__ && defined __ARM_ARCH)
 #   if defined STM32F10X_MD
 #       define LED_GPIO       1
 #       define LED_INIT()     do {                                \

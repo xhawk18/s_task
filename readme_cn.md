@@ -33,7 +33,7 @@
     具备传染性，能调用 await 的函数，一定在一个 async 函数里。这个async 函数需要用 await 调用。
  + 支持协程间的event变量、mutex锁、chan数据通道等，方便不同协程间同步数据和状态。这个方式比其他协程resume函数更好用和可控。
  + 除支持windows, linux, macos这些常规环境外，更能为stm32等嵌入式小芯片环境提供多任务支持（注：小芯片环境下不支持libuv)。
- + 嵌入式小芯片版本没有动态内存分配，增加程序大小不到 1.5k, 不增加程序空间负担。
+ + 在嵌入式小芯片下使用，s_task是个恰到好处的RTOS -- 没有动态内存分配，增加程序大小不到 1.5k, 不增加程序空间负担，支持任务和中断间通讯。
 
 ## 协程 vs 多线程
 
@@ -260,24 +260,27 @@ void loop() {
 | Windows                        | :heavy_check_mark: | :heavy_check_mark: |
 | Linux                          | :heavy_check_mark: | :heavy_check_mark: |
 | MacOS                          | :heavy_check_mark: | :heavy_check_mark: |
+| FreeBSD (12.1, x64)            | :heavy_check_mark: | :heavy_check_mark: |
 | Android                        | :heavy_check_mark: | :heavy_check_mark: |
 | MingW (https://www.msys2.org/) | :heavy_check_mark: | :heavy_check_mark: |
 | ARMv6-M (M051)                 | :heavy_check_mark: | :x:                |
 | ARMv7-M (STM32F103, STM32F302) | :heavy_check_mark: | :x:                |
 | STM8 (STM8S103, STM8L051F3)    | :heavy_check_mark: | :x:                |
 | Arduino UNO (AVR MEGA328P)     | :heavy_check_mark: | :x:                |
+| Arduino DUE (ATSAM3X8E)        | :heavy_check_mark: | :x:                |
 
    linux在以下硬件环境测试通过
    * i686 (ubuntu-16.04)
    * x86_64 (centos-8.1)
    * arm (树莓派32位)
-   * aarch64 (① 树莓派64位, ② ubuntu 14.04 运行于华为鲲鹏920)
+   * aarch64 (① 树莓派64位, ② ubuntu 14.04 / centos7.6 运行于华为鲲鹏920)
    * mipsel (openwrt ucLinux 3.10.14 for MT7628)
    * mips64 (fedora for loongson 3A-4000 龙芯)
+   * riscv64 ([jslinux](https://bellard.org/jslinux/vm.html?cpu=riscv64&url=buildroot-riscv64.cfg&mem=256))
 
 ## 编译
 
-### Linux / MacOS / MingW(MSYS2)
+### Linux / FreeBSD / MacOS / MingW(MSYS2)
 
     cd build
     cmake .
@@ -285,17 +288,18 @@ void loop() {
 
 ### Windows 或其他平台
 
-| 平台       | 项目                              | 工具链                                      |
-|------------|-----------------------------------|---------------------------------------------|
-| Windows    | build\windows\s_task.sln          | visual studio 2019                          |
-| Android    | build\android\cross_build_arm*.sh | android ndk 20, API level 21 (在termux测试) |
-| STM8S103   | build\stm8s103\Project.eww        | IAR workbench for STM8                      |
-| STM8L051F3 | build\stm8l05x\Project.eww        | IAR workbench for STM8                      |
-| STM32F103  | build\stm32f103\Project.uvproj    | Keil uVision5                               |
-| STM32F302  | build\stm32f302\Project.uvporj    | Keil uVision5                               |
-| M051       | build\m051\Project.uvporj         | Keil uVision5                               |
-| ATmega328P | build\atmega328p\atmega328p.atsln | Atmel Studio 7.0                            |
-| Arduino    | build\arduino\arduino.ino         | Arduino IDE                                 |
+| 平台                       | 项目                                | 工具链                                      |
+|----------------------------|-------------------------------------|---------------------------------------------|
+| Windows                    | build\windows\s_task.sln            | visual studio 2019                          |
+| Android                    | build\android\cross_build_arm*.sh   | android ndk 20, API level 21 (在termux测试) |
+| STM8S103                   | build\stm8s103\Project.eww          | IAR workbench for STM8                      |
+| STM8L051F3                 | build\stm8l05x\Project.eww          | IAR workbench for STM8                      |
+| STM32F103                  | build\stm32f103\arcc\Project.uvproj | Keil uVision5                               |
+| STM32F103                  | build\stm32f103\gcc\Project.uvproj  | arm-none-eabi-gcc                           |
+| STM32F302                  | build\stm32f302\Project.uvporj      | Keil uVision5                               |
+| M051                       | build\m051\Project.uvporj           | Keil uVision5                               |
+| ATmega328P                 | build\atmega328p\atmega328p.atsln   | Atmel Studio 7.0                            |
+| Arduino UNO<br>Arduino DUE | build\arduino\arduino.ino           | Arduino IDE                                 |
 
 ## 如何在您的项目中使用s_task？
 

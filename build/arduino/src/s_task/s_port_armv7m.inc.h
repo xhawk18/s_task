@@ -1,4 +1,23 @@
 
+#ifdef ARDUINO
+
+/* 3. Implement the initilization function for clock. Leave it blank if not required. */
+void my_clock_init(){
+}
+
+/* 4. Implement the function of getting current clock ticks. */
+my_clock_t my_clock() {
+    return (my_clock_t)millis();
+}
+
+/* 5. Implement the idle delay function. */
+void my_on_idle(uint64_t max_idle_ms) {
+    delay(max_idle_ms);
+}
+
+#else
+
+
 static my_clock_t g_ticks;
 void SysTick_Handler(){
     ++g_ticks;
@@ -19,6 +38,10 @@ void my_on_idle(uint64_t max_idle_ms) {
     __WFE();
 }
 
+#endif
+
+
+#if defined __ARMCC_VERSION
 __asm static void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
     PUSH    {r4-r12,lr}
     STR     sp, [r0]
@@ -30,6 +53,24 @@ __asm static void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
 
     BX      lr
 }
+
+#elif defined __GNUC__
+
+__attribute__((naked))
+static void swapcontext(ucontext_t *old_tcb, const ucontext_t *new_tcb) {
+    __asm__ __volatile__(
+        "PUSH    {r4-r12,lr}\n"
+        "STR     sp, [r0]\n"
+        //"LDR     r2, [r1]\n"
+        //"MOV     sp, r2\n"
+        "LDR     sp, [r1]\n"
+        "POP     {r4-r12,lr}\n"
+
+        "BX      lr\n"
+   );
+}
+
+#endif
 
 
 static void create_context(ucontext_t *oucp, void *stack, size_t stack_size) {

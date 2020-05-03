@@ -24,6 +24,10 @@
     #include "jump_mips64_n64_elf_gas.S"
 #elif defined(__mips__)
     #include "jump_mips32_o32_elf_gas.S"
+#elif defined(__riscv)
+    #include "jump_riscv64_sysv_elf_gas.S"
+#elif defined(__s390x__)
+    #include "jump_s390x_sysv_elf_gas.S"
 #else
     #error "No arch's"
 #endif

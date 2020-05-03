@@ -76,12 +76,23 @@ typedef struct {
 #endif
 } s_task_globals_t;
 
-#if defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L
-#   define THREAD_LOCAL _Thread_local
-#elif defined _MSC_VER
+#if defined _MSC_VER
 #   define THREAD_LOCAL __declspec(thread)
-#elif defined __GNUC__ || defined __clang__
-#   define THREAD_LOCAL __thread
+#elif defined __clang__
+#   if __clang_major__ >= 2
+#       define THREAD_LOCAL __thread
+#   else
+#       define THREAD_LOCAL
+#   endif
+#elif defined __GNUC__
+#   define GNUC_VERSION_ (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
+#   if GNUC_VERSION_ >= 30301
+#       define THREAD_LOCAL __thread
+#   else
+#       define THREAD_LOCAL
+#   endif
+#elif defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L
+#   define THREAD_LOCAL _Thread_local
 #else
 #   define THREAD_LOCAL
 #endif

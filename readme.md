@@ -31,7 +31,7 @@
  + supports keywords **\_\_await\_\_** and **\_\_async\_\_** . :triangular_flag_on_post: For functions that may switch to other tasks, call it with 1st parameter \_\_await\_\_, for the caller function of which, define the 1st parameter as \_\_async\_\_, which make it is clear to know about context switching.
  + works with libuv for network programming.
  + "chan", "mutex" and "event" for communication between tasks.
- + Special features on embedded platfrom (stm32/stm8/m051/arduino)
+ + on embedded platfrom (stm32/stm8/m051/arduino,etc), "s_task" is a special RTOS --
    - no dynamical memory allocation
    - very small memory footprint ( increased by ROM<1.5K, RAM<128 bytes + task stack size)
 
@@ -228,20 +228,23 @@ void loop() {
 | Windows                        | :heavy_check_mark: | :heavy_check_mark: |
 | Linux                          | :heavy_check_mark: | :heavy_check_mark: |
 | MacOS                          | :heavy_check_mark: | :heavy_check_mark: |
+| FreeBSD (12.1, x64)            | :heavy_check_mark: | :heavy_check_mark: |
 | Android                        | :heavy_check_mark: | :heavy_check_mark: |
 | MingW (https://www.msys2.org/) | :heavy_check_mark: | :heavy_check_mark: |
 | ARMv6-M (M051)                 | :heavy_check_mark: | :x:                |
 | ARMv7-M (STM32F103, STM32F302) | :heavy_check_mark: | :x:                |
 | STM8 (STM8S103, STM8L051F3)    | :heavy_check_mark: | :x:                |
 | Arduino UNO (AVR MEGA328P)     | :heavy_check_mark: | :x:                |
+| Arduino DUE (ATSAM3X8E)        | :heavy_check_mark: | :x:                |
 
    linux tested on 
    * i686 (ubuntu-16.04)
    * x86_64 (centos-8.1)
    * arm (raspiberry 32bit)
-   * aarch64 (① raspiberry 64bit, ② ubuntu 14.04 on huawei Kunpeng920)
+   * aarch64 (① raspiberry 64bit, ② ubuntu 14.04 / centos7.6 on huawei Kunpeng920)
    * mipsel (openwrt ucLinux 3.10.14 for MT7628)
    * mips64 (fedora for loongson 3A-4000)
+   * riscv64 ([jslinux](https://bellard.org/jslinux/vm.html?cpu=riscv64&url=buildroot-riscv64.cfg&mem=256))
 
 ## Build
 
@@ -253,17 +256,18 @@ void loop() {
 
 ### Windows and other platforms
 
-| Platform    | Project                           | Tool chain                                    |
-|-------------|-----------------------------------|-----------------------------------------------|
-| Windows     | build\windows\s_task.sln          | visual studio 2019                            |
-| Android     | build\android\cross_build_arm*.sh | android ndk 20, API level 21 (test in termux) |
-| STM8S103    | build\stm8s103\Project.eww        | IAR workbench for STM8                        |
-| STM8L051F3  | build\stm8l05x\Project.eww        | IAR workbench for STM8                        |
-| STM32F103   | build\stm32f103\Project.uvproj    | Keil uVision5                                 |
-| STM32F302   | build\stm32f302\Project.uvporj    | Keil uVision5                                 |
-| M051        | build\m051\Project.uvporj         | Keil uVision5                                 |
-| ATmega328P  | build\atmega328p\atmega328p.atsln | Atmel Studio 7.0                              |
-| Arduino UNO | build\arduino\arduino.ino         | Arduino IDE                                   |
+| Platform                   | Project                             | Tool chain                                    |
+|----------------------------|-------------------------------------|-----------------------------------------------|
+| Windows                    | build\windows\s_task.sln            | visual studio 2019                            |
+| Android                    | build\android\cross_build_arm*.sh   | android ndk 20, API level 21 (test in termux) |
+| STM8S103                   | build\stm8s103\Project.eww          | IAR workbench for STM8                        |
+| STM8L051F3                 | build\stm8l05x\Project.eww          | IAR workbench for STM8                        |
+| STM32F103                  | build\stm32f103\arcc\Project.uvproj | Keil uVision5                                 |
+| STM32F103                  | build\stm32f103\gcc\Project.uvproj  | arm-none-eabi-gcc                             |
+| STM32F302                  | build\stm32f302\Project.uvporj      | Keil uVision5                                 |
+| M051                       | build\m051\Project.uvporj           | Keil uVision5                                 |
+| ATmega328P                 | build\atmega328p\atmega328p.atsln   | Atmel Studio 7.0                              |
+| Arduino UNO<br>Arduino DUE | build\arduino\arduino.ino           | Arduino IDE                                   |
 
 ## How to use in your project?
 
