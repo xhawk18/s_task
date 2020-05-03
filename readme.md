@@ -72,7 +72,6 @@ void main_task(__async__, void* arg) {
 }
 
 int main(int argc, char* argv) {
-    __init_async__;
 
     s_task_init_system();
     s_task_create(g_stack_main, sizeof(g_stack_main), main_task, (void*)(size_t)argc);
@@ -208,7 +207,6 @@ void main_task(__async__, void* arg) {
 }
 
 void loop() {
-    __init_async__;
     
     s_task_init_system();
     main_task(__await__, NULL);
