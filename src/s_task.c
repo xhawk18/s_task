@@ -74,11 +74,19 @@ int s_task_sleep(__async__, uint32_t sec) {
 }
 
 my_clock_t msec_to_ticks(uint32_t msec) {
-    return (my_clock_t)((uint64_t)msec * (1024 * (uint64_t)MY_CLOCKS_PER_SEC / 1000) / 1024);
+    uint64_t ret = (uint64_t)((uint64_t)msec * (1024 * (uint64_t)MY_CLOCKS_PER_SEC / 1000) / 1024);
+    if(ret >= ((my_clock_t)-1))
+        return (my_clock_t)-1;
+    else
+        return (my_clock_t)ret;
 }
 
 my_clock_t sec_to_ticks(uint32_t sec) {
-    return (my_clock_t)((uint64_t)sec * (uint64_t)MY_CLOCKS_PER_SEC);
+    uint64_t ret = (uint64_t)((uint64_t)sec * (uint64_t)MY_CLOCKS_PER_SEC);
+    if(ret >= (my_clock_t)-1)
+        return (my_clock_t)-1;
+    else
+        return (my_clock_t)ret;
 }
 
 #define TICKS_DEVIDER   (uint32_t)(4096*1024)

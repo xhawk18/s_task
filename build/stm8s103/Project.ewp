@@ -1621,7 +1621,7 @@
       <name>$PROJ_DIR$\..\..\include\s_port_stm8s.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\src\s_port_stm8s.inc</name>
+      <name>$PROJ_DIR$\..\..\src\s_port_stm8s.inc.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\src\s_rbtree.c</name>
