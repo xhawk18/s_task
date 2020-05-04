@@ -280,7 +280,8 @@ void loop() {
 
 ### Linux / FreeBSD / MacOS / MingW(MSYS2)
 
-    cd build
+    git clone https://github.com/xhawk18/s_task.git
+    cd s_task/build/
     cmake .
     make
 
