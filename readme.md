@@ -248,9 +248,14 @@ void loop() {
 
 ### Linux / FreeBSD / MacOS / MingW(MSYS2)
 
-    cd build
+    git clone https://github.com/xhawk18/s_task.git
+    cd s_task/build/
     cmake .
     make
+
+If need cross compiler, please set argument CMAKE_C_COMPILER instead of run "cmake ." above, for example --
+
+    cmake . -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
 
 ### Windows and other platforms
 

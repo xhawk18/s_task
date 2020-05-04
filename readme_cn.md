@@ -284,6 +284,10 @@ void loop() {
     cmake .
     make
 
+若您采用交叉编译器，请在上述运行 "cmake ." 指令时，加上参数 CMAKE_C_COMPILER 指定您所使用的交叉编译器，例如 --
+
+    cmake . -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
+
 ### Windows 或其他平台
 
 | 平台                       | 项目                                | 工具链                                      |
