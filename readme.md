@@ -253,7 +253,7 @@ void loop() {
     cmake .
     make
 
-If need cross compiler, please set argument CMAKE_C_COMPILER instead of run "cmake ." above, for example --
+If need cross compiler, please set argument CMAKE_C_COMPILER when calling "cmake ." above, for example --
 
     cmake . -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
 
