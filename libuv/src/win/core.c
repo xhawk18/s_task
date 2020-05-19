@@ -505,7 +505,7 @@ int uv_loop_alive(const uv_loop_t* loop) {
 
 
 int uv_run(uv_loop_t *loop, uv_run_mode mode) {
-  __init_async__;
+  __async__ = 0;
   DWORD timeout;
   int r;
   int ran_pending;
