@@ -22,6 +22,7 @@
   - [希望移植到新的平台？](#%e5%b8%8c%e6%9c%9b%e7%a7%bb%e6%a4%8d%e5%88%b0%e6%96%b0%e7%9a%84%e5%b9%b3%e5%8f%b0)
   - [联系方式](#%e8%81%94%e7%b3%bb%e6%96%b9%e5%bc%8f)
   - [其他协程库对比](#%e5%85%b6%e4%bb%96%e5%8d%8f%e7%a8%8b%e5%ba%93%e5%af%b9%e6%af%94)
+  - [感谢](#%e6%84%9f%e8%b0%a2)
   
 ## 特性
 
@@ -555,3 +556,7 @@ void my_on_idle(uint64_t max_idle_ms) {
 + micro: https://github.com/mikewei/micoro
 + mill: https://github.com/sustrik/mill
 + Portable Coroutine Library (PCL): http://xmailserver.org/libpcl.html
+
+## 感谢
+
+[wooley](https://github.com/wooley) 关于cmake+vc编译的修正
