@@ -9,6 +9,7 @@
 #include "s_list.h"
 #include "s_rbtree.h"
 
+#define S_TASK_STACK_MAGIC ((int)0x5AA55AA5)
 THREAD_LOCAL s_task_globals_t g_globals;
 
 #if defined __GNUC__ && __USES_INITFINI__ && defined __ARM_ARCH
@@ -155,6 +156,27 @@ static void s_task_call_next(__async__) {
         *ret->from = t.fctx;
 #endif
     }
+
+#ifdef USE_STACK_DEBUG
+    if(g_globals.current_task->stack_size > 0) {
+        s_task_t* task = g_globals.current_task;
+        void *real_stack = (void *)&task[1];
+        size_t real_stack_size = task->stack_size - sizeof(task[0]);
+        size_t int_stack_size = real_stack_size / sizeof(int);
+        if(((int *)real_stack)[0] != S_TASK_STACK_MAGIC) {
+#ifndef NDEBUG
+            fprintf(stderr, "stack overflow in lower bits");
+#endif
+            while(1);   /* dead */
+        }
+        if(((int *)real_stack)[int_stack_size - 1] != S_TASK_STACK_MAGIC) {
+#ifndef NDEBUG
+            fprintf(stderr, "stack overflow in higher bits");
+#endif
+            while(1);   /* dead */
+        }
+    }
+#endif    
 }
 
 #if defined USE_LIBUV
@@ -280,12 +302,24 @@ void s_task_create(void *stack, size_t stack_size, s_task_fn_t task_entry, void 
     task->waiting_cancelled = false;
     s_list_attach(&g_globals.active_tasks, &task->node);
 
-    /* Fill all 1 so as to check stack size */
     real_stack = (void *)&task[1];
     real_stack_size = stack_size - sizeof(task[0]);
-    memset(real_stack, '\xff', real_stack_size);
-    ((char *)real_stack)[real_stack_size - 1] = 0;    /* fill 0 to check stack size */
-    
+#ifdef USE_STACK_DEBUG
+    {
+        /* Fill magic number so as to check stack size */
+        size_t int_stack_size = real_stack_size / sizeof(int);
+        if(int_stack_size <= 2) {
+#ifndef NDEBUG
+            fprintf(stderr, "stack size too small");
+            return;
+#endif
+        }
+        ((int *)real_stack)[0] = S_TASK_STACK_MAGIC;
+        ((int *)real_stack)[int_stack_size - 1] = S_TASK_STACK_MAGIC;
+        real_stack = (char *)real_stack + sizeof(int);
+        real_stack_size = (int_stack_size - 2) * sizeof(int);
+    }
+#endif
 
 #if defined   USE_SWAP_CONTEXT
     create_context(&task->uc, real_stack, real_stack_size);
