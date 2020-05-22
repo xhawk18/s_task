@@ -113,7 +113,7 @@ rbt_copy_data(RBTree *rbt, RBTNode *dest, const RBTNode *src)
 */
 
 static void
-rbt_swap_node(RBTree *rbt, RBTNode *x, RBTNode *y) {
+rbt_swap_node(RBTNode *x, RBTNode *y) {
     /* 交换y,z的数据结构 */
     char color = x->color;
     x->color = y->color;
@@ -753,7 +753,7 @@ rbt_delete_node(RBTree *rbt, RBTNode *z)
      * the data for the removed node to the one we were supposed to remove.
      */
     if (y != z) {
-        rbt_swap_node(rbt, z, y);
+        rbt_swap_node(z, y);
         if (rbt->root == z)
             rbt->root = y; 
         /* rbt_copy_data(rbt, z, y); */

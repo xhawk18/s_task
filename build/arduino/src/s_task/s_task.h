@@ -28,6 +28,7 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 /* #define USE_JUMP_FCONTEXT                                           */
 /* #define USE_LIST_TIMER_CONTAINER //for very small memory footprint  */
 /* #define USE_IN_EMBEDDED                                             */
+/* #define USE_STACK_DEBUG                                             */
 
 
 #if defined __ARMCC_VERSION || (defined __GNUC__ && __USES_INITFINI__ && defined __ARM_ARCH)
