@@ -120,4 +120,4 @@ _jump_fcontext:
     jmp *%ecx
 
 .section .drectve
-.ascii " -export:\"_jump_fcontext\""
+.ascii " -export:\"jump_fcontext\""

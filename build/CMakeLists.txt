@@ -16,7 +16,7 @@ macro(st_add_link_flags target_name)
   elseif(WIN32 OR MINGW)
     list(APPEND st_link_flags -static -s)
   else()
-    list(APPEND st_link_flags -static -s)
+    #list(APPEND st_link_flags -static -s)
   endif()
 endmacro()
 
