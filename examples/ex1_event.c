@@ -54,6 +54,7 @@ void main_task(__async__, void *arg) {
 }
 
 int main(int argc, char *argv[]) {
+    (void)argv;
 
     s_task_init_system();
 

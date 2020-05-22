@@ -11,6 +11,7 @@
 int s_timer_comparator(const RBTNode* a, const RBTNode* b, void* arg) {
     s_timer_t* timer_a = GET_PARENT_ADDR(a, s_timer_t, rbt_node);
     s_timer_t* timer_b = GET_PARENT_ADDR(b, s_timer_t, rbt_node);
+    (void)arg;
 
     my_clock_diff_t diff = (my_clock_diff_t)(timer_a->wakeup_ticks - timer_b->wakeup_ticks);
     if (diff != 0) {
@@ -46,6 +47,8 @@ void dump_timers(int line) {
         s_task_t *task = GET_PARENT_ADDR(list, s_task_t, node);
         printf("task: %p\n", task);
     }
+#else
+    (void)line;
 #endif
 }
 

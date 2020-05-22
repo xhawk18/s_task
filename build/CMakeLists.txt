@@ -7,15 +7,28 @@ message("CMAKE_SYSTEM_PROCESSOR = ${CMAKE_SYSTEM_PROCESSOR}")
 message("CMAKE_C_COMPILER = ${CMAKE_C_COMPILER}")
 message("CMAKE_ASM_COMPILER = ${CMAKE_ASM_COMPILER}")
 
+macro(st_add_link_flags target_name)
+  set(st_link_flags )
+  if(MSVC)
+    if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13.0")
+      target_link_options(${target_name} PRIVATE /SAFESEH:NO)
+    endif()
+  elseif(WIN32 OR MINGW)
+    list(APPEND st_link_flags -static -s)
+  else()
+    list(APPEND st_link_flags -static -s)
+  endif()
+endmacro()
+
 if(MSVC)
+  enable_language(ASM_MASM)
   list(APPEND st_cflags /W4)
+  list(APPEND st_defines _CRT_SECURE_NO_WARNINGS _CONSOLE FRAME BOOST_CONTEXT_EXPORT)
 elseif(CMAKE_C_COMPILER_ID MATCHES "AppleClang|Clang|GNU")
-  list(APPEND st_cflags -fvisibility=hidden --std=c89)
+  list(APPEND st_cflags -fvisibility=hidden)
   list(APPEND st_cflags -Wall -Wextra -Wstrict-prototypes)
   list(APPEND st_cflags -Wno-unused-parameter -Wno-deprecated-declarations)
   list(APPEND st_cflags -static)
-  #list(APPEND st_libraries -s)
-  #list(APPEND st_libraries -static -s)
 endif()
 
 set(st_sources
@@ -30,10 +43,21 @@ set(st_sources
     ../src/s_list.c
     ../src/s_rbtree.c)
 
-# TODO: the two asm files may be replaced to target platform.
-list(APPEND st_sources
+if(MSVC)
+  if(CMAKE_CL_64)
+    list(APPEND st_sources
+      ../asm/jump_x86_64_ms_pe_masm.asm
+      ../asm/make_x86_64_ms_pe_masm.asm)
+  else()
+    list(APPEND st_sources
+      ../asm/jump_i386_ms_pe_masm.asm
+      ../asm/make_i386_ms_pe_masm.asm)
+  endif()
+else()
+  list(APPEND st_sources
     ../asm/make_gas.S
     ../asm/jump_gas.S)
+endif()
 
 set(uv_sources
     ../src/s_uv.c
@@ -48,10 +72,6 @@ set(uv_sources
     ../libuv/src/version.c)
 
 if(WIN32 OR MINGW)
-  if(WIN32 OR MINGW)
-    list(APPEND st_libraries -static -s)
-  endif()
-
   list(APPEND st_defines WIN32_LEAN_AND_MEAN _WIN32_WINNT=0x0600)
   list(APPEND st_libraries
        advapi32
@@ -220,49 +240,48 @@ endif()
 add_executable(ex0_task ../examples/ex0_task.c ${st_sources})
 target_compile_definitions(ex0_task PRIVATE ${st_defines})
 target_compile_options(ex0_task PRIVATE ${st_cflags})
-#target_link_options(ex0_task PRIVATE -s)
-target_include_directories(ex0_task PRIVATE ../include ../libuv/include ../libuv/src)
-target_link_libraries(ex0_task ${st_libraries})
+st_add_link_flags(ex0_task)
+target_include_directories(ex0_task PRIVATE ../include ../libuv/include ../libuv/src ../asm)
+target_link_libraries(ex0_task ${st_link_flags} ${st_libraries})
 
 add_executable(ex1_event ../examples/ex1_event.c ${st_sources})
 target_compile_definitions(ex1_event PRIVATE ${st_defines})
 target_compile_options(ex1_event PRIVATE ${st_cflags})
-#target_link_options(ex1_event PRIVATE -s)
-target_include_directories(ex1_event PRIVATE ../include ../libuv/include ../libuv/src)
-target_link_libraries(ex1_event ${st_libraries})
+st_add_link_flags(ex1_event)
+target_include_directories(ex1_event PRIVATE ../include ../libuv/include ../libuv/src ../asm)
+target_link_libraries(ex1_event ${st_link_flags} ${st_libraries})
 
 add_library(s_task STATIC ${st_sources} ${uv_sources})
 target_compile_definitions(s_task PRIVATE ${st_defines} USE_LIBUV)
 target_compile_options(s_task PRIVATE ${st_cflags})
-target_include_directories(s_task PRIVATE ../include ../libuv/include ../libuv/src)
-target_link_libraries(s_task ${st_libraries})
+target_include_directories(s_task PRIVATE ../include ../libuv/include ../libuv/src ../asm)
 
 add_executable(ex2_libuv ../examples/ex2_libuv.c)
 target_compile_definitions(ex2_libuv PRIVATE ${st_defines} USE_LIBUV)
 target_compile_options(ex2_libuv PRIVATE ${st_cflags})
-#target_link_options(ex2_libuv PRIVATE -s)
-target_include_directories(ex2_libuv PRIVATE ../include ../libuv/include ../libuv/src)
-target_link_libraries(ex2_libuv ${st_libraries} s_task)
+st_add_link_flags(ex2_libuv)
+target_include_directories(ex2_libuv PRIVATE ../include ../libuv/include ../libuv/src ../asm)
+target_link_libraries(ex2_libuv s_task ${st_link_flags} ${st_libraries})
 
 add_executable(ex3_http_client ../examples/ex3_http_client.c)
 target_compile_definitions(ex3_http_client PRIVATE ${st_defines} USE_LIBUV)
 target_compile_options(ex3_http_client PRIVATE ${st_cflags})
-#target_link_options(ex3_http_client PRIVATE -s)
-target_include_directories(ex3_http_client PRIVATE ../include ../libuv/include ../libuv/src)
-target_link_libraries(ex3_http_client ${st_libraries} s_task)
+st_add_link_flags(ex3_http_client)
+target_include_directories(ex3_http_client PRIVATE ../include ../libuv/include ../libuv/src ../asm)
+target_link_libraries(ex3_http_client s_task ${st_link_flags} ${st_libraries})
 
 add_executable(ex4_echo_server ../examples/ex4_echo_server.c)
 target_compile_definitions(ex4_echo_server PRIVATE ${st_defines} USE_LIBUV)
 target_compile_options(ex4_echo_server PRIVATE ${st_cflags})
-#target_link_options(ex4_echo_server PRIVATE -s)
-target_include_directories(ex4_echo_server PRIVATE ../include ../libuv/include ../libuv/src)
-target_link_libraries(ex4_echo_server ${st_libraries} s_task)
+st_add_link_flags(ex4_echo_server)
+target_include_directories(ex4_echo_server PRIVATE ../include ../libuv/include ../libuv/src ../asm)
+target_link_libraries(ex4_echo_server s_task ${st_link_flags} ${st_libraries})
 
 add_executable(ex6_chan ../examples/ex6_chan.c ${st_sources})
 target_compile_definitions(ex6_chan PRIVATE ${st_defines})
 target_compile_options(ex6_chan PRIVATE ${st_cflags})
-#target_link_options(ex6_chan PRIVATE -s)
-target_include_directories(ex6_chan PRIVATE ../include ../libuv/include ../libuv/src)
-target_link_libraries(ex6_chan ${st_libraries})
+st_add_link_flags(ex6_chan)
+target_include_directories(ex6_chan PRIVATE ../include ../libuv/include ../libuv/src ../asm)
+target_link_libraries(ex6_chan ${st_link_flags} ${st_libraries})
 
 

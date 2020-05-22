@@ -125,6 +125,8 @@ static void s_task_call_next(__async__) {
     s_list_t* next;
     s_task_t* old_task;
 
+    (void)__awaiter_dummy__;
+
     /* Check active tasks */
     if (s_list_is_empty(&g_globals.active_tasks)) {
 #ifndef NDEBUG

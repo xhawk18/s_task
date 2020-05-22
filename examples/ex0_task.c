@@ -31,7 +31,8 @@ void main_task(__async__, void* arg) {
     s_task_join(__await__, g_stack1);
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
+    (void)argv;
 
     s_task_init_system();
     s_task_create(g_stack_main, sizeof(g_stack_main), main_task, (void*)(size_t)argc);
