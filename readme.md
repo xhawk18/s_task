@@ -243,6 +243,7 @@ void loop() {
    * aarch64 (① raspiberry 64bit, ② ubuntu 14.04 / centos7.6 on huawei Kunpeng920)
    * mipsel (openwrt ucLinux 3.10.14 for MT7628)
    * mips64 (fedora for loongson 3A-4000)
+   * ppc64 (centos-7.8.2003 altarch)
    * riscv64 ([jslinux](https://bellard.org/jslinux/vm.html?cpu=riscv64&url=buildroot-riscv64.cfg&mem=256))
 
 ## Build

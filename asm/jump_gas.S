@@ -12,9 +12,9 @@
     #include "jump_x86_64_sysv_elf_gas.S"
 #elif defined(__i386__)
     #include "jump_i386_sysv_elf_gas.S"
-#elif defined(__ppc64__)
+#elif defined(__ppc64__) || defined(__PPC64__)
     #include "jump_ppc64_sysv_elf_gas.S"
-#elif defined(__ppc__)
+#elif defined(__ppc__) || defined(__PPC__)
     #include "jump_ppc32_sysv_elf_gas.S"
 #elif defined(__aarch64__)
     #include "jump_arm64_aapcs_elf_gas.S"
