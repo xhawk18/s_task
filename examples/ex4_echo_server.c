@@ -16,6 +16,8 @@ typedef struct {
     s_list_t running_clients;
     s_list_t stopped_clients;
     void* stack[32 * 1024];
+
+    void* stack_timer[32 * 1024];
 } server_t;
 
 typedef struct {
@@ -180,7 +182,7 @@ void run_server(__async__, void *arg) {
 
     /* stop and wait all clients exit */
     for (node = s_list_get_next(&server->running_clients);
-        node == &server->running_clients;
+        node != &server->running_clients;
         node = s_list_get_next(node)) {
         client_t* client = GET_PARENT_ADDR(node, client_t, list_node);
         stop_client(client);
@@ -199,13 +201,29 @@ out0:;
 }
 
 
+
+
+void run_timer(__async__, void* arg) {
+    server_t* server = (server_t*)arg;
+    uint32_t second = 60;
+    s_task_sleep(__await__, second);
+    printf("Gracefully close server after %d seconds.", (int)second);
+    stop_server(server);
+}
+
+
 int main(int argc, char *argv[]) {
     uv_loop_t *loop = uv_default_loop();
     s_task_init_system(loop);
 
     g_server.loop = loop;
+
+    /* Start the server task */
     s_task_create(g_server.stack, sizeof(g_server.stack), run_server, (void *)&g_server);
-    
+
+    /* Start a new task that will close the server gracefully after 60 seconds. */
+    s_task_create(g_server.stack_timer, sizeof(g_server.stack_timer), run_timer, (void*)&g_server);
+
     uv_run(loop, UV_RUN_DEFAULT);
     printf("all task is over\n");
     return 0;
