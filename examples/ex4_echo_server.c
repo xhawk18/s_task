@@ -53,9 +53,6 @@ static void run_client(__async__, void* arg) {
         goto out1;
     }
 
-    /* add client the server's maintaining list */
-    s_list_init(&client->list_node);
-    s_list_attach(&client->server->running_clients, &client->list_node);
     /* increase client accounts */
     ++client->server->client_counts;
 

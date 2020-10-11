@@ -180,7 +180,7 @@ int s_event_wait_sec(__async__, s_event_t *event, uint32_t msec);
  *    count: max count of element buffer in the chan
  */
 #define s_chan_declare(name,TYPE,count)                                                         \
-    s_chan_t name[1 + ((count)*sizeof(TYPE) + sizeof(s_chan_t) - 1) / sizeof(sizeof(s_chan_t))]
+    s_chan_t name[1 + ((count)*sizeof(TYPE) + sizeof(s_chan_t) - 1) / sizeof(s_chan_t)]
 
 /* macro: Initialize the chan (parameters same as what's in s_declare_chan).
  * To make a chan, we need to use "s_chan_declare" and then call "s_chan_init".
