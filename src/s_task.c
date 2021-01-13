@@ -268,6 +268,10 @@ void s_task_init_system_()
 #endif
 
     s_list_init(&g_globals.active_tasks);
+#ifdef USE_DEAD_TASK_CHECKING	
+    s_list_init(&g_globals.waiting_mutexes);
+    s_list_init(&g_globals.waiting_events);
+#endif
 
 #ifndef USE_LIST_TIMER_CONTAINER
     rbt_create(&g_globals.timers,
