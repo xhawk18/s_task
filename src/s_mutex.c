@@ -20,7 +20,7 @@ void s_mutex_init(s_mutex_t *mutex) {
 static void s_mutex_add_to_waiting_list(s_mutex_t *mutex) {
 #ifdef USE_DEAD_TASK_CHECKING
     if(s_list_is_empty(&mutex->wait_list)) {
-        s_list_detach(&event->self);
+        s_list_detach(&mutex->self);
         s_list_attach(&g_globals.waiting_mutexes, &mutex->self);
     }
 #endif
