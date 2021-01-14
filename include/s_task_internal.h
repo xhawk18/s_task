@@ -124,8 +124,10 @@ uint64_t s_timer_wait_recent(void);
 int s_timer_comparator(const RBTNode* a, const RBTNode* b, void* arg);
 
 #ifdef USE_DEAD_TASK_CHECKING
-void s_event_cancel_dead_waiting_tasks_(void);
-void s_mutex_cancel_dead_waiting_tasks_(void);
+/* Return: number of cancelled tasks */
+unsigned int s_task_cancel_dead(void);
+unsigned int s_event_cancel_dead_waiting_tasks_(void);
+unsigned int s_mutex_cancel_dead_waiting_tasks_(void);
 #endif
 
 #ifdef __cplusplus

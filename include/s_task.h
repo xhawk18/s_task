@@ -62,6 +62,7 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 #   else
 #       define USE_JUMP_FCONTEXT
 #   endif
+#   define USE_DEAD_TASK_CHECKING
 #   include "s_port_libuv.h"
 #elif defined _WIN32
 #   define USE_JUMP_FCONTEXT

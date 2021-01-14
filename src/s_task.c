@@ -357,6 +357,12 @@ void s_task_cancel_wait(void* stack) {
     s_list_attach(&g_globals.active_tasks, &task->node);
 }
 
+#ifdef USE_DEAD_TASK_CHECKING
+unsigned int s_task_cancel_dead() {
+    return s_event_cancel_dead_waiting_tasks_()
+         + s_mutex_cancel_dead_waiting_tasks_();
+}
+#endif
 
 static size_t s_task_get_stack_free_size_ex_by_stack(void *stack) {
     uint32_t *check;

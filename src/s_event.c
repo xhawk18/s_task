@@ -33,17 +33,34 @@ static void s_event_remove_from_waiting_list(s_event_t *event) {
 
 #ifdef USE_DEAD_TASK_CHECKING
 /* Cancel dead waiting tasks */
-void s_event_cancel_dead_waiting_tasks_() {
-    s_list_t *next;
-    s_list_t *thiz;
-    for(thiz = s_list_get_next(&g_globals.waiting_events);
-        thiz != &g_globals.waiting_events;
-        thiz = next) {
-        next = s_list_get_next(thiz);
+unsigned int s_event_cancel_dead_waiting_tasks_() {
+    s_list_t *next_event;
+    s_list_t *this_event;
+    unsigned int ret = 0;
+    /* Check all events */
+    for(this_event = s_list_get_next(&g_globals.waiting_events);
+        this_event != &g_globals.waiting_events;
+        this_event = next_event) {
+        s_list_t *next_task;
+        s_list_t *this_task;
+        s_event_t *event;
         
-        s_task_t *task = GET_PARENT_ADDR(thiz, s_task_t, node);
-        s_task_cancel_wait(task);
+        next_event = s_list_get_next(this_event);
+        s_list_detach(this_event);
+        event = GET_PARENT_ADDR(this_event, s_event_t, self);
+        
+        /* Check all tasks blocked on this event */
+        for(this_task = s_list_get_next(&event->wait_list);
+            this_task != &event->wait_list;
+            this_task = next_task) {
+            next_task = s_list_get_next(this_task);
+                    
+            s_task_t *task = GET_PARENT_ADDR(this_task, s_task_t, node);
+            s_task_cancel_wait(task);
+            ++ret;
+        }
     }
+    return ret;
 }
 #endif
 

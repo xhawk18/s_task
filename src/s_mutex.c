@@ -37,17 +37,34 @@ static void s_mutex_remove_from_waiting_list(s_mutex_t *mutex) {
 
 #ifdef USE_DEAD_TASK_CHECKING
 /* Cancel dead waiting tasks */
-void s_mutex_cancel_dead_waiting_tasks_() {
-    s_list_t *next;
-    s_list_t *thiz;
-    for(thiz = s_list_get_next(&g_globals.waiting_mutexes);
-        thiz != &g_globals.waiting_mutexes;
-        thiz = next) {
-        next = s_list_get_next(thiz);
+unsigned int s_mutex_cancel_dead_waiting_tasks_() {
+    s_list_t *next_mutex;
+    s_list_t *this_mutex;
+    unsigned int ret = 0;
+    /* Check all mutexs */
+    for(this_mutex = s_list_get_next(&g_globals.waiting_mutexes);
+        this_mutex != &g_globals.waiting_mutexes;
+        this_mutex = next_mutex) {
+        s_list_t *next_task;
+        s_list_t *this_task;
+        s_mutex_t *mutex;
         
-        s_task_t *task = GET_PARENT_ADDR(thiz, s_task_t, node);
-        s_task_cancel_wait(task);
+        next_mutex = s_list_get_next(this_mutex);
+        s_list_detach(this_mutex);
+        mutex = GET_PARENT_ADDR(this_mutex, s_mutex_t, self);
+        
+        /* Check all tasks blocked on this mutex */
+        for(this_task = s_list_get_next(&mutex->wait_list);
+            this_task != &mutex->wait_list;
+            this_task = next_task) {
+            next_task = s_list_get_next(this_task);
+                    
+            s_task_t *task = GET_PARENT_ADDR(this_task, s_task_t, node);
+            s_task_cancel_wait(task);
+            ++ret;
+        }
     }
+    return ret;
 }
 #endif
 
@@ -55,7 +72,7 @@ void s_mutex_cancel_dead_waiting_tasks_() {
 int s_mutex_lock(__async__, s_mutex_t *mutex) {
     if(mutex->locked) {
         int ret;
-        /* Put current task to the event's waiting list */
+        /* Put current task to the mutex's waiting list */
         s_mutex_add_to_waiting_list(mutex);
         s_list_detach(&g_globals.current_task->node);   /* no need, for safe */
         s_list_attach(&mutex->wait_list, &g_globals.current_task->node);

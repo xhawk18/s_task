@@ -516,7 +516,7 @@ int uv_run(uv_loop_t *loop, uv_run_mode mode) {
   if (!r)
     uv_update_time(loop);
 
-  while (r != 0 && loop->stop_flag == 0) {
+  while ((r != 0 && loop->stop_flag == 0) || s_task_cancel_dead() > 0) {
     uv_update_time(loop);
     uv__run_timers(loop);
 
