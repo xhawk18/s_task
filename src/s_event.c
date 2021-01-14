@@ -60,6 +60,13 @@ unsigned int s_event_cancel_dead_waiting_tasks_() {
             ++ret;
         }
     }
+
+#ifndef NDEBUG
+    if (ret > 0) {
+        fprintf(stderr, "error: cancel dead tasks waiting on event!\n");
+    }
+#endif
+
     return ret;
 }
 #endif

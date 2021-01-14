@@ -64,6 +64,13 @@ unsigned int s_mutex_cancel_dead_waiting_tasks_() {
             ++ret;
         }
     }
+
+#ifndef NDEBUG
+    if (ret > 0) {
+        fprintf(stderr, "error: cancel dead tasks waiting on mutex!\n");
+    }
+#endif
+
     return ret;
 }
 #endif
