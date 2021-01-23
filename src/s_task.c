@@ -15,6 +15,8 @@ THREAD_LOCAL s_task_globals_t g_globals;
 #if defined __GNUC__ && __USES_INITFINI__ && defined __ARM_ARCH
 #   if __ARM_ARCH == 7
 #       include "s_port_armv7m.inc.h"
+#   elif __ARM_ARCH == 6
+#       include "s_port_armv6m.inc.h"
 #   else
 #       error "no arch detected"
 #   endif
