@@ -1,4 +1,23 @@
 
+#ifdef PICO_BUILD
+
+/* 3. Implement the initilization function for clock. Leave it blank if not required. */
+void my_clock_init(){
+}
+
+/* 4. Implement the function of getting current clock ticks. */
+my_clock_t my_clock() {
+    return to_ms_since_boot(get_absolute_time());
+}
+
+/* 5. Implement the idle delay function. */
+void my_on_idle(uint64_t max_idle_ms) {
+    sleep_ms(max_idle_ms);
+}
+
+#else
+
+
 static my_clock_t g_ticks;
 void SysTick_Handler(){
     ++g_ticks;
@@ -19,7 +38,7 @@ void my_on_idle(uint64_t max_idle_ms) {
     __WFE();
 }
 
-
+#endif
 
 
 #if defined __ARMCC_VERSION
@@ -33,7 +52,7 @@ __asm static void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
     MOV     r7, lr
     PUSH    {r2-r7}
     MOV     r2, sp
-    STM     r0,{r2}
+    STM     r0, {r2}
 
     LDM     r1, {r2}
     MOV     sp, r2
@@ -63,9 +82,9 @@ static void swapcontext(ucontext_t *old_tcb, const ucontext_t *new_tcb) {
         "MOV     r7, lr\n"
         "PUSH    {r2-r7}\n"
         "MOV     r2, sp\n"
-        "STM     r0,{r2}\n"
+        "STM     r0!, {r2}\n"
 
-        "LDM     r1, {r2}\n"
+        "LDM     r1!, {r2}\n"
         "MOV     sp, r2\n"
         "POP     {r2-r7}\n"
         "MOV     r8, r2\n"

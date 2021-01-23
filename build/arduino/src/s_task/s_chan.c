@@ -5,7 +5,7 @@
 /* chan                                                            */
 /*******************************************************************/
 
-static uint16_t s_chan_put_(s_chan_t *chan, const void **in_object, uint16_t *number) {
+uint16_t s_chan_put_(s_chan_t *chan, const void **in_object, uint16_t *number) {
     uint16_t begin;
     uint16_t end;
     uint16_t count;
@@ -39,7 +39,7 @@ static uint16_t s_chan_put_(s_chan_t *chan, const void **in_object, uint16_t *nu
     return count;
 }
 
-static uint16_t s_chan_get_(s_chan_t *chan, void **out_object, uint16_t *number) {
+uint16_t s_chan_get_(s_chan_t *chan, void **out_object, uint16_t *number) {
     uint16_t end;
     uint16_t count;
     
