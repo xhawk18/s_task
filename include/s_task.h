@@ -29,6 +29,7 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 /* #define USE_LIST_TIMER_CONTAINER //for very small memory footprint  */
 /* #define USE_IN_EMBEDDED                                             */
 /* #define USE_STACK_DEBUG                                             */
+/* #define USE_DEAD_TASK_CHECKING                                      */
 
 
 #if defined __ARMCC_VERSION || (defined __GNUC__ && __USES_INITFINI__ && defined __ARM_ARCH)
@@ -61,9 +62,11 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 #   else
 #       define USE_JUMP_FCONTEXT
 #   endif
+#   define USE_DEAD_TASK_CHECKING
 #   include "s_port_libuv.h"
 #elif defined _WIN32
 #   define USE_JUMP_FCONTEXT
+#   define USE_DEAD_TASK_CHECKING
 #   include "s_port_windows.h"
 #elif defined __AVR__
 #   define USE_IN_EMBEDDED
@@ -76,6 +79,7 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 #   else
 #       define USE_JUMP_FCONTEXT
 #   endif
+#   define USE_DEAD_TASK_CHECKING
 #   include "s_port_posix.h"
 #endif
 
@@ -85,11 +89,17 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 
 typedef struct {
     s_list_t wait_list;
+#ifdef USE_DEAD_TASK_CHECKING
+    s_list_t self;
+#endif
     bool locked;
 } s_mutex_t;
 
 typedef struct {
     s_list_t wait_list;
+#ifdef USE_DEAD_TASK_CHECKING
+    s_list_t self;
+#endif
 } s_event_t;
 
 typedef struct {
@@ -193,17 +203,29 @@ int s_event_wait_sec(__async__, s_event_t *event, uint32_t msec);
     s_event_init(&(&name[0])->event);                                                           \
 } while(0)
 
-/* Put element into chan */
-void s_chan_put(__async__, s_chan_t *chan, const void *in_object);
+/* Put element into chan
+ *  return 0 on chan put successfully
+ *  return -1 on chan cancelled
+ */
+int s_chan_put(__async__, s_chan_t *chan, const void *in_object);
 
-/* Put number of elements into chan */
-void s_chan_put_n(__async__, s_chan_t *chan, const void *in_object, uint16_t number);
+/* Put number of elements into chan
+ *  return 0 on chan put successfully
+ *  return -1 on chan cancelled
+ */
+int s_chan_put_n(__async__, s_chan_t *chan, const void *in_object, uint16_t number);
 
-/* Get element from chan */
-void s_chan_get(__async__, s_chan_t *chan, void *out_object);
+/* Get element from chan
+ *  return 0 on chan get successfully
+ *  return -1 on chan cancelled
+ */
+int s_chan_get(__async__, s_chan_t *chan, void *out_object);
 
-/* Get number of elements from chan */
-void s_chan_get_n(__async__, s_chan_t *chan, void *out_object, uint16_t number);
+/* Get number of elements from chan
+ *  return 0 on chan get successfully
+ *  return -1 on chan cancelled
+ */
+int s_chan_get_n(__async__, s_chan_t *chan, void *out_object, uint16_t number);
 
 /* milliseconds to ticks */
 my_clock_t msec_to_ticks(uint32_t msec);

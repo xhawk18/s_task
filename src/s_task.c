@@ -234,7 +234,8 @@ void s_task_next(__async__) {
             uint64_t timeout = s_timer_wait_recent();
             my_on_idle(timeout);
         }
-        else {
+        else if(s_task_cancel_dead() == 0) {
+
 #ifndef NDEBUG
             fprintf(stderr, "error: must not wait so long!\n");
 #endif
@@ -268,6 +269,10 @@ void s_task_init_system_()
 #endif
 
     s_list_init(&g_globals.active_tasks);
+#ifdef USE_DEAD_TASK_CHECKING	
+    s_list_init(&g_globals.waiting_mutexes);
+    s_list_init(&g_globals.waiting_events);
+#endif
 
 #ifndef USE_LIST_TIMER_CONTAINER
     rbt_create(&g_globals.timers,
@@ -353,6 +358,14 @@ void s_task_cancel_wait(void* stack) {
     s_list_attach(&g_globals.active_tasks, &task->node);
 }
 
+unsigned int s_task_cancel_dead() {
+#ifdef USE_DEAD_TASK_CHECKING
+    return s_event_cancel_dead_waiting_tasks_()
+         + s_mutex_cancel_dead_waiting_tasks_();
+#else
+    return 0;
+#endif
+}
 
 static size_t s_task_get_stack_free_size_ex_by_stack(void *stack) {
     uint32_t *check;

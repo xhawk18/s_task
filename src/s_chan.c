@@ -5,7 +5,7 @@
 /* chan                                                            */
 /*******************************************************************/
 
-uint16_t s_chan_put_(s_chan_t *chan, const void **in_object, uint16_t *number) {
+static uint16_t s_chan_put_(s_chan_t *chan, const void **in_object, uint16_t *number) {
     uint16_t begin;
     uint16_t end;
     uint16_t count;
@@ -39,7 +39,7 @@ uint16_t s_chan_put_(s_chan_t *chan, const void **in_object, uint16_t *number) {
     return count;
 }
 
-uint16_t s_chan_get_(s_chan_t *chan, void **out_object, uint16_t *number) {
+static uint16_t s_chan_get_(s_chan_t *chan, void **out_object, uint16_t *number) {
     uint16_t end;
     uint16_t count;
     
@@ -73,13 +73,14 @@ uint16_t s_chan_get_(s_chan_t *chan, void **out_object, uint16_t *number) {
 }
 
 /* Put element into chan */
-void s_chan_put(__async__, s_chan_t *chan, const void *in_object) {
+int s_chan_put(__async__, s_chan_t *chan, const void *in_object) {
 #if 1
-    s_chan_put_n(__await__, chan, in_object, 1);
+    return s_chan_put_n(__await__, chan, in_object, 1);
 #else
     uint16_t end;
     while (chan->available_count >= chan->max_count) {
-        s_event_wait(__await__, &chan->event);
+        int ret = s_event_wait(__await__, &chan->event);
+        if(ret != 0) return ret;
     }
 
     end = chan->begin + chan->available_count;
@@ -90,16 +91,18 @@ void s_chan_put(__async__, s_chan_t *chan, const void *in_object) {
     ++chan->available_count;
 
     s_event_set(&chan->event);
+    return 0;
 #endif
 }
 
 /* Get element from chan */
-void s_chan_get(__async__, s_chan_t *chan, void *out_object) {
+int s_chan_get(__async__, s_chan_t *chan, void *out_object) {
 #if 1
-    s_chan_get_n(__await__, chan, out_object, 1);
+    return s_chan_get_n(__await__, chan, out_object, 1);
 #else
     while (chan->available_count <= 0) {
-        s_event_wait(__await__, &chan->event);
+        int ret = s_event_wait(__await__, &chan->event);
+        if(ret != 0) return ret;
     }
 
     memcpy(out_object, (char*)&chan[1] + chan->begin * (size_t)chan->element_size, chan->element_size);
@@ -110,28 +113,33 @@ void s_chan_get(__async__, s_chan_t *chan, void *out_object) {
     --chan->available_count;
 
     s_event_set(&chan->event);
+    return 0;
 #endif
 }
 
 /* Put count of elements into chan */
-void s_chan_put_n(__async__, s_chan_t *chan, const void *in_object, uint16_t number) {
+int s_chan_put_n(__async__, s_chan_t *chan, const void *in_object, uint16_t number) {
     while(number > 0) {
         while (chan->available_count >= chan->max_count) {
-            s_event_wait(__await__, &chan->event);
+            int ret = s_event_wait(__await__, &chan->event);
+            if(ret != 0) return ret;
         }
         s_chan_put_(chan, &in_object, &number);
         s_event_set(&chan->event);
     }
+    return 0;
 }
 
 
 /* Get count of elements from chan */
-void s_chan_get_n(__async__, s_chan_t *chan, void *out_object, uint16_t number) {
+int s_chan_get_n(__async__, s_chan_t *chan, void *out_object, uint16_t number) {
     while(number > 0) {
         while (chan->available_count <= 0) {
-            s_event_wait(__await__, &chan->event);
+            int ret = s_event_wait(__await__, &chan->event);
+            if(ret != 0) return ret;
         }
         s_chan_get_(chan, &out_object, &number);
         s_event_set(&chan->event);
     }
+    return 0;
 }
