@@ -222,19 +222,19 @@ void loop() {
 
 "s_task" can run as standalone coroutine library, or work with library libuv (compiling with macro **USE_LIBUV**).
 
-| Platform                       | coroutine          | libuv              |
-|--------------------------------|--------------------|--------------------|
-| Windows                        | :heavy_check_mark: | :heavy_check_mark: |
-| Linux                          | :heavy_check_mark: | :heavy_check_mark: |
-| MacOS                          | :heavy_check_mark: | :heavy_check_mark: |
-| FreeBSD (12.1, x64)            | :heavy_check_mark: | :heavy_check_mark: |
-| Android                        | :heavy_check_mark: | :heavy_check_mark: |
-| MingW (https://www.msys2.org/) | :heavy_check_mark: | :heavy_check_mark: |
-| ARMv6-M (M051, Raspberry-Pico) | :heavy_check_mark: | :x:                |
-| ARMv7-M (STM32F103, STM32F302) | :heavy_check_mark: | :x:                |
-| STM8 (STM8S103, STM8L051F3)    | :heavy_check_mark: | :x:                |
-| Arduino UNO (AVR MEGA328P)     | :heavy_check_mark: | :x:                |
-| Arduino DUE (ATSAM3X8E)        | :heavy_check_mark: | :x:                |
+| Platform                          | coroutine          | libuv              |
+|-----------------------------------|--------------------|--------------------|
+| Windows                           | :heavy_check_mark: | :heavy_check_mark: |
+| Linux                             | :heavy_check_mark: | :heavy_check_mark: |
+| MacOS                             | :heavy_check_mark: | :heavy_check_mark: |
+| FreeBSD (12.1, x64)               | :heavy_check_mark: | :heavy_check_mark: |
+| Android                           | :heavy_check_mark: | :heavy_check_mark: |
+| MingW (https://www.msys2.org/)    | :heavy_check_mark: | :heavy_check_mark: |
+| ARMv6-M (M051, Raspberry Pi Pico) | :heavy_check_mark: | :x:                |
+| ARMv7-M (STM32F103, STM32F302)    | :heavy_check_mark: | :x:                |
+| STM8 (STM8S103, STM8L051F3)       | :heavy_check_mark: | :x:                |
+| Arduino UNO (AVR MEGA328P)        | :heavy_check_mark: | :x:                |
+| Arduino DUE (ATSAM3X8E)           | :heavy_check_mark: | :x:                |
 
    linux tested on 
    * i686 (ubuntu-16.04)
@@ -271,7 +271,7 @@ If need cross compiler, please set argument CMAKE_C_COMPILER when calling "cmake
 | STM32F103                  | build\stm32f103\gcc\Project.uvproj    | arm-none-eabi-gcc                                   |
 | STM32F302                  | build\stm32f302\Project.uvporj        | Keil uVision5                                       |
 | M051                       | build\m051\Project.uvporj             | Keil uVision5                                       |
-| Raspberry-Pico             | build\raspberrypi_pico\CMakeLists.txt | [pico-sdk](https://github.com/raspberrypi/pico-sdk) |
+| Raspberry Pi Pico          | build\raspberrypi_pico\CMakeLists.txt | [pico-sdk](https://github.com/raspberrypi/pico-sdk) |
 | ATmega328P                 | build\atmega328p\atmega328p.atsln     | Atmel Studio 7.0                                    |
 | Arduino UNO<br>Arduino DUE | build\arduino\arduino.ino             | Arduino IDE                                         |
 
@@ -338,17 +338,33 @@ s_chan_declare(name,TYPE,count);
  */
 s_chan_init(name,TYPE,count);
 
-/* Put element into chan */
-void s_chan_put(__async__, s_chan_t *chan, const void *in_object);
+/* 
+ * Put element into chan
+ *  return 0 on chan put successfully
+ *  return -1 on chan cancelled
+ */
+int s_chan_put(__async__, s_chan_t *chan, const void *in_object);
 
-/* Put number of elements into chan */
-void s_chan_put_n(__async__, s_chan_t *chan, const void *in_object, uint16_t number);
+/* 
+ * Put number of elements into chan
+ *  return 0 on chan put successfully
+ *  return -1 on chan cancelled
+ */
+int s_chan_put_n(__async__, s_chan_t *chan, const void *in_object, uint16_t number);
 
-/* Get element from chan */
-void s_chan_get(__async__, s_chan_t *chan, void *out_object);
+/* 
+ * Get element from chan
+ *  return 0 on chan get successfully
+ *  return -1 on chan cancelled
+ */
+int s_chan_get(__async__, s_chan_t *chan, void *out_object);
 
-/* Get number of elements from chan */
-void s_chan_get_n(__async__, s_chan_t *chan, void *out_object, uint16_t number);
+/* 
+ * Get number of elements from chan
+ *  return 0 on chan get successfully
+ *  return -1 on chan cancelled
+ */
+int s_chan_get_n(__async__, s_chan_t *chan, void *out_object, uint16_t number);
 ```
 
 ### Mutex
