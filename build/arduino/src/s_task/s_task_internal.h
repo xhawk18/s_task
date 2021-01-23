@@ -65,6 +65,11 @@ typedef struct {
     s_list_t    timers;
 #endif
 
+#ifdef USE_DEAD_TASK_CHECKING
+    s_list_t    waiting_mutexes;
+    s_list_t    waiting_events;
+#endif
+
 #if defined USE_LIBUV
     uv_loop_t  *uv_loop;
     uv_timer_t  uv_timer;
@@ -118,8 +123,12 @@ void s_timer_run(void);
 uint64_t s_timer_wait_recent(void);
 int s_timer_comparator(const RBTNode* a, const RBTNode* b, void* arg);
 
-uint16_t s_chan_put_(s_chan_t *chan, const void **in_object, uint16_t *number);
-uint16_t s_chan_get_(s_chan_t *chan, void **out_object, uint16_t *number);
+/* Return: number of cancelled tasks */
+unsigned int s_task_cancel_dead(void);
+#ifdef USE_DEAD_TASK_CHECKING
+unsigned int s_event_cancel_dead_waiting_tasks_(void);
+unsigned int s_mutex_cancel_dead_waiting_tasks_(void);
+#endif
 
 #ifdef __cplusplus
 }
