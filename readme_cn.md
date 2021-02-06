@@ -265,6 +265,7 @@ void loop() {
 | ARMv6-M (M051, 树莓派 Raspberry Pi Pico) | :heavy_check_mark: | :x:                |
 | ARMv7-M (STM32F103, STM32F302)           | :heavy_check_mark: | :x:                |
 | STM8 (STM8S103, STM8L051F3)              | :heavy_check_mark: | :x:                |
+| riscv32 (GD32VF103)                      | :heavy_check_mark: | :x:                |
 | Arduino UNO (AVR MEGA328P)               | :heavy_check_mark: | :x:                |
 | Arduino DUE (ATSAM3X8E)                  | :heavy_check_mark: | :x:                |
 
@@ -304,6 +305,7 @@ void loop() {
 | STM32F302                  | build\stm32f302\Project.uvporj        | Keil uVision5                                       |
 | M051                       | build\m051\Project.uvporj             | Keil uVision5                                       |
 | 树莓派 Raspberry Pi Pico   | build\raspberrypi_pico\CMakeLists.txt | [pico-sdk](https://github.com/raspberrypi/pico-sdk) |
+| GD32VF103                  | build\gd32vf103\                      | VSCode + [PlatformIO](https://platformio.org/)      |
 | ATmega328P                 | build\atmega328p\atmega328p.atsln     | Atmel Studio 7.0                                    |
 | Arduino UNO<br>Arduino DUE | build\arduino\arduino.ino             | Arduino IDE                                         |
 

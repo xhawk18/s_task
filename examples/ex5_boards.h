@@ -78,8 +78,45 @@ int g_stack1[350 / sizeof(int)];
 int g_stack0[384 / sizeof(int)];
 int g_stack1[384 / sizeof(int)];
 
+/* For board GD32VF103CBT6 */
+#elif defined __riscv
+#   define LED_PIN GPIO_PIN_1
+#   define LED_GPIO_PORT GPIOA
+#   define LED_GPIO_CLK RCU_GPIOA
+
+#   define LED2_PIN GPIO_PIN_13
+#   define LED2_GPIO_PORT GPIOC
+#   define LED2_GPIO_CLK RCU_GPIOC
+
+#   define LED_INIT()     do {                                                \
+    /* enable the led clock */                                                \
+    rcu_periph_clock_enable(LED_GPIO_CLK);                                    \
+    rcu_periph_clock_enable(LED2_GPIO_CLK);                                   \
+    /* configure led GPIO port */                                             \
+    gpio_init(LED_GPIO_PORT, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, LED_PIN);   \
+    GPIO_BC(LED_GPIO_PORT) = LED_PIN;                                         \
+    gpio_init(LED2_GPIO_PORT, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, LED2_PIN); \
+    GPIO_BC(LED2_GPIO_PORT) = LED2_PIN;                                       \
+} while(0)
+
+#   define LED_SET_HIGH()  do { GPIO_BC(LED_GPIO_PORT) = LED_PIN;  } while(0)
+#   define LED_SET_LOW()   do { GPIO_BOP(LED_GPIO_PORT) = LED_PIN; } while(0)
+
+#   define LED2_SET_HIGH()  do { GPIO_BC(LED2_GPIO_PORT) = LED2_PIN;  } while(0)
+#   define LED2_SET_LOW()   do { GPIO_BOP(LED2_GPIO_PORT) = LED2_PIN; } while(0)
+
+int g_stack0[1024 / sizeof(int)];
+int g_stack1[1024 / sizeof(int)];
+
 #else
-#   error "not supported"
+#   define LED_INIT()     do {} while(0)
+#   define LED_SET_HIGH() do { printf("LED = 1\n"); } while(0)
+#   define LED_SET_LOW()  do { printf("LED = 0\n"); } while(0)
+#   define LED2_SET_HIGH() do { printf("LED2 = 1\n"); } while(0)
+#   define LED2_SET_LOW()  do { printf("LED2 = 0\n"); } while(0)
+int g_stack0[64 * 1024 / sizeof(int)];
+int g_stack1[64 * 1024 / sizeof(int)];
+
 #endif
 
 

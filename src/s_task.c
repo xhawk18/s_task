@@ -42,10 +42,14 @@ THREAD_LOCAL s_task_globals_t g_globals;
 #   include "s_port_libuv.inc.h"
 #elif defined _WIN32
 #   include "s_port_windows.inc.h"
+#elif defined __unix__ || defined __linux__ || defined __APPLE__
+#   include "s_port_posix.inc.h"
 #elif defined __AVR__
 #   include "s_port_avr.inc.h"
+#elif defined __riscv
+#   include "s_port_gd32vf103.inc.h"
 #else
-#   include "s_port_posix.inc.h"
+#   error "no arch detected"
 #endif
 
 

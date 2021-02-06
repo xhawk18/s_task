@@ -277,6 +277,13 @@ st_add_link_flags(ex4_echo_server)
 target_include_directories(ex4_echo_server PRIVATE ../include ../libuv/include ../libuv/src ../asm)
 target_link_libraries(ex4_echo_server s_task ${st_link_flags} ${st_libraries})
 
+add_executable(ex5_led_blinking ../examples/ex5_led_blinking.c ${st_sources})
+target_compile_definitions(ex5_led_blinking PRIVATE ${st_defines})
+target_compile_options(ex5_led_blinking PRIVATE ${st_cflags})
+st_add_link_flags(ex5_led_blinking)
+target_include_directories(ex5_led_blinking PRIVATE ../include ../libuv/include ../libuv/src ../asm)
+target_link_libraries(ex5_led_blinking ${st_link_flags} ${st_libraries})
+
 add_executable(ex6_chan ../examples/ex6_chan.c ${st_sources})
 target_compile_definitions(ex6_chan PRIVATE ${st_defines})
 target_compile_options(ex6_chan PRIVATE ${st_cflags})

@@ -25,7 +25,11 @@
 #elif defined(__mips__)
     #include "jump_mips32_o32_elf_gas.S"
 #elif defined(__riscv)
-    #include "jump_riscv64_sysv_elf_gas.S"
+    #if defined __unix__ || defined __linux__
+        #include "jump_riscv64_sysv_elf_gas.S"
+    #else
+        #include "jump_riscv32_elf_gas.S"
+    #endif
 #elif defined(__s390x__)
     #include "jump_s390x_sysv_elf_gas.S"
 #else

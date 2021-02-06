@@ -70,12 +70,7 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 #   define USE_JUMP_FCONTEXT
 #   define USE_DEAD_TASK_CHECKING
 #   include "s_port_windows.h"
-#elif defined __AVR__
-#   define USE_IN_EMBEDDED
-#   define USE_SWAP_CONTEXT
-#   define USE_LIST_TIMER_CONTAINER
-#   include "s_port_avr.h"
-#else
+#elif defined __unix__ || defined __linux__ || defined __APPLE__
 #   ifdef __CYGWIN__
 #       define USE_SWAP_CONTEXT
 #   else
@@ -83,6 +78,18 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 #   endif
 #   define USE_DEAD_TASK_CHECKING
 #   include "s_port_posix.h"
+#elif defined __AVR__
+#   define USE_IN_EMBEDDED
+#   define USE_SWAP_CONTEXT
+#   define USE_LIST_TIMER_CONTAINER
+#   include "s_port_avr.h"
+#elif defined __riscv
+#   define USE_IN_EMBEDDED
+#   define USE_JUMP_FCONTEXT
+#   define USE_LIST_TIMER_CONTAINER
+#   include "s_port_gd32vf103.h"
+#else
+#   error "no arch detected"
 #endif
 
 #if defined USE_LIBUV && defined USE_IN_EMBEDDED

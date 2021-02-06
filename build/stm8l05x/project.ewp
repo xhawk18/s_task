@@ -1628,7 +1628,7 @@
       <name>$PROJ_DIR$\..\..\src\s_mutex.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\src\s_port_stm8.s</name>
+      <name>$PROJ_DIR$\..\..\asm\s_port_stm8.s</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\include\s_port_stm8l15x.h</name>

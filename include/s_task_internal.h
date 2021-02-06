@@ -81,7 +81,9 @@ typedef struct {
 #endif
 } s_task_globals_t;
 
-#if defined _MSC_VER
+#if defined USE_IN_EMBEDDED
+#   define THREAD_LOCAL
+#elif defined _MSC_VER
 #   define THREAD_LOCAL __declspec(thread)
 #elif defined __clang__
 #   if __clang_major__ >= 2
