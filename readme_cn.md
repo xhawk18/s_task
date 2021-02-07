@@ -2,28 +2,29 @@
 
 ## 目录
 
-  - [特性](#%e7%89%b9%e6%80%a7)
-  - [协程 vs 多线程](#%e5%8d%8f%e7%a8%8b-vs-%e5%a4%9a%e7%ba%bf%e7%a8%8b)
-  - [示例](#%e7%a4%ba%e4%be%8b)
-    - [示例 1 - 创建简单任务](#%e7%a4%ba%e4%be%8b-1---%e5%88%9b%e5%bb%ba%e7%ae%80%e5%8d%95%e4%bb%bb%e5%8a%a1)
-    - [示例 2 - （无需回调函数的）异步HTTP客户端程序](#%e7%a4%ba%e4%be%8b-2---%e6%97%a0%e9%9c%80%e5%9b%9e%e8%b0%83%e5%87%bd%e6%95%b0%e7%9a%84%e5%bc%82%e6%ad%a5http%e5%ae%a2%e6%88%b7%e7%ab%af%e7%a8%8b%e5%ba%8f)
-    - [示例 3 - ardinuo下同时跑多个任务控制led闪烁](#%e7%a4%ba%e4%be%8b-3---ardinuo%e4%b8%8b%e5%90%8c%e6%97%b6%e8%b7%91%e5%a4%9a%e4%b8%aa%e4%bb%bb%e5%8a%a1%e6%8e%a7%e5%88%b6led%e9%97%aa%e7%83%81)
-  - [兼容性](#%e5%85%bc%e5%ae%b9%e6%80%a7)
-  - [编译](#%e7%bc%96%e8%af%91)
-    - [Linux / FreeBSD / MacOS / MingW(MSYS2)](#linux--freebsd--macos--mingwmsys2)
-    - [Windows 或其他平台](#windows-%e6%88%96%e5%85%b6%e4%bb%96%e5%b9%b3%e5%8f%b0)
-  - [如何在您的项目中使用s_task？](#%e5%a6%82%e4%bd%95%e5%9c%a8%e6%82%a8%e7%9a%84%e9%a1%b9%e7%9b%ae%e4%b8%ad%e4%bd%bf%e7%94%a8stask)
+  - [目录](#目录)
+  - [特性](#特性)
+  - [协程 vs 多线程](#协程-vs-多线程)
+  - [示例](#示例)
+    - [示例 1 - 创建简单任务](#示例-1---创建简单任务)
+    - [示例 2 - （无需回调函数的）异步HTTP客户端程序](#示例-2---无需回调函数的异步http客户端程序)
+    - [示例 3 - ardinuo下同时跑多个任务控制led闪烁](#示例-3---ardinuo下同时跑多个任务控制led闪烁)
+  - [兼容性列表](#兼容性列表)
+  - [编译](#编译)
+    - [Posix - Linux / FreeBSD / MacOS / MingW(MSYS2)](#posix---linux--freebsd--macos--mingwmsys2)
+    - [其他 - Windows / STM8 / Cortex-M / Arduino, 和更多单片机 ...](#其他---windows--stm8--cortex-m--arduino-和更多单片机-)
+  - [如何在您的项目中使用s_task？](#如何在您的项目中使用s_task)
   - [API](#api)
-    - [Task （任务）](#task-%e4%bb%bb%e5%8a%a1)
-    - [Chan （数据通道）](#chan-%e6%95%b0%e6%8d%ae%e9%80%9a%e9%81%93)
-    - [Mutex （互斥量）](#mutex-%e4%ba%92%e6%96%a5%e9%87%8f)
-    - [Event （事件）](#event-%e4%ba%8b%e4%bb%b6)
-  - [嵌入式平台](#%e5%b5%8c%e5%85%a5%e5%bc%8f%e5%b9%b3%e5%8f%b0)
-  - [希望移植到新的平台？](#%e5%b8%8c%e6%9c%9b%e7%a7%bb%e6%a4%8d%e5%88%b0%e6%96%b0%e7%9a%84%e5%b9%b3%e5%8f%b0)
-  - [联系方式](#%e8%81%94%e7%b3%bb%e6%96%b9%e5%bc%8f)
-  - [其他协程库对比](#%e5%85%b6%e4%bb%96%e5%8d%8f%e7%a8%8b%e5%ba%93%e5%af%b9%e6%af%94)
-  - [感谢](#%e6%84%9f%e8%b0%a2)
-  
+    - [Task （任务）](#task-任务)
+    - [Chan （数据通道）](#chan-数据通道)
+    - [Mutex （互斥量）](#mutex-互斥量)
+    - [Event （事件）](#event-事件)
+  - [嵌入式平台](#嵌入式平台)
+  - [希望移植到新的平台？](#希望移植到新的平台)
+  - [联系方式](#联系方式)
+  - [其他协程库对比](#其他协程库对比)
+  - [感谢](#感谢)
+
 ## 特性
 
  + 全c和汇编实现，紧凑小巧又不失实用，并且不需要c++。
@@ -250,7 +251,7 @@ void loop() {
 ```
 
 
-## 兼容性
+## 兼容性列表
 
 "s_task" 可以作为一个单独的库使用，也可以配合libuv实现跨平台网络编程（编译时加上宏定义**USE_LIBUV**）。
 
@@ -281,7 +282,7 @@ void loop() {
 
 ## 编译
 
-### Linux / FreeBSD / MacOS / MingW(MSYS2)
+### Posix - Linux / FreeBSD / MacOS / MingW(MSYS2)
 
     git clone https://github.com/xhawk18/s_task.git
     cd s_task/build/
@@ -292,7 +293,7 @@ void loop() {
 
     cmake . -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
 
-### Windows 或其他平台
+### 其他 - Windows / STM8 / Cortex-M / Arduino, 和更多单片机 ...
 
 | 平台                       | 项目                                  | 工具链                                              |
 |----------------------------|---------------------------------------|-----------------------------------------------------|

@@ -1,4 +1,4 @@
-# s_task - awaitable coroutine library for C
+# s_task - full platform multi-task library for C
 
 [中文版文档 (chinese version)](readme_cn.md)
 
@@ -9,10 +9,10 @@
     - [Example 1 - simple task creation](#example-1---simple-task-creation)
     - [Example 2 - asynchronized http client without callback function.](#example-2---asynchronized-http-client-without-callback-function)
     - [Example 3 - control LED with multitasking on ardinuo](#example-3---control-led-with-multitasking-on-ardinuo)
-  - [Compatibility](#compatibility)
+  - [Compatibility list](#compatibility-list)
   - [Build](#build)
-    - [Linux / FreeBSD / MacOS / MingW(MSYS2)](#linux--freebsd--macos--mingwmsys2)
-    - [Windows and other platforms](#windows-and-other-platforms)
+    - [Posix - Linux / FreeBSD / MacOS / MingW(MSYS2)](#posix---linux--freebsd--macos--mingwmsys2)
+    - [Others - Windows / STM8 / Cortex-M / Arduino, and more ...](#others---windows--stm8--cortex-m--arduino-and-more-)
   - [How to use in your project?](#how-to-use-in-your-project)
   - [API](#api)
     - [Task](#task)
@@ -218,7 +218,7 @@ void loop() {
 }
 ```
 
-## Compatibility
+## Compatibility list
 
 "s_task" can run as standalone coroutine library, or work with library libuv (compiling with macro **USE_LIBUV**).
 
@@ -249,7 +249,7 @@ void loop() {
 
 ## Build
 
-### Linux / FreeBSD / MacOS / MingW(MSYS2)
+### Posix - Linux / FreeBSD / MacOS / MingW(MSYS2)
 
     git clone https://github.com/xhawk18/s_task.git
     cd s_task/build/
@@ -260,7 +260,7 @@ If need cross compiler, please set argument CMAKE_C_COMPILER when calling "cmake
 
     cmake . -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc
 
-### Windows and other platforms
+### Others - Windows / STM8 / Cortex-M / Arduino, and more ...
 
 | Platform                   | Project                               | Tool chain                                          |
 |----------------------------|---------------------------------------|-----------------------------------------------------|
