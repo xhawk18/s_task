@@ -4,14 +4,14 @@
           http://www.boost.org/LICENSE_1_0.txt)
 */
 
-.file "make_riscv64_sysv_elf_gas.S"
+.file "make_riscv64_elf_gas.S"
 .text
 .align  1
 .global make_fcontext
 .type   make_fcontext, %function
 make_fcontext:
-    # shift address in a0 (allocated stack) to lower 16 byte boundary
-    # andi a0, a0, ~0xF
+    # shift address in a0 (allocated stack) to lower 4 byte boundary
+    andi a0, a0, ~0x3
 
     # reserve space for context-data on context-stack
 #ifdef __riscv_flen

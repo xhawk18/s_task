@@ -5,7 +5,7 @@
 */
 
 
-.file "jump_riscv64_sysv_elf_gas.S"
+.file "jump_riscv64_elf_gas.S"
 .text
 .align  1
 .global jump_fcontext
