@@ -214,7 +214,7 @@ void run_timer(__async__, void* arg) {
 
 int main(int argc, char *argv[]) {
     uv_loop_t *loop = uv_default_loop();
-    s_task_init_system(loop);
+    s_task_init_uv_system(loop);
 
     g_server.loop = loop;
 
