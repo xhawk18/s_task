@@ -304,6 +304,12 @@ On windows or other system, please find the project in folder "build" as the pro
 /* Function type for task entrance */
 typedef void(*s_task_fn_t)(__async__, void *arg);
 
+/* System initialization (without USE_LIBUV defined) */
+void s_task_init_system();
+
+/* System initialization (with USE_LIBUV defined)  */
+void s_task_init_uv_system(uv_loop_t *loop);
+
 /* Create a new task */
 void s_task_create(void *stack, size_t stack_size, s_task_fn_t entry, void *arg);
 

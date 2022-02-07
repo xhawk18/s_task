@@ -61,7 +61,7 @@ s_task协程库，更是打造了全平台兼容的协程支持环境，从高�
 
 所有这些平台，全部共享一套同样接口的多任务[API](#api)。使用s_task，您将用最小的使用成本，获得最大的收益。
 
-现在，放弃进入历史垃圾堆的多线程编程，开始您的 s_task 协程之旅！
+现在，暂时忘记多线程，开始您的 s_task 协程之旅！
 
 ## 示例
 
@@ -336,6 +336,12 @@ void loop() {
 
 /* Function type for task entrance */
 typedef void(*s_task_fn_t)(__async__, void *arg);
+
+/* System initialization (without USE_LIBUV defined) */
+void s_task_init_system();
+
+/* System initialization (with USE_LIBUV defined)  */
+void s_task_init_uv_system(uv_loop_t *loop);
 
 /* Create a new task */
 void s_task_create(void *stack, size_t stack_size, s_task_fn_t entry, void *arg);
