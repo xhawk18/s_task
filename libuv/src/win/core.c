@@ -35,7 +35,6 @@
 #include "handle-inl.h"
 #include "heap-inl.h"
 #include "req-inl.h"
-#include "s_task.h"
 
 /* uv_once initialization guards */
 static uv_once_t uv_init_guard_ = UV_ONCE_INIT;
@@ -505,18 +504,17 @@ int uv_loop_alive(const uv_loop_t* loop) {
 
 
 int uv_run(uv_loop_t *loop, uv_run_mode mode) {
-  __async__ = 0;
   DWORD timeout;
   int r;
   int ran_pending;
 
-  s_task_main_loop_once(__await__);
+  (*g_main_loop_once)(loop);
 
   r = uv__loop_alive(loop);
   if (!r)
     uv_update_time(loop);
 
-  while ((r != 0 && loop->stop_flag == 0) || s_task_cancel_dead() > 0) {
+  while ((r != 0 && loop->stop_flag == 0) || (*g_cancel_dead)(loop) > 0) {
     uv_update_time(loop);
     uv__run_timers(loop);
 
@@ -524,7 +522,7 @@ int uv_run(uv_loop_t *loop, uv_run_mode mode) {
     uv_idle_invoke(loop);
     uv_prepare_invoke(loop);
 
-    s_task_main_loop_once(__await__);
+    (*g_main_loop_once)(loop);
 
     timeout = 0;
     if ((mode == UV_RUN_ONCE && !ran_pending) || mode == UV_RUN_DEFAULT)
@@ -551,7 +549,7 @@ int uv_run(uv_loop_t *loop, uv_run_mode mode) {
       uv__run_timers(loop);
     }
 
-    s_task_main_loop_once(__await__);
+    (*g_main_loop_once)(loop);
 
     r = uv__loop_alive(loop);
     if (mode == UV_RUN_ONCE || mode == UV_RUN_NOWAIT)

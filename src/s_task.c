@@ -192,7 +192,9 @@ void s_task_next(__async__) {
     s_task_call_next(__await__);
 }
 
-void s_task_main_loop_once(__async__) {
+void s_uv_task_main_loop_once(uv_loop_t *loop) {
+    __async__ = 0;
+    (void)loop;
     s_timer_run();
     while (!s_list_is_empty(&g_globals.active_tasks)) {
         /* Put current task to the waiting list */
@@ -207,6 +209,11 @@ void s_task_main_loop_once(__async__) {
         uint64_t timeout = s_timer_wait_recent();
         my_on_idle(timeout);
     }
+}
+
+unsigned int s_uv_task_cancel_dead(uv_loop_t *loop) {
+    (void)loop;
+    return s_task_cancel_dead();
 }
 
 #else
@@ -260,15 +267,17 @@ void s_task_yield(__async__) {
 }
 
 #if defined USE_LIBUV
-void s_task_init_uv_system_(uv_loop_t* uv_loop)
-#else
-void s_task_init_system_()
-#endif
-{
-#if defined USE_LIBUV
+
+void s_task_init_system_(void);
+void s_task_init_uv_system_(uv_loop_t *uv_loop) {
     g_globals.uv_loop = uv_loop;
+    uv_set_loop_cb(&s_uv_task_main_loop_once, &s_uv_task_cancel_dead);
+    s_task_init_system_();
+}
+
 #endif
-    
+
+void s_task_init_system_() {
 #if defined USE_IN_EMBEDDED    
     s_list_init(&g_globals.irq_active_tasks);
     g_globals.irq_actived = 0;

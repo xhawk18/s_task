@@ -787,3 +787,22 @@ void uv_loop_delete(uv_loop_t* loop) {
   if (loop != default_loop)
     uv__free(loop);
 }
+
+
+static void default_main_loop_once(uv_loop_t *loop) {
+    (void)loop;
+}
+
+static unsigned int default_cancel_dead(uv_loop_t *loop) {
+    (void)loop;
+    return 0;
+}
+
+void (*g_main_loop_once)(uv_loop_t *) = &default_main_loop_once;
+unsigned int (*g_cancel_dead)(uv_loop_t *) = &default_cancel_dead;
+
+void uv_set_loop_cb(void (*main_loop_once)(uv_loop_t *),
+                    unsigned int (*cancel_dead)(uv_loop_t *)) {
+    g_main_loop_once = (main_loop_once == NULL ? default_main_loop_once : main_loop_once);
+    g_cancel_dead = (cancel_dead == NULL ? default_cancel_dead : cancel_dead);
+}

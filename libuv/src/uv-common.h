@@ -324,4 +324,7 @@ void* uv__malloc(size_t size);
 void uv__free(void* ptr);
 void* uv__realloc(void* ptr, size_t size);
 
+extern void (*g_main_loop_once)(uv_loop_t *);
+extern unsigned int (*g_cancel_dead)(uv_loop_t *);
+
 #endif /* UV_COMMON_H_ */
