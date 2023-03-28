@@ -16,6 +16,7 @@ my_clock_t my_clock() {
 }
 
 static void uv_on_timer(uv_timer_t* handle) {
+    (void)handle;
     /* uv_close((uv_handle_t*)handle, NULL); */
 }
 

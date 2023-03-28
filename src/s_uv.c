@@ -9,6 +9,7 @@ typedef struct {
 } s_uv_close_arg_t;
 
 static void s_uv_close_cb(uv_handle_t* handle, void *arg) {
+    (void)handle;
     s_uv_close_arg_t* arg_ = (s_uv_close_arg_t*)arg;
     arg_->trigged = true;
     s_event_set(&arg_->event);
@@ -42,6 +43,9 @@ static void s_uv_read_start_alloc_cb(
     size_t suggested_size,
     uv_buf_t* buf,
     void* arg) {
+    (void)handle;
+    (void)suggested_size;
+    (void)buf;
     s_uv_read_start_arg_t* arg_ = (s_uv_read_start_arg_t*)arg;
     buf->base = arg_->buf;
     buf->len = arg_->buf_len;
@@ -52,6 +56,7 @@ static void s_uv_read_start_read_cb(
     ssize_t nread,
     const uv_buf_t* buf,
     void* arg) {
+    (void)buf;
     s_uv_read_start_arg_t* arg_ = (s_uv_read_start_arg_t*)arg;
     uv_read_stop(stream);
     arg_->nread = nread;
@@ -144,6 +149,9 @@ static void uv_udp_recv_start_alloc_cb(
     size_t suggested_size,
     uv_buf_t* buf,
     void* arg) {
+    (void)handle;
+    (void)suggested_size;
+    (void)buf;
     s_uv_recv_start_arg_t* arg_ = (s_uv_recv_start_arg_t*)arg;
     buf->base = arg_->buf;
     buf->len = arg_->buf_len;
@@ -156,7 +164,7 @@ static void uv_udp_recv_start_recv_cb(
     const struct sockaddr* addr,
     unsigned flags,
     void *arg) {
-
+    (void)buf;
     s_uv_recv_start_arg_t* arg_ = (s_uv_recv_start_arg_t*)arg;
     uv_udp_recv_stop(handle);
     arg_->nrecv = nread;
@@ -267,6 +275,7 @@ typedef struct {
 static void s_uv_getaddrinfo_cb(uv_getaddrinfo_t* req,
     int status,
     struct addrinfo* res) {
+    (void)res;
     s_uv_getaddrinfo_t* arg_ = GET_PARENT_ADDR(req, s_uv_getaddrinfo_t, req);
     arg_->status = status;
     arg_->trigged = true;

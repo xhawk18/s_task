@@ -18,6 +18,7 @@ volatile bool g_is_low = false;
 volatile bool g_exit = false;
 
 void sub_task_fast_blinking(__async__, void* arg) {
+    (void)arg;
     while(!g_exit) {
         if(!g_is_low)
             LED_SET_HIGH();                  /* turn the LED on */
@@ -29,6 +30,7 @@ void sub_task_fast_blinking(__async__, void* arg) {
 }
 
 void sub_task_set_low(__async__, void* arg) {
+    (void)arg;
     while(!g_exit) {
         g_is_low = true;                     /* stop fast blinking */
         LED_SET_LOW();                       /* turn the LED off */
@@ -45,6 +47,7 @@ void sub_task_set_low(__async__, void* arg) {
 }
 
 void main_task(__async__, void* arg) {
+    (void)arg;
     
     LED_INIT();
 

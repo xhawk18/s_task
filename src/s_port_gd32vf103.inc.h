@@ -22,7 +22,9 @@ void my_on_idle(uint64_t max_idle_ms) {
 
     do {
         delta_mtime = get_timer_value() - start_mtime;
-    } while(delta_mtime < (MY_CLOCKS_PER_SEC * max_idle_ms / 1000));
+    } while(
+        !g_globals.irq_actived
+        && delta_mtime < (MY_CLOCKS_PER_SEC * max_idle_ms / 1000));
 }
 
 

@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "s_task.h"
 
 /* Declares for chan1 */
@@ -41,6 +42,7 @@ void task_chan1_put(__async__, void* arg) {
 }
 
 void task_chan1_get(__async__, void* arg) {
+    (void)arg;
     my_element_t element;
     int sum;
 
@@ -67,6 +69,7 @@ void task_chan1_get(__async__, void* arg) {
 
 
 void task_chan2_put(__async__, void* arg) {
+    (void)arg;
     
     char x = 0;
     while(true) {
@@ -81,6 +84,8 @@ void task_chan2_put(__async__, void* arg) {
 }
 
 void task_chan2_get(__async__, void* arg) {
+    (void)arg;
+
     s_chan_init(g_my_chan2, char, 512);
     s_task_create(g_stack_chan2_put, sizeof(g_stack_chan2_put), task_chan2_put, NULL);
 
@@ -108,7 +113,7 @@ end:
 
 
 
-int main(int argc, char* argv[]) {
+int main(void) {
 
     s_task_init_system();
 
