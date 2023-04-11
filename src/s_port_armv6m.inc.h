@@ -41,34 +41,7 @@ void my_on_idle(uint64_t max_idle_ms) {
 #endif
 
 
-#if defined __ARMCC_VERSION
-__asm static void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
-    PUSH    {r4-r7}
-    MOV     r2, r8
-    MOV     r3, r9
-    MOV     r4, r10
-    MOV     r5, r11
-    MOV     r6, r12
-    MOV     r7, lr
-    PUSH    {r2-r7}
-    MOV     r2, sp
-    STM     r0, {r2}
-
-    LDM     r1, {r2}
-    MOV     sp, r2
-    POP     {r2-r7}
-    MOV     r8, r2
-    MOV     r9, r3
-    MOV     r10, r4
-    MOV     r11, r5
-    MOV     r12, r6
-    MOV     lr, r7
-    POP     {r4-r7}
-
-    BX      lr
-}
-
-#elif defined __GNUC__
+#if defined __clang__ || defined __GNUC__
 
 __attribute__((naked))
 static void swapcontext(ucontext_t *old_tcb, const ucontext_t *new_tcb) {
@@ -95,6 +68,33 @@ static void swapcontext(ucontext_t *old_tcb, const ucontext_t *new_tcb) {
         "MOV     lr, r7\n"
         "POP     {r4-r7}\n"
    );
+}
+
+#elif defined __ARMCC_VERSION
+__asm static void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
+    PUSH    {r4-r7}
+    MOV     r2, r8
+    MOV     r3, r9
+    MOV     r4, r10
+    MOV     r5, r11
+    MOV     r6, r12
+    MOV     r7, lr
+    PUSH    {r2-r7}
+    MOV     r2, sp
+    STM     r0, {r2}
+
+    LDM     r1, {r2}
+    MOV     sp, r2
+    POP     {r2-r7}
+    MOV     r8, r2
+    MOV     r9, r3
+    MOV     r10, r4
+    MOV     r11, r5
+    MOV     r12, r6
+    MOV     lr, r7
+    POP     {r4-r7}
+
+    BX      lr
 }
 
 #endif

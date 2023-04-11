@@ -21,7 +21,11 @@ THREAD_LOCAL s_task_globals_t g_globals;
 #       error "no arch detected"
 #   endif
 #elif defined __ARMCC_VERSION
-#   if defined __TARGET_CPU_CORTEX_M0
+#   if defined __ARM_ARCH_6M__
+#       include "s_port_armv6m.inc.h"
+#   elif defined __ARM_ARCH_7M__ || defined __ARM_ARCH_7EM__
+#       include "s_port_armv7m.inc.h"
+#   elif defined __TARGET_CPU_CORTEX_M0
 #       include "s_port_armv6m.inc.h"
 #   elif defined __TARGET_CPU_CORTEX_M3
 #       include "s_port_armv7m.inc.h"

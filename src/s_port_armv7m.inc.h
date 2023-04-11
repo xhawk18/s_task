@@ -41,20 +41,7 @@ void my_on_idle(uint64_t max_idle_ms) {
 #endif
 
 
-#if defined __ARMCC_VERSION
-__asm static void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
-    PUSH    {r4-r12,lr}
-    STR     sp, [r0]
-    
-    //LDR     r2, [r1]
-    //MOV     sp, r2
-    LDR     sp, [r1]
-    POP     {r4-r12,lr}
-
-    BX      lr
-}
-
-#elif defined __GNUC__
+#if defined __clang__ || defined __GNUC__
 
 __attribute__((naked))
 static void swapcontext(ucontext_t *old_tcb, const ucontext_t *new_tcb) {
@@ -69,6 +56,20 @@ static void swapcontext(ucontext_t *old_tcb, const ucontext_t *new_tcb) {
         "BX      lr\n"
    );
 }
+
+#elif defined __ARMCC_VERSION
+__asm static void swapcontext(ucontext_t *oucp, const ucontext_t *ucp) {
+    PUSH    {r4-r12,lr}
+    STR     sp, [r0]
+    
+    //LDR     r2, [r1]
+    //MOV     sp, r2
+    LDR     sp, [r1]
+    POP     {r4-r12,lr}
+
+    BX      lr
+}
+
 
 #endif
 
