@@ -31,6 +31,10 @@
 #   elif defined STM32L1XX_MD
 #       error "not supported"
 
+/* For board STM32L431xx */
+#   elif defined STM32L431xx
+#       error "not supported"
+
 /* For board Raspberry Pico */
 #   elif defined PICO_BUILD
 #       define LED_GPIO 25

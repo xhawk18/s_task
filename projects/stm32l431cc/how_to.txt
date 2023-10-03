@@ -1,0 +1,4 @@
+1. Open stm32l431cc.ioc with STM32CubeMX, 
+   and click "GENERATE CODE".
+
+2. Open the project in "MDK-ARM\stm32l431cc.uvprojx".

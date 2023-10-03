@@ -44,6 +44,8 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 #       include "s_port_stm32f30x.h"
 #   elif defined STM32L1XX_MD
 #       include "s_port_stm32l1xx.h"
+#   elif defined STM32L431xx
+#       include "s_port_stm32l4xx.h"
 #   elif defined PICO_BUILD
 #       include "s_port_raspberry_pico.h"
 #   else

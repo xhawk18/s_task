@@ -33,6 +33,8 @@ THREAD_LOCAL s_task_globals_t g_globals;
 #       include "s_port_armv7m.inc.h"
 #   elif defined __TARGET_CPU_CORTEX_M4_FP
 #       include "s_port_armv7m.inc.h"
+#   elif defined __TARGET_CPU_CORTEX_M4_FP_SP
+#       include "s_port_armv7m.inc.h"
 #   else
 #       error "no arch detected"
 #   endif
