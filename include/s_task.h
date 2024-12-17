@@ -86,10 +86,17 @@ typedef void(*s_task_fn_t)(__async__, void *arg);
 #   define USE_LIST_TIMER_CONTAINER
 #   include "s_port_avr.h"
 #elif defined __riscv
-#   define USE_IN_EMBEDDED
-#   define USE_JUMP_FCONTEXT
-#   define USE_LIST_TIMER_CONTAINER
-#   include "s_port_gd32vf103.h"
+#   if defined HPMICRO
+#       define USE_IN_EMBEDDED
+#       define USE_JUMP_FCONTEXT
+#       define USE_LIST_TIMER_CONTAINER
+#       include "s_port_hpmicro.h"
+#   else
+#       define USE_IN_EMBEDDED
+#       define USE_JUMP_FCONTEXT
+#       define USE_LIST_TIMER_CONTAINER
+#       include "s_port_gd32vf103.h"
+#   endif
 #else
 #   error "no arch detected"
 #endif

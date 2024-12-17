@@ -53,7 +53,11 @@ THREAD_LOCAL s_task_globals_t g_globals;
 #elif defined __AVR__
 #   include "s_port_avr.inc.h"
 #elif defined __riscv
-#   include "s_port_gd32vf103.inc.h"
+#   if defined HPMICRO
+#       include "s_port_hpmicro.inc.h"
+#   else
+#       include "s_port_gd32vf103.inc.h"
+#   endif
 #else
 #   error "no arch detected"
 #endif

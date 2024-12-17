@@ -20,7 +20,9 @@ typedef uint64_t my_clock_t;
 typedef int64_t my_clock_diff_t;
 
 /* 2. define the clock ticks count for one second */
-#define MY_CLOCKS_PER_SEC (SystemCoreClock/4)
+#ifndef MY_CLOCKS_PER_SEC
+#define MY_CLOCKS_PER_SEC 24000000
+#endif
 
 /* 3. Implement the initilization function for clock. Leave it blank if not required. */
 void my_clock_init(void);
